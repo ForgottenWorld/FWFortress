@@ -1,0 +1,17 @@
+name: FWFortress
+version: ${project.version}
+main: me.architetto.fwfortress.FWFortress
+api-version: 1.16
+authors: [ Architetto ]
+depend: [ Towny ]
+commands:
+  fwfortress:
+    description: Plugin per la gestione delle fortezze.
+    aliases:
+      - fwfort
+      - fort
+
+permissions:
+  fwfortress.admin:
+    description: description
+    default: op
