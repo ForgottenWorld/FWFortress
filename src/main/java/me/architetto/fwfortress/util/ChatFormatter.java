@@ -28,4 +28,10 @@ public class ChatFormatter {
         return message;
     }
 
+    public static String formatYellowMessage(String message) {
+        message = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FW" + ChatColor.RESET  + "Fortress" + ChatColor.GRAY  +
+                " ||> " + ChatColor.YELLOW + message + ChatColor.RESET;
+        return message;
+    }
+
 }

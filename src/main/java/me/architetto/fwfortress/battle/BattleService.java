@@ -5,10 +5,12 @@ import java.util.HashMap;
 
 public class BattleService {
 
+    //WIP WIP WIP WIP
+
     private static BattleService battleService;
 
     private HashMap<String,Battle> battleContainer;
-    private HashMap<String,Long> fortressLastBattle;
+    //private HashMap<String,Long> fortressLastBattle;
 
 
     private BattleService() {
@@ -19,7 +21,7 @@ public class BattleService {
         //inizializzare le variabili
 
         this.battleContainer = new HashMap<>();
-        this.fortressLastBattle = new HashMap<>(); //va inizializzata con un valore preso da config per ogni fortezza
+        //this.fortressLastBattle = new HashMap<>(); //va inizializzata con un valore preso da config per ogni fortezza
 
     }
 
@@ -30,5 +32,6 @@ public class BattleService {
         return battleService;
     }
 
+    //todo
 
 }
