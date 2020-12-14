@@ -17,9 +17,9 @@
 ## * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ##
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
-FORTRESS_HP: 1000
+FORTRESS_HP: 120
 
-BATTLE_TIME_LIMIT: 1800
+BATTLE_TIME_LIMIT: 180
 
 START_BATTLE_DELAY : 15
 
