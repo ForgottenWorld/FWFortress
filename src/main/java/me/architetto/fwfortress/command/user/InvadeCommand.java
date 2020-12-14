@@ -83,8 +83,6 @@ public class InvadeCommand extends SubCommand {
             }
         }
 
-        Bukkit.getConsoleSender().sendMessage(fortress.get().getFortressName() + " // " + enemies.toString() + "//" + tow.getName());
-
         BattleService.getInstance().startNewBattle(fortress.get(), enemies, tow.getName());
 
 

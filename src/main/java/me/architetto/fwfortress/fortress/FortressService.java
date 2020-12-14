@@ -49,9 +49,6 @@ public class FortressService {
         if (fortressContainer.containsKey(fortressName)) {
             return false;
         }
-        Bukkit.getConsoleSender().sendMessage(fortressName + " // " + firstOwner + " // " + currentOwner);
-        Bukkit.getConsoleSender().sendMessage(fortressPosition.toString());
-        Bukkit.getConsoleSender().sendMessage(String.valueOf(fortressHP));
 
         Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner, fortressPosition, fortressHP);
 

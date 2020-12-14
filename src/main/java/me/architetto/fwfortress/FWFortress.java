@@ -5,6 +5,7 @@ import me.architetto.fwfortress.config.ConfigManager;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.listener.FortressCreationListener;
 import me.architetto.fwfortress.listener.PlayerListener;
+import me.architetto.fwfortress.listener.TownListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -50,6 +51,7 @@ public final class FWFortress extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new FortressCreationListener(),this);
         getServer().getPluginManager().registerEvents(new PlayerListener(),this);
+        getServer().getPluginManager().registerEvents(new TownListener(),this);
 
     }
 

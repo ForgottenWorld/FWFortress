@@ -1,7 +1,8 @@
 package me.architetto.fwfortress.battle;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.TownyMessaging;
+
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.FWFortress;
 import me.architetto.fwfortress.battle.util.Countdown;
@@ -10,14 +11,13 @@ import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.util.ChatFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
+
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
+
 import org.bukkit.util.BoundingBox;
 
 import java.util.*;
@@ -35,7 +35,7 @@ public class Battle {
 
     private String enemyTown;
 
-    //private BossBar bossBar; bossBar o scoreBoard ? Preferisco la prima
+    private BossBar bossBar;
 
     private int fortressHP;
 
@@ -49,21 +49,13 @@ public class Battle {
         this.greenArea = fortress.getGreenBoundingBox();
         this.blueArea = fortress.getBlueBoundingBox();
 
-        Bukkit.getConsoleSender().sendMessage("BLUE AREA MAX XYZ:");
-        Bukkit.getConsoleSender().sendMessage(blueArea.getMaxX() + " // " + blueArea.getMaxY() + " // " + blueArea.getMaxZ());
-        Bukkit.getConsoleSender().sendMessage("BLUE AREA MIN XYZ:");
-        Bukkit.getConsoleSender().sendMessage(blueArea.getMinX() + " // " + blueArea.getMinY() + " // " + blueArea.getMinZ());
-
-        Bukkit.getConsoleSender().sendMessage("GREEN AREA MAX XYZ:");
-        Bukkit.getConsoleSender().sendMessage(greenArea.getMaxX() + " // " + greenArea.getMaxY() + " // " + greenArea.getMaxZ());
-        Bukkit.getConsoleSender().sendMessage("GREEN AREA MIN XYZ:");
-        Bukkit.getConsoleSender().sendMessage(greenArea.getMinX() + " // " + greenArea.getMinY() + " // " + greenArea.getMinZ());
-
         this.fortressHP = fortress.getFortressHP();
 
         this.activeInvaders = invaders;
 
         this.enemyTown = enemyTown;
+
+        this.bossBar = Bukkit.createBossBar("PLACEHOLDER", BarColor.RED, BarStyle.SOLID);
 
     }
 
@@ -82,7 +74,7 @@ public class Battle {
                         ChatColor.AQUA + " sta' per essere attaccata da " +
                         ChatColor.YELLOW + enemyTown)),
                 () -> {
-            //
+
                     sendMessageToEnemies(ChatFormatter.formatMessage(ChatColor.AQUA + "La battaglia per la conquista di " +
                             ChatColor.YELLOW + fortress.getFortressName() +
                                     ChatColor.AQUA + " e' cominciata ! Da questo momento lasciare la fortezza equivale a morire!"));
@@ -110,15 +102,23 @@ public class Battle {
     }
 
     private void startBattle() {
-        //todo
         Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class), SettingsHandler.getInstance().getBattleTimeLimit(),
                 () -> {
-            //START BATTLE LOGIC
-                    //todo: boosbar ?
 
+                    this.activeInvaders.forEach(uuid -> this.bossBar.addPlayer(Bukkit.getPlayer(uuid)));
+
+                    try {
+                        TownyAPI.getInstance().getDataSource().getTown(this.fortress.getCurrentOwner())
+                                .getResidents().forEach(resident -> {
+                                    if (resident.getPlayer() != null)
+                                        this.bossBar.addPlayer(resident.getPlayer()); });
+                    } catch (NotRegisteredException e) {
+                        e.printStackTrace();
+                    }
                 },
+
                 () -> {
-            //END BATLLE LOGIC
+
                     sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.YELLOW + fortress.getFortressName() +
                             ChatColor.AQUA + " ha resistito all'attacco di ") +
                             ChatColor.YELLOW + enemyTown);
@@ -128,11 +128,15 @@ public class Battle {
 
                 },
                 (s) -> {
-            //EVERY SECOND
+
                     this.fortressHP -= getInvadersInsideGreenArea();
 
-                    //DEBUG
-                    Bukkit.broadcastMessage("HP FORTEZZA (WIP) :" + this.fortressHP);
+                    this.bossBar.setTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + fortress.getFortressName() +
+                            ChatColor.AQUA + " [ TIMER : " + ChatColor.YELLOW + s.getSecondsLeft() +
+                            ChatColor.AQUA + " ] [ HP : " + ChatColor.YELLOW + this.fortressHP +
+                            ChatColor.AQUA + " ]");
+
+                    this.bossBar.setProgress((float) this.fortressHP / this.fortress.getFortressHP());
 
                     if (this.activeInvaders.isEmpty()) {
                         sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.YELLOW + fortress.getFortressName() +
@@ -177,7 +181,7 @@ public class Battle {
 
     public void playerLeaveFortressArea(Player player) {
         player.damage(2);
-        player.sendActionBar(ChatColor.YELLOW + "" + ChatColor.BOLD + "TORNA NELLA FORTEZZA");
+        player.sendActionBar(ChatColor.DARK_RED + "" + ChatColor.BOLD + "TORNA NELLA FORTEZZA");
     }
 
     //Il metodo commentato tippa il player in citta' e droppa l'inventario in terra. Personalmente preferisco danneggiarlo
@@ -232,8 +236,6 @@ public class Battle {
         Optional<Town> optionalTown = TownyAPI.getInstance().getDataSource().getTowns()
                 .stream().filter(town -> town.getName().equals(townName)).findFirst();
 
-        //optionalTown.ifPresent(town -> TownyMessaging.sendPrefixedTownMessage(town,msg));
-
         optionalTown.ifPresent(town -> town.getResidents().forEach(resident -> {
             Player player = resident.getPlayer();
             if (player != null && player.isOnline())
@@ -244,6 +246,7 @@ public class Battle {
     }
 
     public void stopBattle() {
+        this.bossBar.removeAll();
         Bukkit.getScheduler().cancelTask(this.positionTaskID);
         Bukkit.getScheduler().cancelTask(this.battleTaskID);
     }

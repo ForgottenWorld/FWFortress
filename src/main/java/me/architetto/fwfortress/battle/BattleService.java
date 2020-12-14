@@ -1,10 +1,8 @@
 package me.architetto.fwfortress.battle;
 
-
 import me.architetto.fwfortress.config.ConfigManager;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
-import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +16,6 @@ public class BattleService {
     private static BattleService battleService;
 
     private HashMap<String,Battle> battleContainer;
-    //private HashMap<String,Long> fortressLastBattle;
-
 
     private BattleService() {
         if(battleService != null) {
@@ -29,7 +25,6 @@ public class BattleService {
         //inizializzare le variabili
 
         this.battleContainer = new HashMap<>();
-        //this.fortressLastBattle = new HashMap<>(); //va inizializzata con un valore preso da config per ogni fortezza
 
     }
 
