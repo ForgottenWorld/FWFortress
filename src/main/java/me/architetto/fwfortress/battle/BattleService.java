@@ -1,7 +1,15 @@
 package me.architetto.fwfortress.battle;
 
 
+import me.architetto.fwfortress.config.ConfigManager;
+import me.architetto.fwfortress.config.SettingsHandler;
+import me.architetto.fwfortress.fortress.Fortress;
+import org.bukkit.Bukkit;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class BattleService {
 
@@ -30,6 +38,51 @@ public class BattleService {
             battleService = new BattleService();
         }
         return battleService;
+    }
+
+    public void startNewBattle(Fortress fortress, List<UUID> enemies, String enemyTown) {
+
+        Battle battle = new Battle(fortress, enemies, enemyTown);
+
+        this.battleContainer.put(fortress.getFortressName(), battle);
+
+        battle.initBattle();
+
+    }
+
+    public void resolveBattle(Fortress fortress, String newOwner, int fortressHP) {
+
+        ConfigManager configManager = ConfigManager.getInstance();
+
+        if (!fortress.getCurrentOwner().equals(newOwner)) {
+
+            fortress.setCurrentOwner(newOwner);
+            fortress.setFortressHP(SettingsHandler.getInstance().getFortressHP());
+            configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName() + ".OWNER", newOwner);
+            configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName()
+                    + ".FORTRESS_HP", SettingsHandler.getInstance().getFortressHP());
+
+        } else {
+            fortress.setFortressHP(fortressHP);
+            configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName()
+                    + ".FORTRESS_HP", fortressHP);
+
+        }
+
+        stopBattle(fortress.getFortressName());
+
+        this.battleContainer.remove(fortress.getFortressName());
+
+    }
+
+    public void stopBattle(String fortressName) {
+        Battle battle = this.battleContainer.get(fortressName);
+        battle.stopBattle();
+        this.battleContainer.remove(fortressName);
+    }
+
+    public List<Battle> getCurrentBattle() {
+        return new ArrayList<>(this.battleContainer.values());
     }
 
     //todo

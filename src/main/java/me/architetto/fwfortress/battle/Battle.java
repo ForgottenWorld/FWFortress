@@ -1,21 +1,26 @@
 package me.architetto.fwfortress.battle;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.FWFortress;
 import me.architetto.fwfortress.battle.util.Countdown;
+import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.util.ChatFormatter;
 import org.bukkit.Bukkit;
-import org.bukkit.boss.BossBar;
+import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class Battle {
 
@@ -26,8 +31,7 @@ public class Battle {
     private BoundingBox greenArea;
     private BoundingBox blueArea;
 
-    private List<UUID> invaders;
-    private List<UUID> defenders;
+    private List<UUID> activeInvaders;
 
     private String enemyTown;
 
@@ -36,6 +40,7 @@ public class Battle {
     private int fortressHP;
 
     private int battleTaskID;
+    private int positionTaskID;
 
     public Battle(Fortress fortress, List<UUID> invaders, String enemyTown) {
 
@@ -44,76 +49,81 @@ public class Battle {
         this.greenArea = fortress.getGreenBoundingBox();
         this.blueArea = fortress.getBlueBoundingBox();
 
+        Bukkit.getConsoleSender().sendMessage("BLUE AREA MAX XYZ:");
+        Bukkit.getConsoleSender().sendMessage(blueArea.getMaxX() + " // " + blueArea.getMaxY() + " // " + blueArea.getMaxZ());
+        Bukkit.getConsoleSender().sendMessage("BLUE AREA MIN XYZ:");
+        Bukkit.getConsoleSender().sendMessage(blueArea.getMinX() + " // " + blueArea.getMinY() + " // " + blueArea.getMinZ());
+
+        Bukkit.getConsoleSender().sendMessage("GREEN AREA MAX XYZ:");
+        Bukkit.getConsoleSender().sendMessage(greenArea.getMaxX() + " // " + greenArea.getMaxY() + " // " + greenArea.getMaxZ());
+        Bukkit.getConsoleSender().sendMessage("GREEN AREA MIN XYZ:");
+        Bukkit.getConsoleSender().sendMessage(greenArea.getMinX() + " // " + greenArea.getMinY() + " // " + greenArea.getMinZ());
+
         this.fortressHP = fortress.getFortressHP();
 
-        this.invaders = invaders;
-        this.defenders = getDefenders(fortress.getCurrentOwner());
+        this.activeInvaders = invaders;
 
         this.enemyTown = enemyTown;
 
     }
 
-    private List<UUID> getDefenders(String townName) {
-        Optional<Town> town = TownyAPI.getInstance().getDataSource().getTowns().stream().findFirst().filter(t -> t.getName().equals(townName));
-        List<UUID> defendersList = new ArrayList<>();
-
-        if (town.isPresent()) {
-            Town t = town.get();
-            t.getResidents().forEach(resident -> defendersList.add(resident.getPlayer().getUniqueId()));
-        }
-        return defendersList;
+    public List<UUID> getActiveInvaders() {
+        return new ArrayList<>(this.activeInvaders);
     }
 
-    public List<UUID> getInvaders() {
-        return new ArrayList<>(this.invaders);
-    }
 
-    private void initBattle() {
-        Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class),5,
+    public void initBattle() {
+
+        Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class),SettingsHandler.getInstance().getStartBattleDelay(),
+                () -> sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.AQUA + "La fortezza " +
+                        ChatColor.YELLOW + fortress.getFortressName() +
+                        ChatColor.AQUA + " protetta dalla citta' di " +
+                        ChatColor.YELLOW + fortress.getCurrentOwner() +
+                        ChatColor.AQUA + " sta' per essere attaccata da " +
+                        ChatColor.YELLOW + enemyTown)),
                 () -> {
-            //todo: messaggio di avvertimento alla citta' proprietaria della fortezza
-                    sendMessageToDefenders("un gruppo di soldati provenienti da " + enemyTown + "si sta' avvicinando alla fortezza " + fortress.getFortressName());
-                    //todo: messaggio al gruppo di invasori
-                    sendMessageToInvaders("le truppe difensive della fortezza sono state allertate ! Preparatevi alla battaglia");
-                    //todo: startare gia' da qui il check della posizione degli invasori ?
+            //
+                    sendMessageToEnemies(ChatFormatter.formatMessage(ChatColor.AQUA + "La battaglia per la conquista di " +
+                            ChatColor.YELLOW + fortress.getFortressName() +
+                                    ChatColor.AQUA + " e' cominciata ! Da questo momento lasciare la fortezza equivale a morire!"));
 
+                    checkInvadersPosition();
 
-                },
-                () -> {
-            //todo: metodo startBattle()
-
-                    //todo: mandare messaggio alla town owner della fortezza
-                    sendMessageToDefenders("Le unità nemiche stanno mettendo la fortezza a ferro e fuoco, presto corri a proteggerla!");
-
-                    //todo: mandare messaggio al gruppo di invasori
-                    sendMessageToInvaders("il dado e' tratto, nel futuro puo' esserci solo la vittoria o la morte");
+                    startBattle();
 
                 },
                 (s) -> {
-            //todo: altri messaggi alla città propretaria della portezza
-                    if (s.getSecondsLeft() == 5)
-                        sendMessageToDefenders("le unità nemiche hanno fatto breccia nelle mura difensive di " + fortress.getFortressName());
 
+                    if (s.getSecondsLeft() == 8) {
+
+                        sendMessageToTown(fortress.getCurrentOwner(), ChatFormatter.formatMessage(ChatColor.AQUA +
+                                "Tra pochi secondi la tua fortezza " + ChatColor.YELLOW + fortress.getFortressName() +
+                                ChatColor.AQUA + " verra' attacata. Corri a proteggerla !"));
+
+                        sendMessageToEnemies(ChatFormatter.formatMessage(ChatColor.AQUA +
+                                "Preparati alla battaglia, rimani nella fortezza fino a conquistarla"));
+
+                    }
 
                 });
+        countdown.scheduleTimer();
     }
 
     private void startBattle() {
         //todo
-        Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class),1800, //todo: durata della battaglia settabile da config
+        Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class), SettingsHandler.getInstance().getBattleTimeLimit(),
                 () -> {
             //START BATTLE LOGIC
-
-
                     //todo: boosbar ?
 
                 },
                 () -> {
             //END BATLLE LOGIC
-                    //todo: messaggio ai difensori
-                    sendMessageToDefenders("La battaglia è terminata ! " + fortress.getFortressName() + " e' stata danneggiata ma è salva !");
-                    //todo: aggiornamento degli hp della fortezza !!va anche salvato su file ovviamente !!
-                    //fortress.setFortressHP(this.fortressHP);
+                    sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.YELLOW + fortress.getFortressName() +
+                            ChatColor.AQUA + " ha resistito all'attacco di ") +
+                            ChatColor.YELLOW + enemyTown);
+
+                    BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(), this.fortressHP);
 
 
                 },
@@ -121,79 +131,121 @@ public class Battle {
             //EVERY SECOND
                     this.fortressHP -= getInvadersInsideGreenArea();
 
-                    if (this.fortressHP <= 0) {
-                        //todo: terminare la task
-                        //todo: resettare hp della fortezza
+                    //DEBUG
+                    Bukkit.broadcastMessage("HP FORTEZZA (WIP) :" + this.fortressHP);
 
+                    if (this.activeInvaders.isEmpty()) {
+                        sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.YELLOW + fortress.getFortressName() +
+                                ChatColor.AQUA + " ha resistito all'attacco di ") +
+                                ChatColor.YELLOW + enemyTown);
+
+                        BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(),
+                                this.fortressHP);
+                    }
+
+                    if (this.fortressHP <= 0) {
+                        sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.YELLOW + fortress.getFortressName() +
+                                ChatColor.AQUA + " e' stata conquistata da ") +
+                                ChatColor.YELLOW + enemyTown);
+
+                        BattleService.getInstance().resolveBattle(this.fortress, this.enemyTown,
+                                SettingsHandler.getInstance().getFortressHP());
                     }
 
                 });
         this.battleTaskID = countdown.scheduleTimer();
     }
 
-    public void stopBattle() {
-        Bukkit.getScheduler().cancelTask(this.battleTaskID);
-        //todo
-    }
-
-    private void sendMessageToInvaders(String msg) {
-        for (UUID uuid : new ArrayList<>(invaders)) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null && player.isOnline())
-                player.sendMessage(ChatFormatter.formatYellowMessage(msg));
-        }
-    }
-
-    private void sendMessageToDefenders(String msg) {
-        for (UUID uuid : new ArrayList<>(defenders)) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null && player.isOnline())
-                player.sendMessage(ChatFormatter.formatYellowMessage(msg));
-        }
-    }
-
     public void removeInvaders(UUID uuid) {
-        this.invaders.remove(uuid);
-        //todo check che controlla se ci sono altri invasori
+        this.activeInvaders.remove(uuid);
     }
 
     private void checkInvadersPosition() {
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                if (invaders.isEmpty())
-                    this.cancel();
-
-                    new ArrayList<>(invaders).forEach(uuid -> {
-                        Player player = Bukkit.getPlayer(uuid);
-                        if (player != null && !blueArea.contains(player.getLocation().toVector()))
-                            removeInvaders(uuid);
-                        //todo: drop dell'inventario ?
-                        //todo: messaggio al player ?
-                    });
-            }
-        }.runTaskTimer(FWFortress.plugin,0L,10L);
-
-    }
+        this.positionTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(FWFortress.plugin, () ->
+                new ArrayList<>(activeInvaders)
+                .stream().map(Bukkit::getPlayer)
+                .filter(player -> player != null && !blueArea.contains(player.getBoundingBox()))
+                .forEach(this::playerLeaveFortressArea),0L,10L);
+        }
 
     private Integer getInvadersInsideGreenArea() {
 
-        int count = 0;
+        return (int) new ArrayList<>(this.activeInvaders).stream().map(Bukkit::getPlayer)
+                .filter(player -> player != null && this.greenArea.contains(player.getBoundingBox())).count();
 
-        for (UUID uuid : new ArrayList<>(invaders)) {
-            Player player = Bukkit.getPlayer(uuid);
+    }
 
-            if (player == null)
-                continue;
+    public void playerLeaveFortressArea(Player player) {
+        player.damage(2);
+        player.sendActionBar(ChatColor.YELLOW + "" + ChatColor.BOLD + "TORNA NELLA FORTEZZA");
+    }
 
-            if (this.greenArea.contains(player.getLocation().toVector()))
-                count++;
+    //Il metodo commentato tippa il player in citta' e droppa l'inventario in terra. Personalmente preferisco danneggiarlo
+    /*
+    public void playerLeaveFortressArea(Player player) {
 
+        //todo: questo metodo va testato
+
+        Location loc = player.getLocation().clone();
+        ItemStack[] inventory = player.getInventory().getContents().clone();
+
+        player.getInventory().clear();
+
+        player.teleport(TownyAPI.getInstance().getTownSpawnLocation(player));
+        //todo: sinceramente preferisco che venga danneggiato nel tempo
+
+
+        for (ItemStack itemStack : inventory) {
+            if (itemStack == null) continue;
+            loc.getWorld().dropItemNaturally(loc, itemStack);
         }
-        return count;
 
+        removeInvaders(player.getUniqueId());
+
+    }
+     */
+
+    private void sendGlobalMessage(String msg) {
+        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(msg));
+    }
+
+    private void sendMessageToEnemies(String msg) {
+        new ArrayList<>(this.activeInvaders).forEach(uuid -> {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null)
+                player.sendMessage(msg);
+        });
+    }
+
+    private void sendMessageToPlayerInFortressArea(String msg) {
+        for (long fortChunkKeys : this.fortress.getChunkKeys()) {
+            for (Entity entity : Bukkit.getWorld(this.fortress.getWorldName()).getChunkAt(fortChunkKeys).getEntities()) {
+                if (entity instanceof Player) {
+                    Player player = (Player) entity;
+                    player.sendMessage(msg);
+                }
+            }
+        }
+    }
+
+    private void sendMessageToTown(String townName, String msg) {
+        Optional<Town> optionalTown = TownyAPI.getInstance().getDataSource().getTowns()
+                .stream().filter(town -> town.getName().equals(townName)).findFirst();
+
+        //optionalTown.ifPresent(town -> TownyMessaging.sendPrefixedTownMessage(town,msg));
+
+        optionalTown.ifPresent(town -> town.getResidents().forEach(resident -> {
+            Player player = resident.getPlayer();
+            if (player != null && player.isOnline())
+                player.sendMessage(msg);
+        }));
+
+
+    }
+
+    public void stopBattle() {
+        Bukkit.getScheduler().cancelTask(this.positionTaskID);
+        Bukkit.getScheduler().cancelTask(this.battleTaskID);
     }
 
 }

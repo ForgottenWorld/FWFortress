@@ -1,11 +1,10 @@
 package me.architetto.fwfortress.fortress;
 
 import me.architetto.fwfortress.config.ConfigManager;
+import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.util.ChatFormatter;
 import org.bukkit.*;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -45,44 +44,56 @@ public class FortressService {
         return fortressService;
     }
 
-    public boolean newFortress(String fortressName, String firstOwner, Location fortressPosition) {
+    public boolean newFortress(String fortressName, String firstOwner, String currentOwner, Location fortressPosition, int fortressHP) {
 
         if (fortressContainer.containsKey(fortressName)) {
             return false;
         }
+        Bukkit.getConsoleSender().sendMessage(fortressName + " // " + firstOwner + " // " + currentOwner);
+        Bukkit.getConsoleSender().sendMessage(fortressPosition.toString());
+        Bukkit.getConsoleSender().sendMessage(String.valueOf(fortressHP));
 
-        Fortress fortress = new Fortress(fortressName, firstOwner, fortressPosition);
+        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner, fortressPosition, fortressHP);
 
-        fortressContainer.put(fortressName, fortress);
-
+        //todo: nel caso si dia la possibilità di cambiare il nome di una fortezza, ricorda di modificare anche il nome in
+        //todo: questi array
+        this.fortressContainer.put(fortressName, fortress);
         this.fortressChunkKey.put(fortressName,fortress.getChunkKeys());
-
-        ConfigManager configManager = ConfigManager.getInstance();
-
-        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName + ".FIRTS_OWNER",firstOwner);
-        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName + ".OWNER",firstOwner);
-        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName + ".FORTRESS_WORLD",fortressPosition.getWorld().getName());
-        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName + ".FORTRESS_POSITION",fortressPosition);
-        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName + ".FORTRESS_HP",1000); //placeholder
 
         return true;
     }
 
     public void fortressCrationHandler(Player sender, Location location) {
+
         if(!playerCreationMode.contains(sender.getUniqueId())) {
             return;
         }
 
-
-
         if (newFortress(playerFortressNameCreation.get(sender.getUniqueId()),
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
-                location)) {
+                playerFortressOwnerCreation.get(sender.getUniqueId()),
+                location,
+                SettingsHandler.getInstance().getFortressHP())) {
 
-            spawnEffectAtBlock(location);
-            sender.sendMessage(ChatFormatter.formatSuccessMessage("Fortezza inserita con successo"));
-            sender.sendMessage(ChatFormatter.formatSuccessMessage("Nome fortezza : ") + playerFortressNameCreation.get(sender.getUniqueId()));
-            sender.sendMessage(ChatFormatter.formatSuccessMessage("Proprietario fortezza : ") + playerFortressOwnerCreation.get(sender.getUniqueId()));
+            spawnParticleEffectAtBlock(location); //todo: effetto da migliorare
+
+            sender.sendMessage(ChatFormatter.chatHeaderNewFort());
+            sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "NOME FORTEZZA : " +
+                    ChatColor.YELLOW + playerFortressNameCreation.get(sender.getUniqueId())));
+            sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "OWNER : " +
+                    ChatColor.YELLOW + playerFortressOwnerCreation.get(sender.getUniqueId())));
+            sender.sendMessage(ChatFormatter.chatFooter());
+
+            ConfigManager configManager = ConfigManager.getInstance();
+
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".FIRTS_OWNER", playerFortressOwnerCreation.get(sender.getUniqueId()));
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".OWNER", playerFortressOwnerCreation.get(sender.getUniqueId()));
+            configManager.addLocation(configManager.getConfig("Fortress.yml"),
+                    location,playerFortressNameCreation.get(sender.getUniqueId()) + ".FORTRESS_POSITION");
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".FORTRESS_HP", SettingsHandler.getInstance().getFortressHP());
 
         } else
             sender.sendMessage(ChatFormatter.formatErrorMessage("Errore nell'inserimento dell'arena. Controlla i parametri inseriti"));
@@ -108,8 +119,29 @@ public class FortressService {
         return fortressContainer.containsKey(name) ? Optional.of(fortressContainer.get(name)) : Optional.empty();
     }
 
+    public Optional<Fortress> getFortress(long chunkKey) {
+        //todo questo si può fare sicuramente molto meglio ma sono le 5 di mattina quindi nisba
+        String fortressName = null;
+        for (String s : fortressChunkKey.keySet()) {
+            if (fortressChunkKey.get(s).contains(chunkKey))
+                fortressName = s;
+
+        }
+
+        if (fortressName == null)
+            return Optional.empty();
+
+        return fortressContainer.containsKey(fortressName) ? Optional.of(fortressContainer.get(fortressName)) : Optional.empty();
+
+    }
+
     public HashMap<String, Fortress> getFortressContainer() {
         return this.fortressContainer;
+    }
+
+    public void clearFortressContainer() {
+        this.fortressContainer.clear();
+        this.fortressChunkKey.clear();
     }
 
     public void addProtectedChunkKeys(Fortress fortress) {
@@ -120,7 +152,7 @@ public class FortressService {
         return this.fortressChunkKey;
     }
 
-    public void spawnEffectAtBlock(Location loc) {
+    public void spawnParticleEffectAtBlock(Location loc) {
 
         loc.add(0.5,1,0.5);
         Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(255, 69, 0), 5);

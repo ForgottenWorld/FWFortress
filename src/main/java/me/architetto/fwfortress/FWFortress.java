@@ -2,6 +2,7 @@ package me.architetto.fwfortress;
 
 import me.architetto.fwfortress.command.CommandManager;
 import me.architetto.fwfortress.config.ConfigManager;
+import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.listener.FortressCreationListener;
 import me.architetto.fwfortress.listener.PlayerListener;
 import org.bukkit.plugin.Plugin;
@@ -20,17 +21,23 @@ public final class FWFortress extends JavaPlugin {
 
         ConfigManager.getInstance().setPlugin(this);
 
+        loadSettings();
+
         loadCommands();
 
         loadListener();
 
-        //ConfigManager.getInstance().getConfig("Fortress.yml");
+        loadFortress();
 
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public void loadSettings() {
+        SettingsHandler.getInstance().loadSettings();
     }
 
     public void loadCommands() {
@@ -44,8 +51,10 @@ public final class FWFortress extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FortressCreationListener(),this);
         getServer().getPluginManager().registerEvents(new PlayerListener(),this);
 
+    }
 
-
+    public void loadFortress() {
+        SettingsHandler.getInstance().loadFortress();
     }
 
 

@@ -25,25 +25,14 @@ public class Fortress {
 
     private int fortressHP;
 
-    public Fortress(String fortressName, String firstOwner, Location fortressLocation) {
+    public Fortress(String fortressName, String firstOwner, String currentOwner, Location fortressLocation, int fortressHP) {
 
         this.fortressName = fortressName;
         this.firstOwner = firstOwner;
-        this.currentOwner = firstOwner;
+        this.currentOwner = currentOwner;
         this.fortressVector = fortressLocation.toVector().toBlockVector();
         this.worldName = fortressLocation.getWorld().getName();
-        this.fortressHP = 1000; //placeholder
-
-    }
-
-    public Fortress(String fortressName, String firstOwner, Location fortressLocation, int fortressHP) {
-
-        this.fortressName = fortressName;
-        this.firstOwner = firstOwner;
-        this.currentOwner = firstOwner;
-        this.fortressVector = fortressLocation.toVector().toBlockVector();
-        this.worldName = fortressLocation.getWorld().getName();
-        this.fortressHP = fortressHP; //placeholder
+        this.fortressHP = fortressHP;
 
     }
 
@@ -95,8 +84,12 @@ public class Fortress {
         int blockX = c.getX() << 4; //c.getX() * 16
         int blockZ = c.getZ() << 4; //c.getZ() * 16
 
-        Location g1 = c.getBlock(blockX, this.fortressVector.getBlockY(), blockZ).getLocation();
-        Location g2 = c.getBlock(blockX + 16, this.fortressVector.getBlockY() + 25, blockZ + 16).getLocation();
+        //Location g1 = c.getBlock(blockX, this.fortressVector.getBlockY(), blockZ).getLocation();
+        Location g1 = new Location(c.getWorld(),blockX,this.fortressVector.getBlockY() - 4,blockZ);
+        //Location g2 = c.getBlock(blockX + 16, this.fortressVector.getBlockY() + 25, blockZ + 16).getLocation();
+        Location g2 = new Location(c.getWorld(),blockX + 16,this.fortressVector.getBlockY() + 25,blockZ +16);
+
+
 
         return new BoundingBox(g1.getX(), g1.getY(), g1.getZ(), g2.getX(), g2.getY(), g2.getZ());
 
@@ -109,8 +102,13 @@ public class Fortress {
         int blockX = c.getX() << 4; //c.getX() * 16
         int blockZ = c.getZ() << 4; //c.getZ() * 16
 
-        Location b1 = c.getBlock(blockX - 16, this.fortressVector.getBlockY(), blockZ + 16).getLocation();
-        Location b2 = c.getBlock(blockX + 32, this.fortressVector.getBlockY() + 25, blockZ + 32).getLocation();
+        //Location b1 = c.getBlock(blockX - 16, this.fortressVector.getBlockY(), blockZ + 16).getLocation();
+        Location b1 = new Location(c.getWorld(),blockX - 16,this.fortressVector.getBlockY() - 4,blockZ - 16);
+
+
+        //Location b2 = c.getBlock(blockX + 32, this.fortressVector.getBlockY() + 25, blockZ + 32).getLocation();
+        Location b2 = new Location(c.getWorld(),blockX + 32,this.fortressVector.getBlockY() + 25,blockZ + 32);
+
 
         return new BoundingBox(b1.getX(), b1.getY(), b1.getZ(), b2.getX(), b2.getY(), b2.getZ());
 

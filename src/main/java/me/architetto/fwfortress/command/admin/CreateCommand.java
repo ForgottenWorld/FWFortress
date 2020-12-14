@@ -58,7 +58,7 @@ public class CreateCommand extends SubCommand {
             return;
         }
 
-        String fortressName = args[2];
+        String fortressName = args[2]; //todo: il nome possono essere composti da più parole ? (MEGLIO DI NO)
 
         //check if this fortress's name already exist
         if (fortressService.getFortressContainer().containsKey(fortressName)) {
@@ -71,8 +71,8 @@ public class CreateCommand extends SubCommand {
             return;
         }
 
-        sender.sendMessage(ChatFormatter.formatAquaMessage("Indica la posizione del chunk conquistabile ... "));
-        sender.sendMessage(ChatFormatter.formatAquaMessage("(CLICK DX con STICK equipaggiato)"));
+        sender.sendMessage(ChatFormatter.formatMessage("Indica la posizione del chunk conquistabile ... "));
+        sender.sendMessage(ChatFormatter.formatMessage("(CLICK DX con STICK equipaggiato)"));
 
         fortressService.addPlayerToFortressCreation(sender, fortressName, fortressOwner);
 

@@ -2,35 +2,37 @@ package me.architetto.fwfortress.util;
 
 import org.bukkit.ChatColor;
 
+import java.util.Collections;
+
 public class ChatFormatter {
 
+    public static String chatHeaderNewFort() {
+        return  ChatColor.YELLOW + "[*]----------------[ " +
+                ChatColor.DARK_AQUA + ChatColor.BOLD + "NEW FORTRESS" +
+                ChatColor.YELLOW + " ]----------------[*]";
+    }
+
+    public static String chatFooter() {
+        return  ChatColor.YELLOW + String.join("", Collections.nCopies(53, "-"));
+    }
+
     public static String formatSuccessMessage(String message) {
-        message = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FW" + ChatColor.RESET  + "Fortress" + ChatColor.GRAY  +
-                " ||> " + ChatColor.GREEN + message + ChatColor.RESET;
+        message = ChatColor.GREEN + "[FW Fortress] " + ChatColor.RESET + message;
         return message;
     }
 
     public static String formatErrorMessage(String message) {
-        message = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FW" + ChatColor.RESET  + "Fortress" + ChatColor.GRAY  +
-                " ||> " + ChatColor.RED + message + ChatColor.RESET;
+        message = ChatColor.RED + "[FW Fortress] " + ChatColor.RESET + message;
         return message;
     }
 
-    public static String formatAquaMessage(String message) {
-        message = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FW" + ChatColor.RESET  + "Fortress" + ChatColor.GRAY  +
-                " ||> " + ChatColor.AQUA + message + ChatColor.RESET;
+    public static String formatListMessage(String message) {
+        message = ChatColor.GRAY + "[] " + ChatColor.RESET + message;
         return message;
     }
 
-    public static String formatWhiteMessage(String message) {
-        message = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FW" + ChatColor.RESET  + "Fortress" + ChatColor.GRAY  +
-                " ||> " + ChatColor.RESET + message;
-        return message;
-    }
-
-    public static String formatYellowMessage(String message) {
-        message = ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "FW" + ChatColor.RESET  + "Fortress" + ChatColor.GRAY  +
-                " ||> " + ChatColor.YELLOW + message + ChatColor.RESET;
+    public static String formatMessage(String message) {
+        message = ChatColor.GOLD + "[FW Fortress] " + ChatColor.RESET + message;
         return message;
     }
 

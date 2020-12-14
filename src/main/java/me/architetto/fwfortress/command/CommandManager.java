@@ -3,6 +3,7 @@ package me.architetto.fwfortress.command;
 import me.architetto.fwfortress.command.admin.CreateCommand;
 import me.architetto.fwfortress.command.admin.DeleteCommand;
 import me.architetto.fwfortress.command.other.TestCommand;
+import me.architetto.fwfortress.command.user.InvadeCommand;
 import me.architetto.fwfortress.util.ChatFormatter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,6 +21,7 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new CreateCommand());
         subcommands.add(new DeleteCommand());
         subcommands.add(new TestCommand());
+        subcommands.add(new InvadeCommand());
 
     }
 
