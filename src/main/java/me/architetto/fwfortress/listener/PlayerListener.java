@@ -2,6 +2,7 @@ package me.architetto.fwfortress.listener;
 
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.fortress.FortressService;
+import me.architetto.fwfortress.util.ChatFormatter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,7 +20,7 @@ public class PlayerListener implements Listener {
             for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
                 //Al momento i blocchi fortezza possono essere rotti solo da un Op
                 if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
-                    event.getPlayer().sendMessage("Non puoi distruggere blocchi fortezza");
+                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi distruggere blocchi fortezza"));
                     event.setCancelled(true);
                 }
             }
@@ -48,7 +49,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerTelepor(PlayerTeleportEvent event) {
 
-        if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL)
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL
+                || event.getCause() == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT)
             return;
 
         battleService.getCurrentBattle().forEach(battle -> {

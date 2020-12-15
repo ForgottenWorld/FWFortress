@@ -40,9 +40,20 @@ public class DeleteCommand extends SubCommand {
 
         String fortressName = args[1];
         FortressService fortressService = FortressService.getInstance();
+
+        if (!fortressService.getFortressContainer().containsKey(fortressName)) {
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Nessuna fortezza con questo nome"));
+            return;
+        }
+
         fortressService.removeFortress(fortressName);
+
         ConfigManager configManager = ConfigManager.getInstance();
         configManager.setData(configManager.getConfig("Fortress.yml"),fortressName,null);
+
+        //Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza " + fortressName + " e' stata eliminata")));
+
+        sender.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza " + fortressName + " e' stata eliminata"));
 
     }
 

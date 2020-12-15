@@ -24,8 +24,6 @@ import java.util.*;
 
 public class Battle {
 
-    //WIP WIP WIP WIP WIP WIP WIP WIP WIP
-
     private Fortress fortress;
 
     private BoundingBox greenArea;
@@ -184,31 +182,6 @@ public class Battle {
         player.sendActionBar(ChatColor.DARK_RED + "" + ChatColor.BOLD + "TORNA NELLA FORTEZZA");
     }
 
-    //Il metodo commentato tippa il player in citta' e droppa l'inventario in terra. Personalmente preferisco danneggiarlo
-    /*
-    public void playerLeaveFortressArea(Player player) {
-
-        //todo: questo metodo va testato
-
-        Location loc = player.getLocation().clone();
-        ItemStack[] inventory = player.getInventory().getContents().clone();
-
-        player.getInventory().clear();
-
-        player.teleport(TownyAPI.getInstance().getTownSpawnLocation(player));
-        //todo: sinceramente preferisco che venga danneggiato nel tempo
-
-
-        for (ItemStack itemStack : inventory) {
-            if (itemStack == null) continue;
-            loc.getWorld().dropItemNaturally(loc, itemStack);
-        }
-
-        removeInvaders(player.getUniqueId());
-
-    }
-     */
-
     private void sendGlobalMessage(String msg) {
         Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(msg));
     }
@@ -221,7 +194,7 @@ public class Battle {
         });
     }
 
-    private void sendMessageToPlayerInFortressArea(String msg) {
+    public void sendMessageToPlayerInFortressArea(String msg) {
         for (long fortChunkKeys : this.fortress.getChunkKeys()) {
             for (Entity entity : Bukkit.getWorld(this.fortress.getWorldName()).getChunkAt(fortChunkKeys).getEntities()) {
                 if (entity instanceof Player) {
@@ -233,16 +206,13 @@ public class Battle {
     }
 
     private void sendMessageToTown(String townName, String msg) {
-        Optional<Town> optionalTown = TownyAPI.getInstance().getDataSource().getTowns()
-                .stream().filter(town -> town.getName().equals(townName)).findFirst();
 
-        optionalTown.ifPresent(town -> town.getResidents().forEach(resident -> {
-            Player player = resident.getPlayer();
-            if (player != null && player.isOnline())
-                player.sendMessage(msg);
-        }));
-
-
+        try {
+            Town town = TownyAPI.getInstance().getDataSource().getTown(townName);
+            TownyAPI.getInstance().getOnlinePlayersInTown(town).forEach(player -> player.sendMessage(msg));
+        } catch (NotRegisteredException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopBattle() {

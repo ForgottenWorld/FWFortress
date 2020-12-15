@@ -6,9 +6,9 @@ import java.util.Collections;
 
 public class ChatFormatter {
 
-    public static String chatHeaderNewFort() {
+    public static String chatHeaderFortInfo() {
         return  ChatColor.YELLOW + "[*]----------------[ " +
-                ChatColor.DARK_AQUA + ChatColor.BOLD + "NEW FORTRESS" +
+                ChatColor.DARK_AQUA + ChatColor.BOLD + "FORTRESS INFO" +
                 ChatColor.YELLOW + " ]----------------[*]";
     }
 

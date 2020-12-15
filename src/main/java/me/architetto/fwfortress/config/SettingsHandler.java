@@ -10,6 +10,7 @@ public class SettingsHandler {
     private int fortressHP;
     private int battleTimeLimit;
     private int startBattleDelay;
+    private int distanceBetweenFortresses;
 
     private SettingsHandler() {
         if(instance != null) {
@@ -34,6 +35,7 @@ public class SettingsHandler {
         this.fortressHP = configManager.getInt(configManager.getConfig("Settings.yml"),"FORTRESS_HP");
         this.battleTimeLimit = configManager.getInt(configManager.getConfig("Settings.yml"),"BATTLE_TIME_LIMIT");
         this.startBattleDelay = configManager.getInt(configManager.getConfig("Settings.yml"),"START_BATTLE_DELAY");
+        this.distanceBetweenFortresses = configManager.getInt(configManager.getConfig("Settings.yml"),"DISTANCE_BETWEEN_FORTRESSES");
 
     }
 
@@ -79,6 +81,10 @@ public class SettingsHandler {
     public int getStartBattleDelay() { return this.startBattleDelay; }
 
     public void setStartBattleDelay(int startBattleDelay) { this.startBattleDelay = startBattleDelay; }
+
+    public int getDistanceBetweenFortresses() { return this.distanceBetweenFortresses; }
+
+    public void setDistanceBetweenFortresses(int distanceBetweenFortresses) { this.distanceBetweenFortresses = distanceBetweenFortresses; }
 
 
 }

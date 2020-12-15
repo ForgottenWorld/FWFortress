@@ -1,10 +1,7 @@
 package me.architetto.fwfortress.fortress;
 
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -56,6 +53,14 @@ public class Fortress {
 
     public Location getLocation() {
         return new Location(Bukkit.getWorld(this.worldName),this.fortressVector.getX(),this.fortressVector.getY(),this.fortressVector.getZ());
+    }
+
+    public String getFormattedLocation() {
+        Location location = getLocation();
+        return ChatColor.AQUA + "X : " + ChatColor.YELLOW + location.getBlockX() +
+                ChatColor.AQUA + "Y : " + ChatColor.YELLOW + location.getBlockY() +
+                ChatColor.AQUA + "Z : " + ChatColor.YELLOW + location.getBlockZ() +
+                ChatColor.AQUA + "WORLD : " + ChatColor.YELLOW + location.getWorld().getName();
     }
 
     //Non utilizzare dirattemente nel listener
@@ -119,14 +124,9 @@ public class Fortress {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fortress fort = (Fortress) o;
-        return Objects.equals(fortressName, fort.fortressName) &&
-                Objects.equals(firstOwner, fort.firstOwner) &&
-                Objects.equals(currentOwner, fort.currentOwner) &&
-                Objects.equals(worldName, fort.worldName) &&
-                Objects.equals(fortressVector, fort.fortressVector) &&
-                Objects.equals(fortressHP, fort.fortressHP);
+        return  Objects.equals(worldName, fort.worldName) &&
+                Objects.equals(fortressVector, fort.fortressVector);
     }
-
 
     @Override
     public int hashCode() {

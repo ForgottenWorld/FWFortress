@@ -74,7 +74,7 @@ public class FortressService {
 
             spawnParticleEffectAtBlock(location); //todo: effetto da migliorare
 
-            sender.sendMessage(ChatFormatter.chatHeaderNewFort());
+            sender.sendMessage(ChatFormatter.chatHeaderFortInfo());
             sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "NOME FORTEZZA : " +
                     ChatColor.YELLOW + playerFortressNameCreation.get(sender.getUniqueId())));
             sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "OWNER : " +

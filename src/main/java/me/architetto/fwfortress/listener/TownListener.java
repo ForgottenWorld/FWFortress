@@ -14,7 +14,6 @@ public class TownListener implements Listener {
     @EventHandler
     public void onTownDelete(DeleteTownEvent event) {
         //todo: e se c'è una battaglia in corso sulla fortezza di questa città ? Bella domanda
-
         FortressService.getInstance().getFortressContainer().values().forEach(fortress -> {
             if (fortress.getFirstOwner().equals(event.getTownName())) {
                 if (!fortress.getCurrentOwner().equals(event.getTownName())) {
