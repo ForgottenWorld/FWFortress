@@ -60,6 +60,12 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
+        if (FortressService.getInstance().getFortressContainer().values()
+                .stream().noneMatch(f -> f.getFirstOwner().equals(senderTown.getName()))) {
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Non puoi invadere una fortezza se la tua citta' non ne ha mai costruita una"));
+            return;
+        }
+
         List<UUID> senderTownResidentUUID = senderTown.getResidents().stream().map(Resident::getPlayer)
                 .map(Player::getUniqueId).collect(Collectors.toCollection(ArrayList::new));
 
