@@ -1,7 +1,6 @@
 package me.architetto.fwfortress.command.admin;
 
 import me.architetto.fwfortress.command.SubCommand;
-import me.architetto.fwfortress.config.ConfigManager;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
 import me.architetto.fwfortress.util.Messages;
@@ -47,11 +46,6 @@ public class DeleteCommand extends SubCommand {
         }
 
         fortressService.removeFortress(fortressName);
-
-        ConfigManager configManager = ConfigManager.getInstance();
-        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName,null);
-
-        //Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza " + fortressName + " e' stata eliminata")));
 
         sender.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza " + fortressName + " e' stata eliminata"));
 

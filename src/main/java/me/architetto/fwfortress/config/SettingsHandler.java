@@ -3,6 +3,8 @@ package me.architetto.fwfortress.config;
 import me.architetto.fwfortress.fortress.FortressService;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.concurrent.TimeUnit;
+
 public class SettingsHandler {
 
     private static SettingsHandler instance;
@@ -11,6 +13,9 @@ public class SettingsHandler {
     private int battleTimeLimit;
     private int startBattleDelay;
     private int distanceBetweenFortresses;
+    private int maxGroundDistance;
+
+    private long battleCooldown;
 
     private SettingsHandler() {
         if(instance != null) {
@@ -36,6 +41,9 @@ public class SettingsHandler {
         this.battleTimeLimit = configManager.getInt(configManager.getConfig("Settings.yml"),"BATTLE_TIME_LIMIT");
         this.startBattleDelay = configManager.getInt(configManager.getConfig("Settings.yml"),"START_BATTLE_DELAY");
         this.distanceBetweenFortresses = configManager.getInt(configManager.getConfig("Settings.yml"),"DISTANCE_BETWEEN_FORTRESSES");
+        this.maxGroundDistance = configManager.getInt(configManager.getConfig("Settings.yml"),"MAX_GROUND_DISTANCE");
+
+        this.battleCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
 
     }
 
@@ -57,7 +65,8 @@ public class SettingsHandler {
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".FIRTS_OWNER"),
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".OWNER"),
                     configManager.getLocation(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_POSITION"),
-                    configManager.getInt(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_HP"));
+                    configManager.getInt(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_HP"),
+                    configManager.getLong(configManager.getConfig("Fortress.yml"), fortressName + ".LAST_BATTLE"));
 
         }
 
@@ -82,9 +91,17 @@ public class SettingsHandler {
 
     public void setStartBattleDelay(int startBattleDelay) { this.startBattleDelay = startBattleDelay; }
 
+    public long getBattleCooldown() { return this.battleCooldown; }
+
+    public void setBattleCooldown(long battleCooldown) { this.battleCooldown = battleCooldown; }
+
     public int getDistanceBetweenFortresses() { return this.distanceBetweenFortresses; }
 
     public void setDistanceBetweenFortresses(int distanceBetweenFortresses) { this.distanceBetweenFortresses = distanceBetweenFortresses; }
+
+    public int getMaxGroundDistance() { return this.maxGroundDistance; }
+
+    public void setMaxGroundDistance(int maxGroundDistance) { this.maxGroundDistance = maxGroundDistance; }
 
 
 }

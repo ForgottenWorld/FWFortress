@@ -103,6 +103,13 @@ public class ConfigManager{
         return conf.getDouble(path);
     }
 
+    public long getLong(FileConfiguration conf, String path) {
+        if (!conf.contains(path)) {
+            setData(conf, path, 0);
+        }
+        return conf.getLong(path);
+    }
+
     public boolean getBoolean(FileConfiguration conf, String path){
         //Create dummy if not available
         if (!conf.contains(path)) {

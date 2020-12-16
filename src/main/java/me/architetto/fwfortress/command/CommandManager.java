@@ -2,6 +2,7 @@ package me.architetto.fwfortress.command;
 
 import me.architetto.fwfortress.command.admin.CreateCommand;
 import me.architetto.fwfortress.command.admin.DeleteCommand;
+import me.architetto.fwfortress.command.admin.ReloadCommand;
 import me.architetto.fwfortress.command.other.TestCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.user.InvadeCommand;
@@ -24,6 +25,7 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new TestCommand());
         subcommands.add(new InvadeCommand());
         subcommands.add(new InfoCommand());
+        subcommands.add(new ReloadCommand());
 
     }
 
@@ -47,7 +49,7 @@ public class CommandManager implements TabExecutor{
             }
         }else{
             p.sendMessage("--------------------------------");
-            for (int i = 0; i < getSubcommands().size(); i++){
+            for (int i = 0; i < getSubcommands().size(); i++) {
                 p.sendMessage(getSubcommands().get(i).getSyntax() + " - " + getSubcommands().get(i).getDescription());
             }
             p.sendMessage("--------------------------------");

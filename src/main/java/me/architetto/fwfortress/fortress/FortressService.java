@@ -44,13 +44,13 @@ public class FortressService {
         return fortressService;
     }
 
-    public boolean newFortress(String fortressName, String firstOwner, String currentOwner, Location fortressPosition, int fortressHP) {
+    public boolean newFortress(String fortressName, String firstOwner, String currentOwner, Location fortressPosition, int fortressHP, long lastBattle) {
 
         if (fortressContainer.containsKey(fortressName)) {
             return false;
         }
 
-        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner, fortressPosition, fortressHP);
+        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner, fortressPosition, fortressHP, lastBattle);
 
         //todo: nel caso si dia la possibilità di cambiare il nome di una fortezza, ricorda di modificare anche il nome in
         //todo: questi array
@@ -70,7 +70,8 @@ public class FortressService {
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
                 location,
-                SettingsHandler.getInstance().getFortressHP())) {
+                SettingsHandler.getInstance().getFortressHP(),
+                0)) {
 
             spawnParticleEffectAtBlock(location); //todo: effetto da migliorare
 
@@ -91,6 +92,8 @@ public class FortressService {
                     location,playerFortressNameCreation.get(sender.getUniqueId()) + ".FORTRESS_POSITION");
             configManager.setData(configManager.getConfig("Fortress.yml"),
                     playerFortressNameCreation.get(sender.getUniqueId()) + ".FORTRESS_HP", SettingsHandler.getInstance().getFortressHP());
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".LAST_BATTLE", 0);
 
         } else
             sender.sendMessage(ChatFormatter.formatErrorMessage("Errore nell'inserimento dell'arena. Controlla i parametri inseriti"));
@@ -160,6 +163,33 @@ public class FortressService {
     public void removeFortress(String fortressName) {
         fortressContainer.remove(fortressName);
         fortressChunkKey.remove(fortressName);
+        ConfigManager configManager = ConfigManager.getInstance();
+        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName,null);
+    }
+
+    public boolean updateFortressFile(String fortressName) {
+
+        if (!fortressContainer.containsKey(fortressName)) {
+            return false;
+        }
+
+        Fortress fortress = fortressContainer.get(fortressName);
+
+        ConfigManager configManager = ConfigManager.getInstance();
+        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName,null);
+
+        configManager.setData(configManager.getConfig("Fortress.yml"),
+                fortressName + ".FIRTS_OWNER", fortress.getFirstOwner());
+        configManager.setData(configManager.getConfig("Fortress.yml"),
+                fortressName + ".OWNER", fortress.getCurrentOwner());
+        configManager.addLocation(configManager.getConfig("Fortress.yml"),
+                fortress.getLocation(),fortressName + ".FORTRESS_POSITION");
+        configManager.setData(configManager.getConfig("Fortress.yml"),
+                fortressName + ".FORTRESS_HP", fortress.getFortressHP());
+        configManager.setData(configManager.getConfig("Fortress.yml"),
+                fortressName + ".LAST_BATTLE", fortress.getLastBattle());
+
+        return true;
     }
 
 }

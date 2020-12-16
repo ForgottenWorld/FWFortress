@@ -1,6 +1,7 @@
 package me.architetto.fwfortress.fortress;
 
 
+import me.architetto.fwfortress.config.SettingsHandler;
 import org.bukkit.*;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
@@ -22,6 +23,20 @@ public class Fortress {
 
     private int fortressHP;
 
+    private long lastBattle;
+
+    public Fortress(String fortressName, String firstOwner, String currentOwner, Location fortressLocation, int fortressHP, long lastBattle) {
+
+        this.fortressName = fortressName;
+        this.firstOwner = firstOwner;
+        this.currentOwner = currentOwner;
+        this.fortressVector = fortressLocation.toVector().toBlockVector();
+        this.worldName = fortressLocation.getWorld().getName();
+        this.fortressHP = fortressHP;
+        this.lastBattle = lastBattle;
+
+    }
+
     public Fortress(String fortressName, String firstOwner, String currentOwner, Location fortressLocation, int fortressHP) {
 
         this.fortressName = fortressName;
@@ -30,8 +45,10 @@ public class Fortress {
         this.fortressVector = fortressLocation.toVector().toBlockVector();
         this.worldName = fortressLocation.getWorld().getName();
         this.fortressHP = fortressHP;
+        this.lastBattle = 0;
 
     }
+
 
     public String getFortressName() { return this.fortressName; }
 
@@ -47,6 +64,10 @@ public class Fortress {
 
     public void setFortressHP(int fortressHP) { this.fortressHP = fortressHP; }
 
+    public long getLastBattle() { return this.lastBattle; }
+
+    public void setLastBattle(long lastBattle) { this.lastBattle = lastBattle; }
+
     public Vector getFortressVector() { return this.fortressVector; }
 
     public String getWorldName() { return this.worldName; }
@@ -57,10 +78,10 @@ public class Fortress {
 
     public String getFormattedLocation() {
         Location location = getLocation();
-        return ChatColor.AQUA + "X : " + ChatColor.YELLOW + location.getBlockX() +
-                ChatColor.AQUA + "Y : " + ChatColor.YELLOW + location.getBlockY() +
-                ChatColor.AQUA + "Z : " + ChatColor.YELLOW + location.getBlockZ() +
-                ChatColor.AQUA + "WORLD : " + ChatColor.YELLOW + location.getWorld().getName();
+        return ChatColor.AQUA + "[X] " + ChatColor.YELLOW + location.getBlockX() +
+                ChatColor.AQUA + " [Y] " + ChatColor.YELLOW + location.getBlockY() +
+                ChatColor.AQUA + " [Z] " + ChatColor.YELLOW + location.getBlockZ() +
+                ChatColor.AQUA + " [WORLD] " + ChatColor.YELLOW + location.getWorld().getName();
     }
 
     //Non utilizzare dirattemente nel listener
@@ -86,37 +107,30 @@ public class Fortress {
 
         Chunk c = getLocation().getChunk();
 
-        int blockX = c.getX() << 4; //c.getX() * 16
-        int blockZ = c.getZ() << 4; //c.getZ() * 16
+        int blockX = c.getX() << 4;
+        int blockZ = c.getZ() << 4;
 
-        //Location g1 = c.getBlock(blockX, this.fortressVector.getBlockY(), blockZ).getLocation();
+        int height = SettingsHandler.getInstance().getMaxGroundDistance();
+
         Location g1 = new Location(c.getWorld(),blockX,this.fortressVector.getBlockY() - 4,blockZ);
-        //Location g2 = c.getBlock(blockX + 16, this.fortressVector.getBlockY() + 25, blockZ + 16).getLocation();
-        Location g2 = new Location(c.getWorld(),blockX + 16,this.fortressVector.getBlockY() + 25,blockZ +16);
-
-
+        Location g2 = new Location(c.getWorld(),blockX + 16,this.fortressVector.getBlockY() + height,blockZ +16);
 
         return new BoundingBox(g1.getX(), g1.getY(), g1.getZ(), g2.getX(), g2.getY(), g2.getZ());
-
     }
 
     public BoundingBox getBlueBoundingBox() {
 
         Chunk c = getLocation().getChunk();
 
-        int blockX = c.getX() << 4; //c.getX() * 16
-        int blockZ = c.getZ() << 4; //c.getZ() * 16
+        int blockX = c.getX() << 4;
+        int blockZ = c.getZ() << 4;
 
-        //Location b1 = c.getBlock(blockX - 16, this.fortressVector.getBlockY(), blockZ + 16).getLocation();
+        int height = SettingsHandler.getInstance().getMaxGroundDistance();
+
         Location b1 = new Location(c.getWorld(),blockX - 16,this.fortressVector.getBlockY() - 4,blockZ - 16);
-
-
-        //Location b2 = c.getBlock(blockX + 32, this.fortressVector.getBlockY() + 25, blockZ + 32).getLocation();
-        Location b2 = new Location(c.getWorld(),blockX + 32,this.fortressVector.getBlockY() + 25,blockZ + 32);
-
+        Location b2 = new Location(c.getWorld(),blockX + 32,this.fortressVector.getBlockY() + height,blockZ + 32);
 
         return new BoundingBox(b1.getX(), b1.getY(), b1.getZ(), b2.getX(), b2.getY(), b2.getZ());
-
     }
 
     @Override

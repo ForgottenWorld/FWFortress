@@ -64,6 +64,10 @@ public class BattleService {
 
         }
 
+        fortress.setLastBattle(System.currentTimeMillis());
+        configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName()
+                + ".LAST_BATTLE", fortress.getLastBattle());
+
         stopBattle(fortress.getFortressName());
 
         this.battleContainer.remove(fortress.getFortressName());

@@ -35,10 +35,15 @@ public class InfoCommand extends SubCommand {
             return;
         }
 
-        Optional<Fortress> fortress = FortressService.getInstance().getFortress(sender.getLocation().getChunk().getChunkKey());
+        if (args.length < 2) {
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Inserisci il nome della fortezza"));
+            return;
+        }
+
+        Optional<Fortress> fortress = FortressService.getInstance().getFortress(args[1]);
 
         if (!fortress.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Devi trovarti all'interno di una fortezza per poterla conquistare"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Nessuna fortezza con questo nome"));
             return;
         }
 

@@ -6,14 +6,17 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.SubCommand;
+import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
 import me.architetto.fwfortress.util.Messages;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class InvadeCommand extends SubCommand {
@@ -39,11 +42,31 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        Optional<Fortress> fortress = FortressService.getInstance().getFortress(sender.getLocation().getChunk().getChunkKey());
+        Optional<Fortress> optionalFortress = FortressService.getInstance().getFortress(sender.getLocation().getChunk().getChunkKey());
 
-        if (!fortress.isPresent()) {
+        if (!optionalFortress.isPresent()) {
             sender.sendMessage(ChatFormatter.formatErrorMessage("Devi trovarti all'interno di una fortezza per poterla conquistare"));
             return;
+        }
+
+        Fortress fortress = optionalFortress.get();
+
+        if (fortress.getLastBattle() != 0) {
+            long remain = SettingsHandler.getInstance().getBattleCooldown() -
+                    (System.currentTimeMillis() - fortress.getLastBattle());
+
+            if (remain > 0) {
+
+                sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza potra' essere attaccata tra : " +
+                        ChatColor.YELLOW + String.format("%d ORE : %d MINUTI : %d SECONDI",
+                        TimeUnit.MILLISECONDS.toHours(remain),
+                        TimeUnit.MILLISECONDS.toMinutes(remain) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(remain)),
+                        TimeUnit.MILLISECONDS.toSeconds(remain) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remain)))));
+
+                return;
+            }
         }
 
         Town senderTown;
@@ -55,7 +78,7 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        if (fortress.get().getCurrentOwner().equals(senderTown.getName())) {
+        if (fortress.getCurrentOwner().equals(senderTown.getName())) {
             sender.sendMessage(ChatFormatter.formatErrorMessage("Questa fortezza e' gia' sotto il controlo della tua citta' !"));
             return;
         }
@@ -84,7 +107,7 @@ public class InvadeCommand extends SubCommand {
         }
 
 
-        BattleService.getInstance().startNewBattle(fortress.get(), invadersListUUID, senderTown.getName());
+        BattleService.getInstance().startNewBattle(fortress, invadersListUUID, senderTown.getName());
 
 
 
