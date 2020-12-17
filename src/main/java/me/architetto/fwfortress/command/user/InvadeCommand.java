@@ -55,7 +55,10 @@ public class InvadeCommand extends SubCommand {
         if (!settingsHandler.getDate().contains(dayName)
                 || time < settingsHandler.getTime().get(0)
                 || time > settingsHandler.getTime().get(1)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Non puoi attaccare la fortezza in questo momento .."));
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Le conquiste non sono attive in questo momento"));
+            sender.sendMessage(ChatFormatter.formatListMessage("Giorni attivi : " + ChatColor.YELLOW + settingsHandler.getDate()));
+            sender.sendMessage(ChatFormatter.formatListMessage("Orari attivi : " + ChatColor.YELLOW + "dalle "
+                    + settingsHandler.getTime().get(0) + " alle " + settingsHandler.getTime().get(1)));
             return;
         }
 
@@ -106,6 +109,21 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
+        if (!settingsHandler.allowInvadeAlliedFortress()) {
+            Town fortTown;
+
+            try{
+                fortTown = TownyAPI.getInstance().getDataSource().getTown(fortress.getCurrentOwner());
+            } catch (NotRegisteredException e) {
+                return;
+            }
+
+            if (fortTown.isAlliedWith(senderTown)) {
+                sender.sendMessage(ChatFormatter.formatErrorMessage("Non puoi invadere la fortezza di una citta' alleata"));
+                return;
+            }
+        }
+
         if (BattleService.getInstance().isOccupied(fortress.getFortressName())) {
             sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza e' gia' sotto attacco ..."));
             return;
@@ -128,6 +146,12 @@ public class InvadeCommand extends SubCommand {
                 invadersListUUID.add(player.getUniqueId());
         }
 
+
+        if (invadersListUUID.size() < settingsHandler.getMinInvaders()) {
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Numero di invasori minimo : "
+                    + ChatColor.YELLOW + settingsHandler.getMinInvaders()));
+            return;
+        }
 
         BattleService.getInstance().startNewBattle(fortress, invadersListUUID, senderTown.getName());
 

@@ -6,9 +6,9 @@ import me.architetto.fwfortress.util.ChatFormatter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 
 public class PlayerListener implements Listener {
     BattleService battleService = BattleService.getInstance();
@@ -18,9 +18,47 @@ public class PlayerListener implements Listener {
         FortressService fortressService = FortressService.getInstance();
         for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
             for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
-                //Al momento i blocchi fortezza possono essere rotti solo da un Op
                 if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
-                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi distruggere blocchi fortezza"));
+                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        FortressService fortressService = FortressService.getInstance();
+        for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
+            for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
+                if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
+                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBucketPlace(PlayerBucketEmptyEvent event) {
+        FortressService fortressService = FortressService.getInstance();
+        for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
+            for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
+                if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
+                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent event) {
+        FortressService fortressService = FortressService.getInstance();
+        for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
+            for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
+                if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
+                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
                     event.setCancelled(true);
                 }
             }

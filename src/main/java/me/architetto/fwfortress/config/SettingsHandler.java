@@ -1,7 +1,6 @@
 package me.architetto.fwfortress.config;
 
 import me.architetto.fwfortress.fortress.FortressService;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -16,11 +15,14 @@ public class SettingsHandler {
     private int startBattleDelay;
     private int distanceBetweenFortresses;
     private int maxGroundDistance;
+    private int minInvaders;
 
     private long battleCooldown;
 
     private List<String> date;
     private List<Integer> time;
+
+    private boolean invadeAlliedFortress;
 
     private SettingsHandler() {
         if(instance != null) {
@@ -48,13 +50,14 @@ public class SettingsHandler {
         this.distanceBetweenFortresses = configManager.getInt(configManager.getConfig("Settings.yml"),"DISTANCE_BETWEEN_FORTRESSES");
         this.maxGroundDistance = configManager.getInt(configManager.getConfig("Settings.yml"),"MAX_GROUND_DISTANCE");
 
+        this.minInvaders = configManager.getInt(configManager.getConfig("Settings.yml"),"MIN_INVADERS");
+
         this.battleCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
 
         this.date = (List<String>) configManager.getList(configManager.getConfig("Settings.yml"),"DATE"); //OK
         this.time = (List<Integer>) configManager.getList(configManager.getConfig("Settings.yml"),"TIME_RANGE"); //OK
 
-        Bukkit.getConsoleSender().sendMessage("" + date);
-        Bukkit.getConsoleSender().sendMessage("" + time);
+        this.invadeAlliedFortress = configManager.getBoolean(configManager.getConfig("Settings.yml"),"INVADE_ALLIED_FORTRESS");
 
     }
 
@@ -105,6 +108,12 @@ public class SettingsHandler {
 
     public void setStartBattleDelay(int startBattleDelay) { this.startBattleDelay = startBattleDelay; }
 
+    public int getMinInvaders() {
+        return this.minInvaders;
+    }
+
+    public void setMinInvaders(int minInvaders) { this.minInvaders = minInvaders; }
+
     public long getBattleCooldown() { return this.battleCooldown; }
 
     public void setBattleCooldown(long battleCooldown) { this.battleCooldown = battleCooldown; }
@@ -120,6 +129,10 @@ public class SettingsHandler {
     public List<String> getDate() { return this.date; }
 
     public List<Integer> getTime() { return this.time; }
+
+    public boolean allowInvadeAlliedFortress() { return this.invadeAlliedFortress; }
+
+    public void setInvadeAlliedFortress(boolean invadeAlliedFortress) { this.invadeAlliedFortress = invadeAlliedFortress; }
 
 
 }
