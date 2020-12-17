@@ -66,6 +66,20 @@ public class FortressService {
             return;
         }
 
+        if (fortressContainer.values().stream()
+                .filter(fortress -> fortress.getWorldName().equals(location.getWorld().getName()))
+                .anyMatch(fortress -> fortress.getFortressVector()
+                        .distance(location.toVector()) < SettingsHandler.getInstance().getDistanceBetweenFortresses())) {
+
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Questo chunk è troppo vicino ad un'altra fortezza"));
+
+            this.playerFortressNameCreation.remove(sender.getUniqueId());
+            this.playerFortressOwnerCreation.remove(sender.getUniqueId());
+            this.playerCreationMode.remove(sender.getUniqueId());
+
+            return;
+        }
+
         if (newFortress(playerFortressNameCreation.get(sender.getUniqueId()),
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
@@ -142,10 +156,6 @@ public class FortressService {
     public void clearFortressContainer() {
         this.fortressContainer.clear();
         this.fortressChunkKey.clear();
-    }
-
-    public void addProtectedChunkKeys(Fortress fortress) {
-        this.fortressChunkKey.put(fortress.getFortressName(), fortress.getChunkKeys());
     }
 
     public HashMap<String,List<Long>> getProtectedChunkKeys() {

@@ -1,8 +1,10 @@
 package me.architetto.fwfortress.config;
 
 import me.architetto.fwfortress.fortress.FortressService;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SettingsHandler {
@@ -16,6 +18,9 @@ public class SettingsHandler {
     private int maxGroundDistance;
 
     private long battleCooldown;
+
+    private List<String> date;
+    private List<Integer> time;
 
     private SettingsHandler() {
         if(instance != null) {
@@ -45,6 +50,12 @@ public class SettingsHandler {
 
         this.battleCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
 
+        this.date = (List<String>) configManager.getList(configManager.getConfig("Settings.yml"),"DATE"); //OK
+        this.time = (List<Integer>) configManager.getList(configManager.getConfig("Settings.yml"),"TIME_RANGE"); //OK
+
+        Bukkit.getConsoleSender().sendMessage("" + date);
+        Bukkit.getConsoleSender().sendMessage("" + time);
+
     }
 
     public void loadFortress() {
@@ -73,6 +84,9 @@ public class SettingsHandler {
     }
 
     public void reload() {
+        this.date.clear();
+        this.time.clear();
+
         loadSettings();
 
         FortressService.getInstance().clearFortressContainer();
@@ -102,6 +116,10 @@ public class SettingsHandler {
     public int getMaxGroundDistance() { return this.maxGroundDistance; }
 
     public void setMaxGroundDistance(int maxGroundDistance) { this.maxGroundDistance = maxGroundDistance; }
+
+    public List<String> getDate() { return this.date; }
+
+    public List<Integer> getTime() { return this.time; }
 
 
 }

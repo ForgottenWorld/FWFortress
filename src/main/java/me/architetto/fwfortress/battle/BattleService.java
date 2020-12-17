@@ -45,6 +45,10 @@ public class BattleService {
 
     }
 
+    public boolean isOccupied(String fortressName) {
+        return battleContainer.values().stream().anyMatch(battle -> battle.getFortressInBattle().getFortressName().equals(fortressName));
+    }
+
     public void resolveBattle(Fortress fortress, String newOwner, int fortressHP) {
 
         ConfigManager configManager = ConfigManager.getInstance();

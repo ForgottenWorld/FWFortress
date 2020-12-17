@@ -61,6 +61,7 @@ public class Battle {
         return new ArrayList<>(this.activeInvaders);
     }
 
+    public Fortress getFortressInBattle() { return this.fortress; }
 
     public void initBattle() {
 

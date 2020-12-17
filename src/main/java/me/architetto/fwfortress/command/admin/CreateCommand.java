@@ -3,7 +3,6 @@ package me.architetto.fwfortress.command.admin;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.command.SubCommand;
-import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
 import me.architetto.fwfortress.util.Messages;
@@ -69,16 +68,6 @@ public class CreateCommand extends SubCommand {
 
         if (fortressService.isPlayerInCreationMode(sender)) {
             sender.sendMessage(ChatFormatter.formatErrorMessage("Stai gia' creando una fortezza"));
-            return;
-        }
-
-        int minDistance = SettingsHandler.getInstance().getDistanceBetweenFortresses();
-
-        if (fortressService.getFortressContainer().values().stream()
-                .filter(fortress -> fortress.getWorldName().equals(sender.getWorld().getName()))
-                .anyMatch(fortress -> fortress.getFortressVector().distance(sender.getLocation().toVector()) < minDistance)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Sei troppo vicino ad un'altra fortezza"));
-
             return;
         }
 

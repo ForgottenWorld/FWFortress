@@ -6,6 +6,7 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.listener.FortressCreationListener;
 import me.architetto.fwfortress.listener.PlayerListener;
 import me.architetto.fwfortress.listener.TownListener;
+
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 

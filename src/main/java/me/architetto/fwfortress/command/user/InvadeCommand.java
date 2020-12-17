@@ -15,6 +15,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.time.*;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -39,6 +41,21 @@ public class InvadeCommand extends SubCommand {
     public void perform(Player sender, String[] args) {
         if (!sender.hasPermission("fwfortress.user")) {
             sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
+            return;
+        }
+
+        SettingsHandler settingsHandler = SettingsHandler.getInstance();
+
+        ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/London"));
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        String dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+
+        int time = dateTime.getHour();
+
+        if (!settingsHandler.getDate().contains(dayName)
+                || time < settingsHandler.getTime().get(0)
+                || time > settingsHandler.getTime().get(1)) {
+            sender.sendMessage(ChatFormatter.formatErrorMessage("Non puoi attaccare la fortezza in questo momento .."));
             return;
         }
 
@@ -86,6 +103,11 @@ public class InvadeCommand extends SubCommand {
         if (FortressService.getInstance().getFortressContainer().values()
                 .stream().noneMatch(f -> f.getFirstOwner().equals(senderTown.getName()))) {
             sender.sendMessage(ChatFormatter.formatErrorMessage("Non puoi invadere una fortezza se la tua citta' non ne ha mai costruita una"));
+            return;
+        }
+
+        if (BattleService.getInstance().isOccupied(fortress.getFortressName())) {
+            sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza e' gia' sotto attacco ..."));
             return;
         }
 
