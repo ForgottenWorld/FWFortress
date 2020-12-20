@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CreateCommand extends SubCommand {
@@ -42,9 +43,10 @@ public class CreateCommand extends SubCommand {
 
         String fortressOwner = args[1];
 
+
         //check if town exist
         if (TownyAPI.getInstance().getDataSource().getTowns().stream().noneMatch(t -> t.getName().equals(args[1]))) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Non essiste nessuna citta' con questo nome : ")
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_CITY_NAME)
                     + ChatColor.YELLOW + fortressOwner);
             return;
         }
@@ -53,12 +55,13 @@ public class CreateCommand extends SubCommand {
 
         //check if is the town's first fortress
         if (fortressService.getFortressContainer().values().stream().anyMatch(f -> f.getFirstOwner().equals(args[1]))) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Questa citta' ha gia' costruito una fortezza")
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FIRST_FORTRESS)
                     + ChatColor.YELLOW + fortressOwner);
             return;
         }
 
-        String fortressName = args[2]; //todo: il nome possono essere composti da più parole ? (MEGLIO DI NO)
+        String fortressName = String.join("_", Arrays.copyOfRange(args, 2, args.length));
+
 
         //check if this fortress's name already exist
         if (fortressService.getFortressContainer().containsKey(fortressName)) {

@@ -24,12 +24,15 @@ public class SettingsHandler {
 
     private boolean invadeAlliedFortress;
 
+    private boolean disableInvade;
+
     private SettingsHandler() {
         if(instance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
 
         //inizializzare
+        this.disableInvade = false;
 
     }
 
@@ -133,6 +136,11 @@ public class SettingsHandler {
     public boolean allowInvadeAlliedFortress() { return this.invadeAlliedFortress; }
 
     public void setInvadeAlliedFortress(boolean invadeAlliedFortress) { this.invadeAlliedFortress = invadeAlliedFortress; }
+
+    public boolean isDisableInvade() { return this.disableInvade; }
+
+    public void setDisableInvade(boolean disableInvade) { this.disableInvade = disableInvade; }
+
 
 
 }

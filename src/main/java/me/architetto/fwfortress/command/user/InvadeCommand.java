@@ -46,6 +46,11 @@ public class InvadeCommand extends SubCommand {
 
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
+        if (settingsHandler.isDisableInvade()) {
+            sender.sendMessage(ChatFormatter.formatMessage("Le invasioni sono momentaneamente disabilitate!"));
+            return;
+        }
+
         ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/London"));
         DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
         String dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
