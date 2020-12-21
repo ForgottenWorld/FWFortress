@@ -90,7 +90,7 @@ public class ConfigManager{
     public int getInt(FileConfiguration conf, String path){
         //Create dummy if not available
         if (!conf.contains(path)) {
-            setData(conf, path, 1);
+            setData(conf, path, 0);
         }
         return conf.getInt(path);
     }

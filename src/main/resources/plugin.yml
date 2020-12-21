@@ -12,9 +12,15 @@ commands:
       - fort
 
 permissions:
-  fwfortress.user:
-    description: description
-    default: true
   fwfortress.admin:
     description: description
     default: op
+
+fwfortress.userplus:
+  description: description
+  default: false
+
+  fwfortress.user:
+    description: description
+    default: true
+

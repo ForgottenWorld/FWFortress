@@ -24,8 +24,10 @@ public class Fortress {
     private int fortressHP;
 
     private long lastBattle;
+    private long lastRepair;
 
-    public Fortress(String fortressName, String firstOwner, String currentOwner, Location fortressLocation, int fortressHP, long lastBattle) {
+    public Fortress(String fortressName, String firstOwner, String currentOwner,
+                    Location fortressLocation, int fortressHP, long lastBattle, long lastRepair) {
 
         this.fortressName = fortressName;
         this.firstOwner = firstOwner;
@@ -34,18 +36,7 @@ public class Fortress {
         this.worldName = fortressLocation.getWorld().getName();
         this.fortressHP = fortressHP;
         this.lastBattle = lastBattle;
-
-    }
-
-    public Fortress(String fortressName, String firstOwner, String currentOwner, Location fortressLocation, int fortressHP) {
-
-        this.fortressName = fortressName;
-        this.firstOwner = firstOwner;
-        this.currentOwner = currentOwner;
-        this.fortressVector = fortressLocation.toVector().toBlockVector();
-        this.worldName = fortressLocation.getWorld().getName();
-        this.fortressHP = fortressHP;
-        this.lastBattle = 0;
+        this.lastRepair = lastRepair;
 
     }
 
@@ -67,6 +58,10 @@ public class Fortress {
     public long getLastBattle() { return this.lastBattle; }
 
     public void setLastBattle(long lastBattle) { this.lastBattle = lastBattle; }
+
+    public long getLastRepair() { return this.lastRepair; }
+
+    public void setLastRepair(long lastRepair) { this.lastRepair = lastRepair; }
 
     public Vector getFortressVector() { return this.fortressVector; }
 

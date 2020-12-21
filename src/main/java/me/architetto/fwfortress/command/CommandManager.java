@@ -4,6 +4,7 @@ import me.architetto.fwfortress.command.admin.CreateCommand;
 import me.architetto.fwfortress.command.admin.DeleteCommand;
 import me.architetto.fwfortress.command.admin.ReloadCommand;
 import me.architetto.fwfortress.command.admin.ToggleCommand;
+import me.architetto.fwfortress.command.extra.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.user.InvadeCommand;
 import me.architetto.fwfortress.util.ChatFormatter;
@@ -26,6 +27,7 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new InfoCommand());
         subcommands.add(new ReloadCommand());
         subcommands.add(new ToggleCommand());
+        subcommands.add(new RepairCommand());
 
     }
 

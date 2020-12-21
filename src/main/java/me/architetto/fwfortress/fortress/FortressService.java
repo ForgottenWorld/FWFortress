@@ -44,13 +44,16 @@ public class FortressService {
         return fortressService;
     }
 
-    public boolean newFortress(String fortressName, String firstOwner, String currentOwner, Location fortressPosition, int fortressHP, long lastBattle) {
+    public boolean newFortress(String fortressName, String firstOwner,
+                               String currentOwner, Location fortressPosition,
+                               int fortressHP, long lastBattle, long lastRepair) {
 
         if (fortressContainer.containsKey(fortressName)) {
             return false;
         }
 
-        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner, fortressPosition, fortressHP, lastBattle);
+        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner,
+                fortressPosition, fortressHP, lastBattle, lastRepair);
 
         //todo: nel caso si dia la possibilità di cambiare il nome di una fortezza, ricorda di modificare anche il nome in
         //todo: questi array
@@ -85,7 +88,7 @@ public class FortressService {
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
                 location,
                 SettingsHandler.getInstance().getFortressHP(),
-                0)) {
+                0,0)) {
 
             spawnParticleEffectAtBlock(location); //todo: effetto da migliorare
 
@@ -108,6 +111,8 @@ public class FortressService {
                     playerFortressNameCreation.get(sender.getUniqueId()) + ".FORTRESS_HP", SettingsHandler.getInstance().getFortressHP());
             configManager.setData(configManager.getConfig("Fortress.yml"),
                     playerFortressNameCreation.get(sender.getUniqueId()) + ".LAST_BATTLE", 0);
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".LAST_REPAIR", 0);
 
         } else
             sender.sendMessage(ChatFormatter.formatErrorMessage("Errore nell'inserimento dell'arena. Controlla i parametri inseriti"));
@@ -198,6 +203,8 @@ public class FortressService {
                 fortressName + ".FORTRESS_HP", fortress.getFortressHP());
         configManager.setData(configManager.getConfig("Fortress.yml"),
                 fortressName + ".LAST_BATTLE", fortress.getLastBattle());
+        configManager.setData(configManager.getConfig("Fortress.yml"),
+                fortressName + ".LAST_REPAIR", fortress.getLastRepair());
 
         return true;
     }
