@@ -1,6 +1,7 @@
 package me.architetto.fwfortress.config;
 
 import me.architetto.fwfortress.fortress.FortressService;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -89,16 +90,16 @@ public class SettingsHandler {
 
         for (String fortressName : configurationSection.getKeys(false)) {
 
-            fortressService.newFortress(fortressName,
+            fortressService.loadFortress(fortressName,
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".FIRTS_OWNER"),
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".OWNER"),
                     configManager.getLocation(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_POSITION"),
                     configManager.getInt(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_HP"),
                     configManager.getLong(configManager.getConfig("Fortress.yml"), fortressName + ".LAST_BATTLE"),
-                    configManager.getLong(configManager.getConfig("Fortress.yml"), fortressName + ".LAST_REPAIR"));
+                    configManager.getLong(configManager.getConfig("Fortress.yml"), fortressName + ".LAST_REPAIR"),
+                    (List<Long>) configManager.getList(configManager.getConfig("Fortress.yml"), fortressName + ".CHUNKKEYS"));
 
         }
-
     }
 
     public void reload() {

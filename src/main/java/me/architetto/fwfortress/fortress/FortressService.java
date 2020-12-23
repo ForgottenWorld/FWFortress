@@ -55,12 +55,28 @@ public class FortressService {
         Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner,
                 fortressPosition, fortressHP, lastBattle, lastRepair);
 
-        //todo: nel caso si dia la possibilità di cambiare il nome di una fortezza, ricorda di modificare anche il nome in
-        //todo: questi array
         this.fortressContainer.put(fortressName, fortress);
-        this.fortressChunkKey.put(fortressName,fortress.getChunkKeys());
+
+        this.fortressChunkKey.put(fortressName, fortress.getChunkKeys());
 
         return true;
+    }
+
+    public void loadFortress(String fortressName, String firstOwner,
+                             String currentOwner, Location fortressPosition,
+                             int fortressHP, long lastBattle, long lastRepair, List<Long> fortressChunkKeys) {
+
+
+        if (fortressContainer.containsKey(fortressName)) {
+            Bukkit.getConsoleSender().sendMessage(ChatFormatter.formatErrorMessage("individuate fortezza omonime ..."));
+        }
+
+        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner,
+                fortressPosition, fortressHP, lastBattle, lastRepair);
+
+        this.fortressContainer.put(fortressName, fortress);
+        this.fortressChunkKey.put(fortressName, fortressChunkKeys);
+
     }
 
     public void fortressCrationHandler(Player sender, Location location) {
@@ -110,9 +126,12 @@ public class FortressService {
             configManager.setData(configManager.getConfig("Fortress.yml"),
                     playerFortressNameCreation.get(sender.getUniqueId()) + ".FORTRESS_HP", SettingsHandler.getInstance().getFortressHP());
             configManager.setData(configManager.getConfig("Fortress.yml"),
-                    playerFortressNameCreation.get(sender.getUniqueId()) + ".LAST_BATTLE", 0);
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".LAST_BATTLE", System.currentTimeMillis());
             configManager.setData(configManager.getConfig("Fortress.yml"),
-                    playerFortressNameCreation.get(sender.getUniqueId()) + ".LAST_REPAIR", 0);
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".LAST_REPAIR", System.currentTimeMillis());
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    playerFortressNameCreation.get(sender.getUniqueId()) + ".CHUNKKEYS",
+                    this.fortressChunkKey.get(playerFortressNameCreation.get(sender.getUniqueId())));
 
         } else
             sender.sendMessage(ChatFormatter.formatErrorMessage("Errore nell'inserimento dell'arena. Controlla i parametri inseriti"));
@@ -191,7 +210,7 @@ public class FortressService {
         Fortress fortress = fortressContainer.get(fortressName);
 
         ConfigManager configManager = ConfigManager.getInstance();
-        configManager.setData(configManager.getConfig("Fortress.yml"),fortressName,null);
+        //configManager.setData(configManager.getConfig("Fortress.yml"),fortressName,null);
 
         configManager.setData(configManager.getConfig("Fortress.yml"),
                 fortressName + ".FIRTS_OWNER", fortress.getFirstOwner());

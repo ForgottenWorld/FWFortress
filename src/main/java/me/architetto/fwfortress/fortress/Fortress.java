@@ -19,6 +19,7 @@ public class Fortress {
     private String currentOwner;
 
     private String worldName;
+
     private Vector fortressVector;
 
     private int fortressHP;
@@ -39,7 +40,6 @@ public class Fortress {
         this.lastRepair = lastRepair;
 
     }
-
 
     public String getFortressName() { return this.fortressName; }
 
@@ -90,7 +90,9 @@ public class Fortress {
 
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
-                chunkKeyList.add(world.getChunkAt(cX + x, cZ + z).getChunkKey());
+                Chunk c = world.getChunkAt(cX + x, cZ + z);
+                long key = c.getChunkKey();
+                chunkKeyList.add(key);
             }
         }
 
