@@ -158,7 +158,7 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        BattleService.getInstance().startNewBattle(fortress, invadersListUUID, senderTown.getName());
+        BattleService.getInstance().startBattle(fortress, invadersListUUID, senderTown.getName());
 
 
 

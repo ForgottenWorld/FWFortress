@@ -48,7 +48,7 @@ public class TownListener implements Listener {
 
                 fortressService.getFortressContainer().get(fortress.getFortressName())
                         .setCurrentOwner(fortress.getFirstOwner());
-                fortressService.updateFortressFile(fortress.getFortressName());
+                fortressService.saveFortress(fortress);
             }
         });
     }

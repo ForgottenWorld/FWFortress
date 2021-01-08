@@ -92,9 +92,7 @@ public class CreateCommand extends SubCommand {
 
 
             return list;
-
         }
-
         return null;
     }
 }

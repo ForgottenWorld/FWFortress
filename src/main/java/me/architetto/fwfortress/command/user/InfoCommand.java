@@ -51,7 +51,7 @@ public class InfoCommand extends SubCommand {
         sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "NOME FORTEZZA : " + ChatColor.YELLOW + fortress.get().getFortressName()));
         sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "PRIMO PROPRIETARIO : " + ChatColor.YELLOW + fortress.get().getFirstOwner()));
         sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "PROPRIETARIO ATTUALE : " + ChatColor.YELLOW + fortress.get().getCurrentOwner()));
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "HP : " + ChatColor.YELLOW + fortress.get().getFortressHP()));
+        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "HP : " + ChatColor.YELLOW + fortress.get().getCurrentHP()));
         sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "POSIZIONE : " + fortress.get().getFormattedLocation()));
         sender.sendMessage(ChatFormatter.chatFooter());
 

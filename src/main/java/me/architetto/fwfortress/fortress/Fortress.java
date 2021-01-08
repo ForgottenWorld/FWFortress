@@ -18,24 +18,23 @@ public class Fortress {
     private String firstOwner;
     private String currentOwner;
 
+    private Vector fortressVector;
     private String worldName;
 
-    private Vector fortressVector;
-
-    private int fortressHP;
+    private int currentHP;
 
     private long lastBattle;
     private long lastRepair;
 
     public Fortress(String fortressName, String firstOwner, String currentOwner,
-                    Location fortressLocation, int fortressHP, long lastBattle, long lastRepair) {
+                    Location fortressLocation, int currentHP, long lastBattle, long lastRepair) {
 
         this.fortressName = fortressName;
         this.firstOwner = firstOwner;
         this.currentOwner = currentOwner;
         this.fortressVector = fortressLocation.toVector().toBlockVector();
         this.worldName = fortressLocation.getWorld().getName();
-        this.fortressHP = fortressHP;
+        this.currentHP = currentHP;
         this.lastBattle = lastBattle;
         this.lastRepair = lastRepair;
 
@@ -51,9 +50,9 @@ public class Fortress {
 
     public void setCurrentOwner(String owner) { this.currentOwner = owner; }
 
-    public int getFortressHP() { return this.fortressHP; }
+    public int getCurrentHP() { return this.currentHP; }
 
-    public void setFortressHP(int fortressHP) { this.fortressHP = fortressHP; }
+    public void setCurrentHP(int currentHP) { this.currentHP = currentHP; }
 
     public long getLastBattle() { return this.lastBattle; }
 
@@ -141,7 +140,7 @@ public class Fortress {
 
     @Override
     public int hashCode() {
-        return Objects.hash(fortressName, firstOwner, currentOwner, worldName, fortressVector, fortressHP);
+        return Objects.hash(fortressName, firstOwner, currentOwner, worldName, fortressVector, currentHP);
     }
 
 }

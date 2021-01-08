@@ -115,14 +115,14 @@ public class RepairCommand extends SubCommand {
 
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
-        double missinghp = settingsHandler.getFortressHP() - fortress.getFortressHP();
+        double missinghp = settingsHandler.getFortressHP() - fortress.getCurrentHP();
 
         if (missinghp == 0) {
             sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza e' già al massimo degli HP"));
             return;
         }
 
-        int repairedHp =  Math.min(settingsHandler.getFortressHP(),(int)((missinghp / 100) * settingsHandler.getRepairPercentage()) + fortress.getFortressHP());
+        int repairedHp =  Math.min(settingsHandler.getFortressHP(),(int)((missinghp / 100) * settingsHandler.getRepairPercentage()) + fortress.getCurrentHP());
 
         BankAccount bankAccount = town.getAccount();
 
@@ -136,15 +136,14 @@ public class RepairCommand extends SubCommand {
         sender.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza e' stata riparata. Costo riparazione : "
                 + ChatColor.YELLOW + 1000));
 
-        sender.sendMessage(ChatFormatter.formatListMessage("HP Precedenti : " + ChatColor.YELLOW + fortress.getFortressHP()));
-        sender.sendMessage(ChatFormatter.formatListMessage("HP Recuparati : " + ChatColor.YELLOW + (repairedHp - fortress.getFortressHP())));
+        sender.sendMessage(ChatFormatter.formatListMessage("HP Precedenti : " + ChatColor.YELLOW + fortress.getCurrentHP()));
+        sender.sendMessage(ChatFormatter.formatListMessage("HP Recuperati : " + ChatColor.YELLOW + (repairedHp - fortress.getCurrentHP())));
         sender.sendMessage(ChatFormatter.formatListMessage("HP Attuali : " + ChatColor.YELLOW + repairedHp));
 
 
-        fortress.setFortressHP(repairedHp);
+        fortress.setCurrentHP(repairedHp);
         fortress.setLastRepair(System.currentTimeMillis());
-        FortressService.getInstance().updateFortressFile(fortress.getFortressName());
-
+        FortressService.getInstance().saveFortress(fortress);
 
     }
 

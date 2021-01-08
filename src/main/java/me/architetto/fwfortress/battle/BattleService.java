@@ -1,13 +1,14 @@
 package me.architetto.fwfortress.battle;
 
-import me.architetto.fwfortress.config.ConfigManager;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
+import me.architetto.fwfortress.fortress.FortressService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class BattleService {
 
@@ -35,7 +36,7 @@ public class BattleService {
         return battleService;
     }
 
-    public void startNewBattle(Fortress fortress, List<UUID> enemies, String enemyTown) {
+    public void startBattle(Fortress fortress, List<UUID> enemies, String enemyTown) {
 
         Battle battle = new Battle(fortress, enemies, enemyTown);
 
@@ -49,32 +50,30 @@ public class BattleService {
         return battleContainer.values().stream().anyMatch(battle -> battle.getFortressInBattle().getFortressName().equals(fortressName));
     }
 
-    public void resolveBattle(Fortress fortress, String newOwner, int fortressHP) {
+    public List<String> getOccupiedFortresses() {
+        return battleContainer.values().stream().map(Battle::getFortressInBattle).map(Fortress::getFortressName).collect(Collectors.toList());
+    }
 
-        ConfigManager configManager = ConfigManager.getInstance();
+    public void resolveBattle(Fortress fortress, String newOwner, int fortressHP) {
 
         if (!fortress.getCurrentOwner().equals(newOwner)) {
 
             fortress.setCurrentOwner(newOwner);
-            fortress.setFortressHP(SettingsHandler.getInstance().getFortressHP());
-            configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName() + ".OWNER", newOwner);
-            configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName()
-                    + ".FORTRESS_HP", SettingsHandler.getInstance().getFortressHP());
+            fortress.setCurrentHP(SettingsHandler.getInstance().getFortressHP());
 
         } else {
-            fortress.setFortressHP(fortressHP);
-            configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName()
-                    + ".FORTRESS_HP", fortressHP);
+
+            fortress.setCurrentHP(fortressHP);
 
         }
 
         fortress.setLastBattle(System.currentTimeMillis());
-        configManager.setData(configManager.getConfig("Fortress.yml"), fortress.getFortressName()
-                + ".LAST_BATTLE", fortress.getLastBattle());
 
         stopBattle(fortress.getFortressName());
 
         this.battleContainer.remove(fortress.getFortressName());
+
+        FortressService.getInstance().saveFortress(fortress);
 
     }
 

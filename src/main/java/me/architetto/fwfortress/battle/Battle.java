@@ -50,7 +50,7 @@ public class Battle {
         this.greenArea = fortress.getGreenBoundingBox();
         this.blueArea = fortress.getBlueBoundingBox();
 
-        this.fortressHP = fortress.getFortressHP();
+        this.fortressHP = fortress.getCurrentHP();
 
         this.fortressBorderDamage = SettingsHandler.getInstance().getFortressBorderDamage();
         this.maxDamageForSeconds = SettingsHandler.getInstance().getMaxDamageForSeconds();
@@ -146,16 +146,14 @@ public class Battle {
                 },
                 (s) -> {
 
-                    //this.fortressHP -= getInvadersInsideGreenArea();
                     this.fortressHP -= Math.min(this.maxDamageForSeconds,getInvadersInsideGreenArea());
-
 
                     this.bossBar.setTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + fortress.getFortressName() +
                             ChatColor.AQUA + " [ TIMER : " + ChatColor.YELLOW + s.getSecondsLeft() +
                             ChatColor.AQUA + " ] [ HP : " + ChatColor.YELLOW + this.fortressHP +
                             ChatColor.AQUA + " ]");
 
-                    this.bossBar.setProgress((float) this.fortressHP / this.fortress.getFortressHP());
+                    this.bossBar.setProgress((float) this.fortressHP / this.fortress.getCurrentHP());
 
                     if (this.activeInvaders.isEmpty()) {
                         sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.AQUA + "La fortezza " + ChatColor.YELLOW + fortress.getFortressName() +
