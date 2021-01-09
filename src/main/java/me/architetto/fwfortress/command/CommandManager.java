@@ -8,6 +8,7 @@ import me.architetto.fwfortress.command.extra.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.user.InvadeCommand;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.Messages;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -42,10 +43,22 @@ public class CommandManager implements TabExecutor{
         Player p = (Player) sender;
 
         if (args.length > 0) {
-            for (int i = 0; i < getSubcommands().size(); i++){
-                if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())){
+            for (int i = 0; i < getSubcommands().size(); i++) {
+                if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())) {
 
-                        getSubcommands().get(i).perform(p, args);
+                    SubCommand subCommand = getSubcommands().get(i);
+
+                    if (sender.hasPermission(subCommand.getPermission())) {
+                        sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
+                        return true;
+                    }
+
+                    if (args.length < subCommand.getArgsRequired()) {
+                        sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.NOT_ENOUGHT_ARGUMENTS));
+                        return true;
+                    }
+
+                    subCommand.perform(p, args);
 
                 }
             }

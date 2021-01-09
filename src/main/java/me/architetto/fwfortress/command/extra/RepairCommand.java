@@ -12,7 +12,8 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class RepairCommand extends SubCommand {
     @Override
     public String getName() {
-        return "repair";
+        return CommandName.REPAIR_CMD;
     }
 
     @Override
@@ -38,11 +39,17 @@ public class RepairCommand extends SubCommand {
     }
 
     @Override
+    public String getPermission() {
+        return CommandPermission.FORTRESS_REPAIR_PERM;
+    }
+
+    @Override
+    public int getArgsRequired() {
+        return 1;
+    }
+
+    @Override
     public void perform(Player sender, String[] args) {
-        if (!sender.hasPermission("fwfortress.userplus")) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
-            return;
-        }
 
         String fortressName = args[1];
 

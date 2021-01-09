@@ -4,7 +4,8 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
 public class InfoCommand extends SubCommand {
     @Override
     public String getName() {
-        return "info";
+        return CommandName.INFO_CMD;
     }
 
     @Override
@@ -29,16 +30,17 @@ public class InfoCommand extends SubCommand {
     }
 
     @Override
-    public void perform(Player sender, String[] args) {
-        if (!sender.hasPermission("fwfortress.user")) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
-            return;
-        }
+    public String getPermission() {
+        return CommandPermission.FORTRESS_USER_PERM;
+    }
 
-        if (args.length < 2) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Inserisci il nome della fortezza"));
-            return;
-        }
+    @Override
+    public int getArgsRequired() {
+        return 2;
+    }
+
+    @Override
+    public void perform(Player sender, String[] args) {
 
         Optional<Fortress> fortress = FortressService.getInstance().getFortress(args[1]);
 

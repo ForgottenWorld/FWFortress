@@ -5,6 +5,8 @@ import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.util.cmd.CommandPermission;
 import me.architetto.fwfortress.util.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -16,7 +18,7 @@ import java.util.List;
 public class CreateCommand extends SubCommand {
     @Override
     public String getName() {
-        return "create";
+        return CommandName.CREATE_CMD;
     }
 
     @Override
@@ -30,19 +32,19 @@ public class CreateCommand extends SubCommand {
     }
 
     @Override
-    public void perform(Player sender, String[] args) {
-        if (!sender.hasPermission("fwfortress.admin")) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
-            return;
-        }
+    public String getPermission() {
+        return CommandPermission.FORTRESS_ADMIN_PERM;
+    }
 
-        if (args.length < 3) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.NOT_ENOUGHT_ARGUMENTS));
-            return;
-        }
+    @Override
+    public int getArgsRequired() {
+        return 3;
+    }
+
+    @Override
+    public void perform(Player sender, String[] args) {
 
         String fortressOwner = args[1];
-
 
         //check if town exist
         if (TownyAPI.getInstance().getDataSource().getTowns().stream().noneMatch(t -> t.getName().equals(args[1]))) {

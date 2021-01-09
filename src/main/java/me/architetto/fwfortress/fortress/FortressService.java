@@ -1,7 +1,7 @@
 package me.architetto.fwfortress.fortress;
 
 import me.architetto.fwfortress.FWFortress;
-import me.architetto.fwfortress.api.FortService;
+import me.architetto.fwfortress.api.FortressAPI;
 import me.architetto.fwfortress.config.ConfigManager;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.util.ChatFormatter;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class FortressService implements FortService {
+public class FortressService implements FortressAPI {
 
     private static FortressService fortressService;
 
@@ -209,7 +209,7 @@ public class FortressService implements FortService {
     }
 
     @Override
-    public int getFortressAmount(String cityName) {
+    public int getFortressOwnedAmount(String cityName) {
         return (int) this.fortressContainer.values().stream().filter(fortress -> fortress.getCurrentOwner().equals(cityName)).count();
     }
 }

@@ -3,7 +3,8 @@ package me.architetto.fwfortress.command.admin;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 public class DeleteCommand extends SubCommand {
     @Override
     public String getName() {
-        return "delete";
+        return CommandName.DELETE_CMD;
     }
 
     @Override
@@ -26,16 +27,17 @@ public class DeleteCommand extends SubCommand {
     }
 
     @Override
-    public void perform(Player sender, String[] args) {
-        if (!sender.hasPermission("fwfortress.admin")) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
-            return;
-        }
+    public String getPermission() {
+        return CommandPermission.FORTRESS_ADMIN_PERM;
+    }
 
-        if (args.length < 2) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.NOT_ENOUGHT_ARGUMENTS));
-            return;
-        }
+    @Override
+    public int getArgsRequired() {
+        return 2;
+    }
+
+    @Override
+    public void perform(Player sender, String[] args) {
 
         String fortressName = args[1];
         FortressService fortressService = FortressService.getInstance();
