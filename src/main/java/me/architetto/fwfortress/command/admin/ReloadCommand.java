@@ -4,8 +4,9 @@ import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -18,17 +19,17 @@ public class ReloadCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return null;
+        return CommandDescription.RELOAD_CMD_DESCRIPTION;
     }
 
     @Override
     public String getSyntax() {
-        return null;
+        return "/fwfortress " + CommandName.RELOAD_CMD;
     }
 
     @Override
     public String getPermission() {
-        return CommandPermission.FORTRESS_ADMIN_PERM;
+        return "fwfortress.admin";
     }
 
     @Override
@@ -40,12 +41,12 @@ public class ReloadCommand extends SubCommand {
     public void perform(Player sender, String[] args) {
 
         if (!BattleService.getInstance().getCurrentBattle().isEmpty()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Ci sono battaglie in corso ..."));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_RELOAD1));
             return;
         }
 
         SettingsHandler.getInstance().reload();
-        sender.sendMessage(ChatFormatter.formatSuccessMessage("Settings e fortezze ricaricati"));
+        sender.sendMessage(ChatFormatter.formatSuccessMessage(Messages.OK_RELOAD));
 
     }
 

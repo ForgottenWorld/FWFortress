@@ -3,8 +3,9 @@ package me.architetto.fwfortress.command.admin;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -18,17 +19,17 @@ public class DeleteCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return null;
+        return CommandDescription.DELETE_CMD_DESCRIPTION;
     }
 
     @Override
     public String getSyntax() {
-        return "/fwfortress delete <fortress_name>";
+        return "/fwfortress " + CommandName.DELETE_CMD + " <fortress_name>";
     }
 
     @Override
     public String getPermission() {
-        return CommandPermission.FORTRESS_ADMIN_PERM;
+        return "fwfortress.admin";
     }
 
     @Override
@@ -43,13 +44,13 @@ public class DeleteCommand extends SubCommand {
         FortressService fortressService = FortressService.getInstance();
 
         if (!fortressService.getFortressContainer().containsKey(fortressName)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Nessuna fortezza con questo nome"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FORTRESS_NAME2));
             return;
         }
 
         fortressService.removeFortress(fortressName);
 
-        sender.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza " + fortressName + " e' stata eliminata"));
+        sender.sendMessage(ChatFormatter.formatSuccessMessage(String.format(Messages.FORTRESS_DELETED,fortressName)));
 
     }
 

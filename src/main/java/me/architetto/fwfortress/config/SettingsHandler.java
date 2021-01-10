@@ -1,7 +1,6 @@
 package me.architetto.fwfortress.config;
 
 import me.architetto.fwfortress.fortress.FortressService;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
@@ -166,7 +165,7 @@ public class SettingsHandler {
 
     public void setInvadeAlliedFortress(boolean invadeAlliedFortress) { this.invadeAlliedFortress = invadeAlliedFortress; }
 
-    public boolean isDisableInvade() { return this.disableInvade; }
+    public boolean isInvadeDisabled() { return this.disableInvade; }
 
     public void setDisableInvade(boolean disableInvade) { this.disableInvade = disableInvade; }
 

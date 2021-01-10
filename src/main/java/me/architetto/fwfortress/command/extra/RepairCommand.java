@@ -12,8 +12,9 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -30,7 +31,7 @@ public class RepairCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return null;
+        return CommandDescription.REPAIR_CMD_DESCRIPTION;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class RepairCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return CommandPermission.FORTRESS_REPAIR_PERM;
+        return "fwfortress.repair";
     }
 
     @Override
@@ -56,7 +57,7 @@ public class RepairCommand extends SubCommand {
         Optional<Fortress> fortressO = FortressService.getInstance().getFortress(fortressName);
 
         if (!fortressO.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Nessuna fortezza con questo nome"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FORTRESS_NAME2));
             return;
         }
 
@@ -88,7 +89,7 @@ public class RepairCommand extends SubCommand {
         }
 
         try {
-            town = TownyAPI.getInstance().getDataSource().getTown(resident.getTown().getName());
+            town = resident.getTown();
         } catch (NotRegisteredException e) {
             e.printStackTrace();
         }

@@ -10,8 +10,9 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -30,17 +31,17 @@ public class InvadeCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return null;
+        return CommandDescription.INVADE_CMD_DESCRIPTION;
     }
 
     @Override
     public String getSyntax() {
-        return null;
+        return "/fwfortress " + CommandName.INVADE_CMD;
     }
 
     @Override
     public String getPermission() {
-        return CommandPermission.FORTRESS_USER_PERM;
+        return "fwfortress.user";
     }
 
     @Override
@@ -53,21 +54,21 @@ public class InvadeCommand extends SubCommand {
 
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
-        if (settingsHandler.isDisableInvade()) {
-            sender.sendMessage(ChatFormatter.formatMessage("Le invasioni sono momentaneamente disabilitate!"));
+        if (settingsHandler.isInvadeDisabled()) {
+            sender.sendMessage(ChatFormatter.formatMessage(Messages.BATTLE_DISABLED));
             return;
         }
 
         ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/London"));
         DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+
         String dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
 
-        int time = dateTime.getHour();
-
         if (!settingsHandler.getDate().contains(dayName)
-                || time < settingsHandler.getTime().get(0)
-                || time > settingsHandler.getTime().get(1)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Le conquiste non sono attive in questo momento"));
+                || dateTime.getHour() < settingsHandler.getTime().get(0)
+                || dateTime.getHour() > settingsHandler.getTime().get(1)) {
+
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_BATTLE_DISABLED2));
             sender.sendMessage(ChatFormatter.formatListMessage("Giorni attivi : " + ChatColor.YELLOW + settingsHandler.getDate()));
             sender.sendMessage(ChatFormatter.formatListMessage("Orari attivi : " + ChatColor.YELLOW + "dalle "
                     + settingsHandler.getTime().get(0) + " alle " + settingsHandler.getTime().get(1)));
@@ -77,7 +78,7 @@ public class InvadeCommand extends SubCommand {
         Optional<Fortress> optionalFortress = FortressService.getInstance().getFortress(sender.getLocation().getChunk().getChunkKey());
 
         if (!optionalFortress.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Devi trovarti all'interno di una fortezza per poterla conquistare"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_INVALID_INVADE_POSITION));
             return;
         }
 

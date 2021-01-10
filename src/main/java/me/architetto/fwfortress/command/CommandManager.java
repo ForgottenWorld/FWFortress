@@ -48,7 +48,7 @@ public class CommandManager implements TabExecutor{
 
                     SubCommand subCommand = getSubcommands().get(i);
 
-                    if (sender.hasPermission(subCommand.getPermission())) {
+                    if (!sender.hasPermission(subCommand.getPermission())) {
                         sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
                         return true;
                     }

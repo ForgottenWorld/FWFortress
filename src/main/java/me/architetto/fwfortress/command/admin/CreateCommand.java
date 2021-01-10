@@ -5,8 +5,8 @@ import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.cmd.CommandPermission;
 import me.architetto.fwfortress.util.Messages;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,17 +23,17 @@ public class CreateCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return null;
+        return CommandDescription.CREATE_CMD_DESCRIPTION;
     }
 
     @Override
     public String getSyntax() {
-        return "/fwfortress create <fortress_name> <fortress_firstOwner>";
+        return "/fwfortress " + CommandName.CREATE_CMD + " <fortress_townOwnerName> <fortress_name>";
     }
 
     @Override
     public String getPermission() {
-        return CommandPermission.FORTRESS_ADMIN_PERM;
+        return "fwfortress.admin";
     }
 
     @Override
@@ -64,20 +64,19 @@ public class CreateCommand extends SubCommand {
 
         String fortressName = String.join("_", Arrays.copyOfRange(args, 2, args.length));
 
-
         //check if this fortress's name already exist
         if (fortressService.getFortressContainer().containsKey(fortressName)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Esiste gia' una fortezza con questo nome"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FORTRESS_NAME));
             return;
         }
 
         if (fortressService.isPlayerInCreationMode(sender)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Stai gia' creando una fortezza"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_CREATIONMODE1));
             return;
         }
 
         sender.sendMessage(ChatFormatter.formatMessage(ChatColor.AQUA
-                + "Indica la posizione del chunk conquistabile ... (CLICK DX con STICK equipaggiato)"));
+                + Messages.CREATION_MSG1));
 
         fortressService.addPlayerToFortressCreation(sender, fortressName, fortressOwner);
 

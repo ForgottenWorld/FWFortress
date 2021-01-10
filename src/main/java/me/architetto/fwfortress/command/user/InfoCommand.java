@@ -4,8 +4,9 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.cmd.CommandPermission;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,7 @@ public class InfoCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return null;
+        return CommandDescription.INFO_CMD_DESCRIPTION;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class InfoCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return CommandPermission.FORTRESS_USER_PERM;
+        return "fwfortress.user";
     }
 
     @Override
@@ -45,7 +46,7 @@ public class InfoCommand extends SubCommand {
         Optional<Fortress> fortress = FortressService.getInstance().getFortress(args[1]);
 
         if (!fortress.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Nessuna fortezza con questo nome"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FORTRESS_NAME2));
             return;
         }
 
@@ -56,8 +57,6 @@ public class InfoCommand extends SubCommand {
         sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "HP : " + ChatColor.YELLOW + fortress.get().getCurrentHP()));
         sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "POSIZIONE : " + fortress.get().getFormattedLocation()));
         sender.sendMessage(ChatFormatter.chatFooter());
-
-        //todo: effetto visivo ?
 
     }
 
