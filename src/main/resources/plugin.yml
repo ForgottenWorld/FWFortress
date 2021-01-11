@@ -16,10 +16,10 @@ permissions:
     description: description
     default: op
 
-fwfortress.repair:
-  description: description
-  default: op
+  fwfortress.repair:
+    description: description
+    default: op
 
-fwfortress.user:
-  description: description
-  default: true
+  fwfortress.user:
+    description: description
+    default: true

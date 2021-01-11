@@ -3,6 +3,7 @@ package me.architetto.fwfortress.command.admin;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.command.SubCommand;
+import me.architetto.fwfortress.fortress.FortressCreationService;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
@@ -70,7 +71,7 @@ public class CreateCommand extends SubCommand {
             return;
         }
 
-        if (fortressService.isPlayerInCreationMode(sender)) {
+        if (FortressCreationService.getInstance().isPlayerInFortressCreationMode(sender)) {
             sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_CREATIONMODE1));
             return;
         }
@@ -78,7 +79,7 @@ public class CreateCommand extends SubCommand {
         sender.sendMessage(ChatFormatter.formatMessage(ChatColor.AQUA
                 + Messages.CREATION_MSG1));
 
-        fortressService.addPlayerToFortressCreation(sender, fortressName, fortressOwner);
+        FortressCreationService.getInstance().addPlayerToFortressCreationMode(sender, fortressName, fortressOwner);
 
     }
 

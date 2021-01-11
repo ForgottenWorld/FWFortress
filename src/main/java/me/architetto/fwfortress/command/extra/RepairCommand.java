@@ -64,92 +64,83 @@ public class RepairCommand extends SubCommand {
         Fortress fortress = fortressO.get();
 
         if (BattleService.getInstance().isOccupied(fortressName)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Non e' possibile riparare la fortezza durante un attacco"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR1));
             return;
         }
 
-        //--------------------------------------------------------------//
+        Resident resident;
+        Town town;
 
-        Resident resident = null;
-
-        try {
+        try { 
             resident = TownyAPI.getInstance().getDataSource().getResident(sender.getName());
-        } catch (NotRegisteredException e) {
+        } catch (NotRegisteredException e) { 
             e.printStackTrace();
-        }
-
-        Town town = null;
-
-        if (resident == null || !resident.hasTown())
-            return;
-
-        if (!resident.isMayor()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Solo il sindaco puo' riparare la fortezza"));
             return;
         }
 
         try {
             town = resident.getTown();
         } catch (NotRegisteredException e) {
-            e.printStackTrace();
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR2));
+            return;
         }
 
-        if (town == null)
+        if (!resident.isMayor()) {
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR2));
             return;
+        }
 
         if (!fortress.getCurrentOwner().equals(town.getName())) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Puoi riparare solo le fortezze che sono" +
-                    " sotto il controllo della tua citta'"));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR3));
             return;
         }
 
-        //---------------------------------------------------------------//
+        SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
         if (fortress.getLastRepair() != 0) {
-            long remain = SettingsHandler.getInstance().getRepairCooldown() -
+            long remainCooldown = settingsHandler.getRepairCooldown() -
                     (System.currentTimeMillis() - fortress.getLastRepair());
-            if (remain > 0) {
+
+            if (remainCooldown > 0) {
                 sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza potra' essere riparata tra : " +
                         ChatColor.YELLOW + String.format("%d ORE : %d MINUTI : %d SECONDI",
-                        TimeUnit.MILLISECONDS.toHours(remain),
-                        TimeUnit.MILLISECONDS.toMinutes(remain) -
-                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(remain)),
-                        TimeUnit.MILLISECONDS.toSeconds(remain) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remain)))));
+                        TimeUnit.MILLISECONDS.toHours(remainCooldown),
+                        TimeUnit.MILLISECONDS.toMinutes(remainCooldown) -
+                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(remainCooldown)),
+                        TimeUnit.MILLISECONDS.toSeconds(remainCooldown) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remainCooldown)))));
                 return;
             }
         }
 
+        double missingHP = settingsHandler.getFortressHP() - fortress.getCurrentHP();
 
-        SettingsHandler settingsHandler = SettingsHandler.getInstance();
-
-        double missinghp = settingsHandler.getFortressHP() - fortress.getCurrentHP();
-
-        if (missinghp == 0) {
+        if (missingHP == 0) {
             sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza e' già al massimo degli HP"));
             return;
         }
 
-        int repairedHp =  Math.min(settingsHandler.getFortressHP(),(int)((missinghp / 100) * settingsHandler.getRepairPercentage()) + fortress.getCurrentHP());
+        int repairedFortressHP =  Math.min(settingsHandler.getFortressHP(),
+                (int)(missingHP * (settingsHandler.getRepairPercentage() / 100f)) + fortress.getCurrentHP());
 
         BankAccount bankAccount = town.getAccount();
 
         try {
-            if (bankAccount.canPayFromHoldings(1000))
-                bankAccount.withdraw(1000,"Riparazione fortezza");
+            if (bankAccount.canPayFromHoldings(settingsHandler.getRepairCost()))
+                bankAccount.withdraw(settingsHandler.getRepairCost(), "Riparazione fortezza");
+            else
+                sender.sendMessage(ChatFormatter.formatErrorMessage("La citta' non possiede i fondi necessari" +
+                        " per riparare la fortezza. Costo riparazione : " +
+                        settingsHandler.getRepairCost()));
         } catch (EconomyException e) {
             e.printStackTrace();
         }
 
-        sender.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza e' stata riparata. Costo riparazione : "
-                + ChatColor.YELLOW + 1000));
-
+        sender.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza e' stata riparata : "));
         sender.sendMessage(ChatFormatter.formatListMessage("HP Precedenti : " + ChatColor.YELLOW + fortress.getCurrentHP()));
-        sender.sendMessage(ChatFormatter.formatListMessage("HP Recuperati : " + ChatColor.YELLOW + (repairedHp - fortress.getCurrentHP())));
-        sender.sendMessage(ChatFormatter.formatListMessage("HP Attuali : " + ChatColor.YELLOW + repairedHp));
+        sender.sendMessage(ChatFormatter.formatListMessage("HP Attuali : " + ChatColor.YELLOW + repairedFortressHP));
 
-
-        fortress.setCurrentHP(repairedHp);
+        fortress.setCurrentHP(repairedFortressHP);
         fortress.setLastRepair(System.currentTimeMillis());
         FortressService.getInstance().saveFortress(fortress);
 

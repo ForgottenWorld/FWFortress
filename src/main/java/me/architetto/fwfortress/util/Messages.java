@@ -29,6 +29,12 @@ public class Messages {
     public static String ERR_RELOAD1 = "Ci sono una o piu' fortezze sotto attacco," +
             " non e' possibile ricaricare i config in questo momento.";
 
+    public static String ERR_REPAIR1 = "La fortezza e' sotto attacco e non puo' essere riparata";
+
+    public static String ERR_REPAIR2 = "Il comando puo' essere eseguito solo dal sindaco della citta' che possiede la fortezza";
+
+    public static String ERR_REPAIR3 = "Questa fortezza non appartiene alla tua citta' ";
+
     public static String OK_RELOAD = "Reload effettuato";
 
 

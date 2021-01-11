@@ -1,5 +1,6 @@
 package me.architetto.fwfortress.config;
 
+import me.architetto.fwfortress.fortress.FortressCreationService;
 import me.architetto.fwfortress.fortress.FortressService;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -20,6 +21,7 @@ public class SettingsHandler {
     private int maxDamageForSeconds;
 
     private int repairPercentage;
+    private int repairCost;
 
     private long battleCooldown;
     private long repairCooldown;
@@ -61,12 +63,12 @@ public class SettingsHandler {
         this.maxDamageForSeconds = configManager.getInt(configManager.getConfig("Settings.yml"),"MAX_DAMAGE_FOR_SECOND");
 
         this.repairPercentage = configManager.getInt(configManager.getConfig("Settings.yml"),"REPAIR_PERCENTAGE");
+        this.repairCost = configManager.getInt(configManager.getConfig("Settings.yml"),"REPAIR_COST");
 
         this.minInvaders = configManager.getInt(configManager.getConfig("Settings.yml"),"MIN_INVADERS");
 
         this.battleCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
         this.repairCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"REPAIR_COOLDOWN"));
-
 
         this.date = (List<String>) configManager.getList(configManager.getConfig("Settings.yml"),"DATE"); //OK
         this.time = (List<Integer>) configManager.getList(configManager.getConfig("Settings.yml"),"TIME_RANGE"); //OK
@@ -85,11 +87,11 @@ public class SettingsHandler {
         if (configurationSection == null)
             return;
 
-        FortressService fortressService = FortressService.getInstance();
+        FortressCreationService fortressCreationService = FortressCreationService.getInstance();
 
         for (String fortressName : configurationSection.getKeys(false)) {
 
-            fortressService.loadFortress(fortressName,
+            fortressCreationService.addNewFortress(fortressName,
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".FIRTS_OWNER"),
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".OWNER"),
                     configManager.getLocation(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_POSITION"),
@@ -144,6 +146,10 @@ public class SettingsHandler {
     public int getRepairPercentage() { return this.repairPercentage; }
 
     public void setRepairPercentage(int repairPercentage) { this.repairPercentage = repairPercentage; }
+
+    public int getRepairCost() { return this.repairCost; }
+
+    public void setRepairCost(int repairCost) { this.repairCost = repairCost; }
 
     public long getRepairCooldown() { return this.repairCooldown; }
 

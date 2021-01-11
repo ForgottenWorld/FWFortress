@@ -63,11 +63,14 @@ public class CommandManager implements TabExecutor{
                 }
             }
         }else{
-            p.sendMessage("--------------------------------");
+            p.sendMessage(ChatFormatter.commandsInfo());
+
             for (int i = 0; i < getSubcommands().size(); i++) {
-                p.sendMessage(getSubcommands().get(i).getSyntax() + " - " + getSubcommands().get(i).getDescription());
+                p.sendMessage(ChatFormatter.formatListMessage(getSubcommands().get(i).getSyntax()
+                        + " - " + getSubcommands().get(i).getDescription()));
             }
-            p.sendMessage("--------------------------------");
+
+            p.sendMessage(ChatFormatter.chatFooter());
         }
 
         return true;
@@ -84,8 +87,13 @@ public class CommandManager implements TabExecutor{
         if (args.length == 1) {
             ArrayList<String> subcommandsArguments = new ArrayList<>();
 
-            for (int i = 0; i < getSubcommands().size(); i++){
-                subcommandsArguments.add(getSubcommands().get(i).getName());
+            for (int i = 0; i < getSubcommands().size(); i++) {
+                SubCommand subCommand = getSubcommands().get(i);
+
+                if (!sender.hasPermission(subCommand.getPermission()))
+                    continue;
+
+                subcommandsArguments.add(subCommand.getName());
             }
 
             return subcommandsArguments;

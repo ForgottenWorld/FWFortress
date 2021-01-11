@@ -1,6 +1,6 @@
 package me.architetto.fwfortress.listener;
 
-import me.architetto.fwfortress.fortress.FortressService;
+import me.architetto.fwfortress.fortress.FortressCreationService;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,12 +24,11 @@ public class FortressCreationListener implements Listener {
 
         Player player = event.getPlayer();
 
-        if(!FortressService.getInstance().isPlayerInCreationMode(player)) {
+        if(!FortressCreationService.getInstance().isPlayerInFortressCreationMode(player)) {
             return;
         }
 
-        FortressService simpleFortressManagere = FortressService.getInstance();
-        simpleFortressManagere.fortressCrationHandler(player, event.getClickedBlock().getLocation().toBlockLocation());
+        FortressCreationService.getInstance().fortressCreationMethod(player, event.getClickedBlock().getLocation().toBlockLocation());
 
         event.setCancelled(true);
 

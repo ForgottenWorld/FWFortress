@@ -6,7 +6,7 @@
 
     <groupId>me.architetto</groupId>
     <artifactId>FWFortress</artifactId>
-    <version>0.4f</version>
+    <version>0.5</version>
     <packaging>jar</packaging>
 
     <name>FWFortress</name>

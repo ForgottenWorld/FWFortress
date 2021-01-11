@@ -12,6 +12,12 @@ public class ChatFormatter {
                 ChatColor.YELLOW + " ]----------------[*]";
     }
 
+    public static String commandsInfo() {
+        return  ChatColor.YELLOW + "[*]----------------[ " +
+                ChatColor.DARK_AQUA + ChatColor.BOLD + "COMMANDS INFO" +
+                ChatColor.YELLOW + " ]----------------[*]";
+    }
+
     public static String chatFooter() {
         return  ChatColor.YELLOW + String.join("", Collections.nCopies(53, "-"));
     }
