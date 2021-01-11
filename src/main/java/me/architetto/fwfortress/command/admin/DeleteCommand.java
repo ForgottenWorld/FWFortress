@@ -3,7 +3,7 @@ package me.architetto.fwfortress.command.admin;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
 import org.bukkit.entity.Player;
@@ -44,13 +44,13 @@ public class DeleteCommand extends SubCommand {
         FortressService fortressService = FortressService.getInstance();
 
         if (!fortressService.getFortressContainer().containsKey(fortressName)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FORTRESS_NAME2));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_FORTRESS_NAME2));
             return;
         }
 
         fortressService.removeFortress(fortressName);
 
-        sender.sendMessage(ChatFormatter.formatSuccessMessage(String.format(Messages.FORTRESS_DELETED,fortressName)));
+        sender.sendMessage(ChatFormatter.formatSuccessMessage(String.format(CommandMessages.FORTRESS_DELETED,fortressName)));
 
     }
 

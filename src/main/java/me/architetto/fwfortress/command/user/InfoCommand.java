@@ -4,7 +4,7 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
 import org.bukkit.ChatColor;
@@ -46,7 +46,7 @@ public class InfoCommand extends SubCommand {
         Optional<Fortress> fortress = FortressService.getInstance().getFortress(args[1]);
 
         if (!fortress.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FORTRESS_NAME2));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_FORTRESS_NAME2));
             return;
         }
 

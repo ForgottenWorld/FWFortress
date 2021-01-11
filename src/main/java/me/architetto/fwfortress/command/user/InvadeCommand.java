@@ -10,7 +10,7 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
 import org.bukkit.ChatColor;
@@ -55,7 +55,7 @@ public class InvadeCommand extends SubCommand {
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
         if (settingsHandler.isInvadeDisabled()) {
-            sender.sendMessage(ChatFormatter.formatMessage(Messages.BATTLE_DISABLED));
+            sender.sendMessage(ChatFormatter.formatMessage(CommandMessages.BATTLE_DISABLED));
             return;
         }
 
@@ -68,7 +68,7 @@ public class InvadeCommand extends SubCommand {
                 || dateTime.getHour() < settingsHandler.getTime().get(0)
                 || dateTime.getHour() > settingsHandler.getTime().get(1)) {
 
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_BATTLE_DISABLED2));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_BATTLE_DISABLED2));
             sender.sendMessage(ChatFormatter.formatListMessage("Giorni attivi : " + ChatColor.YELLOW + settingsHandler.getDate()));
             sender.sendMessage(ChatFormatter.formatListMessage("Orari attivi : " + ChatColor.YELLOW + "dalle "
                     + settingsHandler.getTime().get(0) + " alle " + settingsHandler.getTime().get(1)));
@@ -78,7 +78,7 @@ public class InvadeCommand extends SubCommand {
         Optional<Fortress> optionalFortress = FortressService.getInstance().getFortress(sender.getLocation().getChunk().getChunkKey());
 
         if (!optionalFortress.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_INVALID_INVADE_POSITION));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_INVALID_INVADE_POSITION));
             return;
         }
 

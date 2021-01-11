@@ -8,7 +8,7 @@ import me.architetto.fwfortress.command.extra.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.user.InvadeCommand;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandMessages;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -49,12 +49,12 @@ public class CommandManager implements TabExecutor{
                     SubCommand subCommand = getSubcommands().get(i);
 
                     if (!sender.hasPermission(subCommand.getPermission())) {
-                        sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_PERMISSION));
+                        sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_PERMISSION));
                         return true;
                     }
 
                     if (args.length < subCommand.getArgsRequired()) {
-                        sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.NOT_ENOUGHT_ARGUMENTS));
+                        sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.NOT_ENOUGHT_ARGUMENTS));
                         return true;
                     }
 

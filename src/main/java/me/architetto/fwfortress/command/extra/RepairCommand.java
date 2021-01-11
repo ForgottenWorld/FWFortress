@@ -12,7 +12,7 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.Messages;
+import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
 import org.bukkit.ChatColor;
@@ -57,14 +57,14 @@ public class RepairCommand extends SubCommand {
         Optional<Fortress> fortressO = FortressService.getInstance().getFortress(fortressName);
 
         if (!fortressO.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_FORTRESS_NAME2));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_FORTRESS_NAME2));
             return;
         }
 
         Fortress fortress = fortressO.get();
 
         if (BattleService.getInstance().isOccupied(fortressName)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR1));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR1));
             return;
         }
 
@@ -81,17 +81,17 @@ public class RepairCommand extends SubCommand {
         try {
             town = resident.getTown();
         } catch (NotRegisteredException e) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR2));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR2));
             return;
         }
 
         if (!resident.isMayor()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR2));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR2));
             return;
         }
 
         if (!fortress.getCurrentOwner().equals(town.getName())) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(Messages.ERR_REPAIR3));
+            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR3));
             return;
         }
 
@@ -128,10 +128,12 @@ public class RepairCommand extends SubCommand {
         try {
             if (bankAccount.canPayFromHoldings(settingsHandler.getRepairCost()))
                 bankAccount.withdraw(settingsHandler.getRepairCost(), "Riparazione fortezza");
-            else
+            else {
                 sender.sendMessage(ChatFormatter.formatErrorMessage("La citta' non possiede i fondi necessari" +
                         " per riparare la fortezza. Costo riparazione : " +
                         settingsHandler.getRepairCost()));
+                return;
+            }
         } catch (EconomyException e) {
             e.printStackTrace();
         }

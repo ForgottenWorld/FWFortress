@@ -31,7 +31,7 @@ public class Battle {
 
     private List<UUID> activeInvaders;
 
-    private String enemyTown;
+    private String enemyTownName;
 
     private BossBar bossBar;
 
@@ -43,7 +43,7 @@ public class Battle {
     private int battleTaskID;
     private int positionTaskID;
 
-    public Battle(Fortress fortress, List<UUID> invaders, String enemyTown) {
+    public Battle(Fortress fortress, List<UUID> invaders, String enemyTownName) {
 
         this.fortress = fortress;
 
@@ -57,7 +57,7 @@ public class Battle {
 
         this.activeInvaders = invaders;
 
-        this.enemyTown = enemyTown;
+        this.enemyTownName = enemyTownName;
 
         this.bossBar = Bukkit.createBossBar("PLACEHOLDER", BarColor.RED, BarStyle.SOLID);
 
@@ -77,7 +77,7 @@ public class Battle {
                         ChatColor.AQUA + " protetta dalla citta' di " +
                         ChatColor.YELLOW + fortress.getCurrentOwner() +
                         ChatColor.AQUA + " sta' per essere attaccata da " +
-                        ChatColor.YELLOW + enemyTown)),
+                        ChatColor.YELLOW + enemyTownName)),
                 () -> {
 
                     sendMessageToEnemies(ChatFormatter.formatMessage(ChatColor.AQUA + "La battaglia per la conquista della fortezza " +
@@ -138,7 +138,7 @@ public class Battle {
 
                     sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.YELLOW + fortress.getFortressName() +
                             ChatColor.AQUA + " ha resistito all'attacco di ") +
-                            ChatColor.YELLOW + enemyTown);
+                            ChatColor.YELLOW + enemyTownName);
 
                     BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(), this.fortressHP);
 
@@ -158,7 +158,7 @@ public class Battle {
                     if (this.activeInvaders.isEmpty()) {
                         sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.AQUA + "La fortezza " + ChatColor.YELLOW + fortress.getFortressName() +
                                 ChatColor.AQUA + " ha resistito all'attacco di ") +
-                                ChatColor.YELLOW + enemyTown);
+                                ChatColor.YELLOW + enemyTownName);
 
                         BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(),
                                 this.fortressHP);
@@ -168,9 +168,9 @@ public class Battle {
                         sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.AQUA + "La fortezza " +
                                 ChatColor.YELLOW + fortress.getFortressName() +
                                 ChatColor.AQUA + " e' stata conquistata da ") +
-                                ChatColor.YELLOW + enemyTown);
+                                ChatColor.YELLOW + enemyTownName);
 
-                        BattleService.getInstance().resolveBattle(this.fortress, this.enemyTown,
+                        BattleService.getInstance().resolveBattle(this.fortress, this.enemyTownName,
                                 SettingsHandler.getInstance().getFortressHP());
                     }
 

@@ -1,6 +1,6 @@
-package me.architetto.fwfortress.util;
+package me.architetto.fwfortress.util.cmd;
 
-public class Messages {
+public class CommandMessages {
 
     public static String ERR_PERMISSION = "Non possiedi i permessi necessari per eseguire questo comando";
 
