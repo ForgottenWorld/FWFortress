@@ -3,6 +3,7 @@ package me.architetto.fwfortress.listener;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,7 +20,7 @@ public class PlayerListener implements Listener {
         for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
             for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
                 if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
-                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
+                    Message.ERR_BLOCK_EVENT.send(event.getPlayer());
                     event.setCancelled(true);
                 }
             }
@@ -32,7 +33,7 @@ public class PlayerListener implements Listener {
         for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
             for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
                 if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
-                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
+                    Message.ERR_BLOCK_EVENT.send(event.getPlayer());
                     event.setCancelled(true);
                 }
             }
@@ -45,7 +46,7 @@ public class PlayerListener implements Listener {
         for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
             for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
                 if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
-                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
+                    Message.ERR_BLOCK_EVENT.send(event.getPlayer());
                     event.setCancelled(true);
                 }
             }
@@ -58,7 +59,7 @@ public class PlayerListener implements Listener {
         for (String fortName : fortressService.getProtectedChunkKeys().keySet()) {
             for (long key : fortressService.getProtectedChunkKeys().get(fortName)) {
                 if (event.getBlock().getChunk().getChunkKey() == key && !event.getPlayer().isOp()) {
-                    event.getPlayer().sendMessage(ChatFormatter.formatErrorMessage("Non puoi interagire con i blocchi fortezza"));
+                    Message.ERR_BLOCK_EVENT.send(event.getPlayer());
                     event.setCancelled(true);
                 }
             }
@@ -93,6 +94,7 @@ public class PlayerListener implements Listener {
 
         battleService.getCurrentBattle().forEach(battle -> {
             if (battle.getActiveInvaders().contains(event.getPlayer().getUniqueId())) {
+                Message.TELEPORT_DEATH_EVENT.send(event.getPlayer());
                 event.getPlayer().setHealth(0);
             }
         });

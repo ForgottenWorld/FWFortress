@@ -115,53 +115,53 @@ public class SettingsHandler {
 
     public int getFortressHP() { return this.fortressHP; }
 
-    public void setFortressHP(int fortressHP) { this.fortressHP = fortressHP; }
+    //public void setFortressHP(int fortressHP) { this.fortressHP = fortressHP; }
 
     public int getFortressBorderDamage() { return this.fortressBorderDamage; }
 
-    public void setFortressBorderDamage(int fortressBorderDamage) { this.fortressBorderDamage = fortressBorderDamage; }
+    //public void setFortressBorderDamage(int fortressBorderDamage) { this.fortressBorderDamage = fortressBorderDamage; }
 
     public int getMaxDamageForSeconds() { return this.maxDamageForSeconds; }
 
-    public void setMaxDamageForSeconds(int maxDamageForSeconds) { this.maxDamageForSeconds = maxDamageForSeconds; }
+    //public void setMaxDamageForSeconds(int maxDamageForSeconds) { this.maxDamageForSeconds = maxDamageForSeconds; }
 
     public int getBattleTimeLimit() { return this.battleTimeLimit; }
 
-    public void setBattleTimeLimit(int battleTimeLimit) { this.battleTimeLimit = battleTimeLimit; }
+    //public void setBattleTimeLimit(int battleTimeLimit) { this.battleTimeLimit = battleTimeLimit; }
 
     public int getStartBattleDelay() { return this.startBattleDelay; }
 
-    public void setStartBattleDelay(int startBattleDelay) { this.startBattleDelay = startBattleDelay; }
+    //public void setStartBattleDelay(int startBattleDelay) { this.startBattleDelay = startBattleDelay; }
 
     public int getMinInvaders() {
         return this.minInvaders;
     }
 
-    public void setMinInvaders(int minInvaders) { this.minInvaders = minInvaders; }
+    //public void setMinInvaders(int minInvaders) { this.minInvaders = minInvaders; }
 
     public long getBattleCooldown() { return this.battleCooldown; }
 
-    public void setBattleCooldown(long battleCooldown) { this.battleCooldown = battleCooldown; }
+    //public void setBattleCooldown(long battleCooldown) { this.battleCooldown = battleCooldown; }
 
     public int getRepairPercentage() { return this.repairPercentage; }
 
-    public void setRepairPercentage(int repairPercentage) { this.repairPercentage = repairPercentage; }
+    //public void setRepairPercentage(int repairPercentage) { this.repairPercentage = repairPercentage; }
 
     public int getRepairCost() { return this.repairCost; }
 
-    public void setRepairCost(int repairCost) { this.repairCost = repairCost; }
+    //public void setRepairCost(int repairCost) { this.repairCost = repairCost; }
 
     public long getRepairCooldown() { return this.repairCooldown; }
 
-    public void setRepairCooldown(long repairCooldown) { this.repairCooldown = repairCooldown; }
+    //public void setRepairCooldown(long repairCooldown) { this.repairCooldown = repairCooldown; }
 
     public int getDistanceBetweenFortresses() { return this.distanceBetweenFortresses; }
 
-    public void setDistanceBetweenFortresses(int distanceBetweenFortresses) { this.distanceBetweenFortresses = distanceBetweenFortresses; }
+    //public void setDistanceBetweenFortresses(int distanceBetweenFortresses) { this.distanceBetweenFortresses = distanceBetweenFortresses; }
 
     public int getMaxGroundDistance() { return this.maxGroundDistance; }
 
-    public void setMaxGroundDistance(int maxGroundDistance) { this.maxGroundDistance = maxGroundDistance; }
+    //public void setMaxGroundDistance(int maxGroundDistance) { this.maxGroundDistance = maxGroundDistance; }
 
     public List<String> getDate() { return this.date; }
 
@@ -169,7 +169,7 @@ public class SettingsHandler {
 
     public boolean allowInvadeAlliedFortress() { return this.invadeAlliedFortress; }
 
-    public void setInvadeAlliedFortress(boolean invadeAlliedFortress) { this.invadeAlliedFortress = invadeAlliedFortress; }
+    //public void setInvadeAlliedFortress(boolean invadeAlliedFortress) { this.invadeAlliedFortress = invadeAlliedFortress; }
 
     public boolean isInvadeDisabled() { return this.disableInvade; }
 

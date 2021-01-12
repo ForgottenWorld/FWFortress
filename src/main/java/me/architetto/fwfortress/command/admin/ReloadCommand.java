@@ -3,10 +3,10 @@ package me.architetto.fwfortress.command.admin;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
-import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.util.localization.LocalizationManager;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -41,12 +41,14 @@ public class ReloadCommand extends SubCommand {
     public void perform(Player sender, String[] args) {
 
         if (!BattleService.getInstance().getCurrentBattle().isEmpty()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_RELOAD1));
+            Message.ERR_RELOAD.send(sender);
             return;
         }
 
         SettingsHandler.getInstance().reload();
-        sender.sendMessage(ChatFormatter.formatSuccessMessage(CommandMessages.OK_RELOAD));
+        LocalizationManager.getInstance().reload();
+
+        Message.SUCCESS_RELOAD.send(sender);
 
     }
 

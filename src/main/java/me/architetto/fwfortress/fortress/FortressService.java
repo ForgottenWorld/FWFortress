@@ -34,8 +34,6 @@ public class FortressService {
 
         Bukkit.getScheduler().runTaskAsynchronously(FWFortress.plugin, () -> {
 
-            Bukkit.getConsoleSender().sendMessage();
-
             ConfigManager configManager = ConfigManager.getInstance();
 
             configManager.setData(configManager.getConfig("Fortress.yml"),
@@ -97,5 +95,9 @@ public class FortressService {
 
         ConfigManager configManager = ConfigManager.getInstance();
         ConfigManager.getInstance().setData(configManager.getConfig("Fortress.yml"),fortressName,null);
+    }
+
+    public int getAmountOfFortressOwnedByTown(String townName) {
+        return (int) this.fortressContainer.values().stream().filter(fortress -> fortress.getCurrentOwner().equals(townName)).count();
     }
 }

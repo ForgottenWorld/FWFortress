@@ -8,7 +8,7 @@ import me.architetto.fwfortress.command.extra.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.user.InvadeCommand;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.cmd.CommandMessages;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -36,7 +36,7 @@ public class CommandManager implements TabExecutor{
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Error: can't run commands from console"));
+            sender.sendMessage("Error: can't run commands from console");
             return true;
         }
 
@@ -49,12 +49,12 @@ public class CommandManager implements TabExecutor{
                     SubCommand subCommand = getSubcommands().get(i);
 
                     if (!sender.hasPermission(subCommand.getPermission())) {
-                        sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_PERMISSION));
+                        Message.ERR_PERMISSION.send(sender);
                         return true;
                     }
 
                     if (args.length < subCommand.getArgsRequired()) {
-                        sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.NOT_ENOUGHT_ARGUMENTS));
+                        Message.ERR_SYNTAX.send(sender);
                         return true;
                     }
 
@@ -66,8 +66,14 @@ public class CommandManager implements TabExecutor{
             p.sendMessage(ChatFormatter.commandsInfo());
 
             for (int i = 0; i < getSubcommands().size(); i++) {
-                p.sendMessage(ChatFormatter.formatListMessage(getSubcommands().get(i).getSyntax()
-                        + " - " + getSubcommands().get(i).getDescription()));
+
+                SubCommand subCommand = getSubcommands().get(i);
+
+                if (!sender.hasPermission(subCommand.getPermission()))
+                    continue;
+
+                p.sendMessage(ChatFormatter.formatListMessage(subCommand.getSyntax()
+                        + " - " + subCommand.getDescription()));
             }
 
             p.sendMessage(ChatFormatter.chatFooter());

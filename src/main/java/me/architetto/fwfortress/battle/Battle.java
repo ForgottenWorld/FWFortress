@@ -8,14 +8,13 @@ import me.architetto.fwfortress.FWFortress;
 import me.architetto.fwfortress.battle.util.Countdown;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
-import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import org.bukkit.util.BoundingBox;
@@ -72,45 +71,31 @@ public class Battle {
     public void initBattle() {
 
         Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class),SettingsHandler.getInstance().getStartBattleDelay(),
-                () -> sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.AQUA + "La fortezza " +
-                        ChatColor.YELLOW + fortress.getFortressName() +
-                        ChatColor.AQUA + " protetta dalla citta' di " +
-                        ChatColor.YELLOW + fortress.getCurrentOwner() +
-                        ChatColor.AQUA + " sta' per essere attaccata da " +
-                        ChatColor.YELLOW + enemyTownName)),
+                () -> Message.BATTLE_ALLERT.broadcast(fortress.getFortressName(),fortress.getCurrentOwner()),
                 () -> {
 
-                    sendMessageToEnemies(ChatFormatter.formatMessage(ChatColor.AQUA + "La battaglia per la conquista della fortezza " +
-                            ChatColor.YELLOW + fortress.getFortressName() +
-                                    ChatColor.AQUA + " e' cominciata ! Da questo momento lasciare la fortezza equivale a morire!"));
+                    sendMessageToInvaders(Message.BATTLE_START_INVADERS_ALLERT.asString(fortress.getFortressName()));
 
                     checkInvadersPosition();
-
                     startBattle();
 
                 },
                 (s) -> {
-            //
-                    if (s.getSecondsLeft() == s.getTotalSeconds() - 2) {
-                        sendMessageToTown(fortress.getCurrentOwner(), ChatFormatter.formatMessage(ChatColor.AQUA +
-                                "L'attacco alla fortezza " + ChatColor.YELLOW + fortress.getFortressName()
-                                + ChatColor.AQUA + " partira' tra " + ChatColor.YELLOW + s.getSecondsLeft()
-                                + ChatColor.AQUA + " secondi!"));
 
-                        sendMessageToEnemies(ChatFormatter.formatMessage(ChatColor.AQUA +
-                                "L'attacco alla fortezza " + ChatColor.YELLOW + fortress.getFortressName()
-                                + ChatColor.AQUA + " partira' tra " + ChatColor.YELLOW + s.getSecondsLeft()
-                                + ChatColor.AQUA + " secondi!"));
+                    if (s.getSecondsLeft() == s.getTotalSeconds() - 10) {
+                        sendMessageToTown(fortress.getCurrentOwner(),
+                                Message.BATTLE_START_COUNTDOWN_ALLERT.asString(fortress.getFortressName(),s.getSecondsLeft()));
+
+                        sendMessageToTown(this.enemyTownName,
+                                Message.BATTLE_START_COUNTDOWN_ALLERT.asString(fortress.getFortressName(),s.getSecondsLeft()));
+
                     }
 
-                    if (s.getSecondsLeft() == 5) {
+                    if (s.getSecondsLeft() == 10) {
 
-                        sendMessageToTown(fortress.getCurrentOwner(), ChatFormatter.formatMessage(ChatColor.AQUA +
-                                "Tra pochi secondi la tua fortezza " + ChatColor.YELLOW + fortress.getFortressName() +
-                                ChatColor.AQUA + " verra' attacata. Corri a proteggerla !"));
+                        sendMessageToTown(fortress.getCurrentOwner(), Message.BATTLE_START_ALLERT.asString(fortress.getFortressName()));
 
-                        sendMessageToEnemies(ChatFormatter.formatMessage(ChatColor.AQUA +
-                                "Preparati alla battaglia, rimani nella fortezza fino a conquistarla"));
+                        sendMessageToTown(this.enemyTownName, Message.BATTLE_START_ALLERT.asString(fortress.getFortressName()));
 
                     }
 
@@ -128,7 +113,7 @@ public class Battle {
                         TownyAPI.getInstance().getDataSource().getTown(this.fortress.getCurrentOwner())
                                 .getResidents().forEach(resident -> {
                                     if (resident.getPlayer() != null)
-                                        this.bossBar.addPlayer(resident.getPlayer()); });
+                                        this.bossBar.addPlayer(resident.getPlayer());});
                     } catch (NotRegisteredException e) {
                         e.printStackTrace();
                     }
@@ -136,39 +121,32 @@ public class Battle {
 
                 () -> {
 
-                    sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.YELLOW + fortress.getFortressName() +
-                            ChatColor.AQUA + " ha resistito all'attacco di ") +
-                            ChatColor.YELLOW + enemyTownName);
+                    Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getFortressName());
 
                     BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(), this.fortressHP);
-
 
                 },
                 (s) -> {
 
                     this.fortressHP -= Math.min(this.maxDamageForSeconds,getInvadersInsideGreenArea());
 
-                    this.bossBar.setTitle(ChatColor.YELLOW + "" + ChatColor.BOLD + fortress.getFortressName() +
-                            ChatColor.AQUA + " [ TIMER : " + ChatColor.YELLOW + s.getSecondsLeft() +
-                            ChatColor.AQUA + " ] [ HP : " + ChatColor.YELLOW + this.fortressHP +
-                            ChatColor.AQUA + " ]");
+                    this.bossBar.setTitle(Message.BOSSBAR_FORMAT.asString(fortress.getFortressName(),
+                            s.getSecondsLeft(),
+                            this.fortressHP));
 
                     this.bossBar.setProgress((float) this.fortressHP / this.fortress.getCurrentHP());
 
                     if (this.activeInvaders.isEmpty()) {
-                        sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.AQUA + "La fortezza " + ChatColor.YELLOW + fortress.getFortressName() +
-                                ChatColor.AQUA + " ha resistito all'attacco di ") +
-                                ChatColor.YELLOW + enemyTownName);
+
+                        Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getFortressName());
 
                         BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(),
                                 this.fortressHP);
                     }
 
                     if (this.fortressHP <= 0) {
-                        sendGlobalMessage(ChatFormatter.formatMessage(ChatColor.AQUA + "La fortezza " +
-                                ChatColor.YELLOW + fortress.getFortressName() +
-                                ChatColor.AQUA + " e' stata conquistata da ") +
-                                ChatColor.YELLOW + enemyTownName);
+
+                        Message.BATTLE_ENDED_BROADCAST2.broadcast(fortress.getFortressName(),this.enemyTownName);
 
                         BattleService.getInstance().resolveBattle(this.fortress, this.enemyTownName,
                                 SettingsHandler.getInstance().getFortressHP());
@@ -200,30 +178,15 @@ public class Battle {
 
     public void playerLeaveFortressArea(Player player) {
         player.damage(this.fortressBorderDamage);
-        player.sendActionBar(ChatColor.DARK_RED + "" + ChatColor.BOLD + "TORNA NELLA FORTEZZA");
+        player.sendActionBar(Message.BATTLE_LEAVE_ACTIONBAR.asString());
     }
 
-    private void sendGlobalMessage(String msg) {
-        Bukkit.getOnlinePlayers().forEach(player -> player.sendMessage(msg));
-    }
-
-    private void sendMessageToEnemies(String msg) {
+    private void sendMessageToInvaders(String msg) {
         new ArrayList<>(this.activeInvaders).forEach(uuid -> {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null)
                 player.sendMessage(msg);
         });
-    }
-
-    public void sendMessageToPlayerInFortressArea(String msg) {
-        for (long fortChunkKeys : this.fortress.getChunkKeys()) {
-            for (Entity entity : Bukkit.getWorld(this.fortress.getWorldName()).getChunkAt(fortChunkKeys).getEntities()) {
-                if (entity instanceof Player) {
-                    Player player = (Player) entity;
-                    player.sendMessage(msg);
-                }
-            }
-        }
     }
 
     private void sendMessageToTown(String townName, String msg) {

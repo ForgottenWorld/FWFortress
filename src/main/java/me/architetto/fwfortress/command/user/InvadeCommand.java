@@ -9,11 +9,9 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
-import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import org.bukkit.ChatColor;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -55,7 +53,7 @@ public class InvadeCommand extends SubCommand {
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
         if (settingsHandler.isInvadeDisabled()) {
-            sender.sendMessage(ChatFormatter.formatMessage(CommandMessages.BATTLE_DISABLED));
+            Message.ERR_BATTLE_DISABLED.send(sender);
             return;
         }
 
@@ -68,17 +66,16 @@ public class InvadeCommand extends SubCommand {
                 || dateTime.getHour() < settingsHandler.getTime().get(0)
                 || dateTime.getHour() > settingsHandler.getTime().get(1)) {
 
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_BATTLE_DISABLED2));
-            sender.sendMessage(ChatFormatter.formatListMessage("Giorni attivi : " + ChatColor.YELLOW + settingsHandler.getDate()));
-            sender.sendMessage(ChatFormatter.formatListMessage("Orari attivi : " + ChatColor.YELLOW + "dalle "
-                    + settingsHandler.getTime().get(0) + " alle " + settingsHandler.getTime().get(1)));
+            Message.ERR_BATTLE_TIME_RANGE.send(sender,settingsHandler.getDate(),settingsHandler.getTime().get(0),
+                    settingsHandler.getTime().get(1));
             return;
         }
 
-        Optional<Fortress> optionalFortress = FortressService.getInstance().getFortress(sender.getLocation().getChunk().getChunkKey());
+        Optional<Fortress> optionalFortress = FortressService.getInstance()
+                .getFortress(sender.getLocation().getChunk().getChunkKey());
 
         if (!optionalFortress.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_INVALID_INVADE_POSITION));
+            Message.ERR_INVALID_INVADE_POSITION.send(sender);
             return;
         }
 
@@ -90,14 +87,12 @@ public class InvadeCommand extends SubCommand {
 
             if (remain > 0) {
 
-                sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza potra' essere attaccata tra : " +
-                        ChatColor.YELLOW + String.format("%d ORE : %d MINUTI : %d SECONDI",
+                Message.ERR_INVADE_COOLDOWN.send(sender,fortress.getFortressName(),
                         TimeUnit.MILLISECONDS.toHours(remain),
                         TimeUnit.MILLISECONDS.toMinutes(remain) -
                                 TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(remain)),
                         TimeUnit.MILLISECONDS.toSeconds(remain) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remain)))));
-
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remain)));
                 return;
             }
         }
@@ -107,18 +102,18 @@ public class InvadeCommand extends SubCommand {
         try{
             senderTown = TownyAPI.getInstance().getDataSource().getResident(sender.getName()).getTown();
         } catch (NotRegisteredException e) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Devi essere un cittadino per avviare una conquista !"));
+            Message.ERR_NOT_PART_OF_A_TOWN.send(sender);
             return;
         }
 
         if (fortress.getCurrentOwner().equals(senderTown.getName())) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Questa fortezza e' gia' sotto il controlo della tua citta' !"));
+            Message.ERR_FORTRESS_ALREADY_OWNED.send(sender,fortress.getFortressName());
             return;
         }
 
         if (FortressService.getInstance().getFortressContainer().values()
                 .stream().noneMatch(f -> f.getFirstOwner().equals(senderTown.getName()))) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Non puoi invadere una fortezza se la tua citta' non ne ha mai costruita una"));
+            Message.ERR_TONW_CAN_NOT_INVADE.send(sender);
             return;
         }
 
@@ -132,13 +127,13 @@ public class InvadeCommand extends SubCommand {
             }
 
             if (fortTown.isAlliedWith(senderTown)) {
-                sender.sendMessage(ChatFormatter.formatErrorMessage("Non puoi invadere la fortezza di una citta' alleata"));
+                Message.ERR_INVADE_ALLIED_FORTRESS.send(sender,fortress.getFortressName());
                 return;
             }
         }
 
         if (BattleService.getInstance().isOccupied(fortress.getFortressName())) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza e' gia' sotto attacco ..."));
+            Message.ERR_FORTRESS_UNDER_INVADE.send(sender,fortress.getFortressName());
             return;
         }
 
@@ -161,8 +156,7 @@ public class InvadeCommand extends SubCommand {
 
 
         if (invadersListUUID.size() < settingsHandler.getMinInvaders()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Numero di invasori minimo : "
-                    + ChatColor.YELLOW + settingsHandler.getMinInvaders()));
+            Message.ERR_INSUFFICIENT_INVADERS.send(sender,settingsHandler.getMinInvaders());
             return;
         }
 

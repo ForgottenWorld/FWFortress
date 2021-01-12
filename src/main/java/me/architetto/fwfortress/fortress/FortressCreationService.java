@@ -2,6 +2,7 @@ package me.architetto.fwfortress.fortress;
 
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -50,7 +51,7 @@ public class FortressCreationService {
                 .anyMatch(fortress -> fortress.getFortressVector()
                         .distance(location.toVector()) < SettingsHandler.getInstance().getDistanceBetweenFortresses())) {
 
-            sender.sendMessage(ChatFormatter.formatErrorMessage("Questo chunk è troppo vicino ad un'altra fortezza"));
+            Message.ERR_FORTRESS_DISTANCE.send(sender, SettingsHandler.getInstance().getDistanceBetweenFortresses());
 
             removePlayerToFortressCreationMode(sender.getUniqueId());
 
@@ -65,14 +66,7 @@ public class FortressCreationService {
                 0,0);
 
         spawnParticleEffectOnFortressCreation(location.clone());
-
-        sender.sendMessage(ChatFormatter.chatHeaderFortInfo());
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "NOME FORTEZZA : " +
-                ChatColor.YELLOW + playerFortressNameCreation.get(sender.getUniqueId())));
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "OWNER : " +
-                ChatColor.YELLOW + playerFortressOwnerCreation.get(sender.getUniqueId())));
-        sender.sendMessage(ChatFormatter.chatFooter());
-
+        Message.SUCCESS_FORTRESS_CREATED.send(sender,this.playerFortressNameCreation.get(sender.getUniqueId()));
         removePlayerToFortressCreationMode(sender.getUniqueId());
 
     }

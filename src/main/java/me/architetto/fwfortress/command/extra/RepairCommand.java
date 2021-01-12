@@ -11,11 +11,9 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
-import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import org.bukkit.ChatColor;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -46,7 +44,7 @@ public class RepairCommand extends SubCommand {
 
     @Override
     public int getArgsRequired() {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -57,14 +55,15 @@ public class RepairCommand extends SubCommand {
         Optional<Fortress> fortressO = FortressService.getInstance().getFortress(fortressName);
 
         if (!fortressO.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_FORTRESS_NAME2));
+            Message.ERR_FORTRESS_DOES_NOT_EXIST.send(sender);
             return;
         }
 
         Fortress fortress = fortressO.get();
 
         if (BattleService.getInstance().isOccupied(fortressName)) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR1));
+            Message.ERR_REPAIR_1.send(sender,fortress.getFortressName());
+
             return;
         }
 
@@ -73,25 +72,25 @@ public class RepairCommand extends SubCommand {
 
         try { 
             resident = TownyAPI.getInstance().getDataSource().getResident(sender.getName());
-        } catch (NotRegisteredException e) { 
-            e.printStackTrace();
+        } catch (NotRegisteredException e) {
+            Message.ERR_RES_NOT_REGISTERED.send(sender);
             return;
         }
 
         try {
             town = resident.getTown();
         } catch (NotRegisteredException e) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR2));
+            Message.ERR_NOT_A_MAJOR.send(sender);
             return;
         }
 
         if (!resident.isMayor()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR2));
+            Message.ERR_NOT_A_MAJOR.send(sender);
             return;
         }
 
         if (!fortress.getCurrentOwner().equals(town.getName())) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_REPAIR3));
+            Message.ERR_REPAIR_2.send(sender,fortress.getFortressName());
             return;
         }
 
@@ -102,13 +101,12 @@ public class RepairCommand extends SubCommand {
                     (System.currentTimeMillis() - fortress.getLastRepair());
 
             if (remainCooldown > 0) {
-                sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza potra' essere riparata tra : " +
-                        ChatColor.YELLOW + String.format("%d ORE : %d MINUTI : %d SECONDI",
+                Message.ERR_REPAIR_COOLDOWN.send(sender,fortress.getFortressName(),
                         TimeUnit.MILLISECONDS.toHours(remainCooldown),
                         TimeUnit.MILLISECONDS.toMinutes(remainCooldown) -
                                 TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(remainCooldown)),
                         TimeUnit.MILLISECONDS.toSeconds(remainCooldown) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remainCooldown)))));
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remainCooldown)));
                 return;
             }
         }
@@ -116,7 +114,7 @@ public class RepairCommand extends SubCommand {
         double missingHP = settingsHandler.getFortressHP() - fortress.getCurrentHP();
 
         if (missingHP == 0) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage("La fortezza e' già al massimo degli HP"));
+            Message.ERR_FORTRESS_MAX_HP.send(sender,fortress.getFortressName());
             return;
         }
 
@@ -127,24 +125,20 @@ public class RepairCommand extends SubCommand {
 
         try {
             if (bankAccount.canPayFromHoldings(settingsHandler.getRepairCost()))
-                bankAccount.withdraw(settingsHandler.getRepairCost(), "Riparazione fortezza");
+                bankAccount.withdraw(settingsHandler.getRepairCost(), "fortress repair");
             else {
-                sender.sendMessage(ChatFormatter.formatErrorMessage("La citta' non possiede i fondi necessari" +
-                        " per riparare la fortezza. Costo riparazione : " +
-                        settingsHandler.getRepairCost()));
+                Message.ERR_PAY_RAPAIR.send(sender,settingsHandler.getRepairCost());
                 return;
             }
         } catch (EconomyException e) {
             e.printStackTrace();
         }
 
-        sender.sendMessage(ChatFormatter.formatSuccessMessage("La fortezza e' stata riparata : "));
-        sender.sendMessage(ChatFormatter.formatListMessage("HP Precedenti : " + ChatColor.YELLOW + fortress.getCurrentHP()));
-        sender.sendMessage(ChatFormatter.formatListMessage("HP Attuali : " + ChatColor.YELLOW + repairedFortressHP));
-
         fortress.setCurrentHP(repairedFortressHP);
         fortress.setLastRepair(System.currentTimeMillis());
         FortressService.getInstance().saveFortress(fortress);
+
+        Message.SUCCESS_REPAIR.send(sender,fortress.getFortressName());
 
     }
 

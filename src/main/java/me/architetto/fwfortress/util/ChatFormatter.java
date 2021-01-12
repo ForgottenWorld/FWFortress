@@ -22,24 +22,17 @@ public class ChatFormatter {
         return  ChatColor.YELLOW + String.join("", Collections.nCopies(53, "-"));
     }
 
-    public static String formatSuccessMessage(String message) {
-        message = ChatColor.GREEN + "[FW Fortress] " + ChatColor.RESET + message;
-        return message;
-    }
-
-    public static String formatErrorMessage(String message) {
-        message = ChatColor.RED + "[FW Fortress] " + ChatColor.RESET + message;
-        return message;
-    }
-
     public static String formatListMessage(String message) {
         message = ChatColor.GRAY + "[] " + ChatColor.RESET + message;
         return message;
     }
 
-    public static String formatMessage(String message) {
-        message = ChatColor.GOLD + "[FW Fortress] " + ChatColor.RESET + message;
-        return message;
+    public static String rewritePlaceholders(String input) {
+        int i = 0;
+        while (input.contains("{}")) {
+            input = input.replaceFirst("\\{\\}", "{" + i++ + "}");
+        }
+        return input;
     }
 
 }

@@ -4,10 +4,9 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.cmd.CommandMessages;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import org.bukkit.ChatColor;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -43,19 +42,20 @@ public class InfoCommand extends SubCommand {
     @Override
     public void perform(Player sender, String[] args) {
 
-        Optional<Fortress> fortress = FortressService.getInstance().getFortress(args[1]);
+        Optional<Fortress> fortressOptional = FortressService.getInstance().getFortress(args[1]);
 
-        if (!fortress.isPresent()) {
-            sender.sendMessage(ChatFormatter.formatErrorMessage(CommandMessages.ERR_FORTRESS_NAME2));
+        if (!fortressOptional.isPresent()) {
+            Message.ERR_FORTRESS_DOES_NOT_EXIST.send(sender);
             return;
         }
 
+        Fortress fortress = fortressOptional.get();
+
         sender.sendMessage(ChatFormatter.chatHeaderFortInfo());
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "NOME FORTEZZA : " + ChatColor.YELLOW + fortress.get().getFortressName()));
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "PRIMO PROPRIETARIO : " + ChatColor.YELLOW + fortress.get().getFirstOwner()));
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "PROPRIETARIO ATTUALE : " + ChatColor.YELLOW + fortress.get().getCurrentOwner()));
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "HP : " + ChatColor.YELLOW + fortress.get().getCurrentHP()));
-        sender.sendMessage(ChatFormatter.formatListMessage(ChatColor.AQUA + "POSIZIONE : " + fortress.get().getFormattedLocation()));
+
+        Message.FORTRESS_INFO.send(sender,fortress.getFortressName(),fortress.getFirstOwner(),
+                fortress.getCurrentOwner(),fortress.getCurrentHP(),fortress.getFormattedLocation());
+
         sender.sendMessage(ChatFormatter.chatFooter());
 
     }

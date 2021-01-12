@@ -7,6 +7,7 @@ import me.architetto.fwfortress.listener.FortressCreationListener;
 import me.architetto.fwfortress.listener.PlayerListener;
 import me.architetto.fwfortress.listener.TownListener;
 
+import me.architetto.fwfortress.util.localization.LocalizationManager;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +23,8 @@ public final class FWFortress extends JavaPlugin {
         plugin = this;
 
         ConfigManager.getInstance().setPlugin(this);
+
+        loadLocalization();
 
         loadSettings();
 
@@ -58,6 +61,10 @@ public final class FWFortress extends JavaPlugin {
 
     public void loadFortress() {
         SettingsHandler.getInstance().loadFortress();
+    }
+
+    public void loadLocalization() {
+        LocalizationManager.getInstance().loadLanguageFile();
     }
 
 

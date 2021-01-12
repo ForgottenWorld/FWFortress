@@ -2,9 +2,9 @@ package me.architetto.fwfortress.command.admin;
 
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
-import me.architetto.fwfortress.util.ChatFormatter;
 import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.util.localization.Message;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -42,11 +42,11 @@ public class ToggleCommand extends SubCommand {
 
         if (settingsHandler.isInvadeDisabled()) {
             settingsHandler.setDisableInvade(false);
-            sender.sendMessage(ChatFormatter.formatSuccessMessage("Battaglie abilitate ..."));
+            Message.TOGGLE_BATTLE_ENABLED.send(sender);
 
         } else {
             settingsHandler.setDisableInvade(true);
-            sender.sendMessage(ChatFormatter.formatSuccessMessage("Battaglie disabilitate ..."));
+            Message.TOGGLE_BATTLE_DISABLED.send(sender);
         }
 
     }
