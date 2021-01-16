@@ -46,4 +46,4 @@ DATE: ['Mon','Tue','Wed','Thu','Fri','Sat' ,'Sun']
 
 TIME_RANGE: [18,22]
 
-INVADE_ALLIED_FORTRESS: false
+ALLOW_INVADE_ALLIED_FORTRESS: false

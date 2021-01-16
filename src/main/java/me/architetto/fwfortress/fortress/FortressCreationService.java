@@ -1,9 +1,7 @@
 package me.architetto.fwfortress.fortress;
 
 import me.architetto.fwfortress.config.SettingsHandler;
-import me.architetto.fwfortress.util.ChatFormatter;
 import me.architetto.fwfortress.util.localization.Message;
-import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;

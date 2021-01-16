@@ -52,17 +52,17 @@ strings:
 
   creation_mode_msg1: "Indica la posizione del chunk conquistabile ... &8(CLICK DX con STICK equipaggiato)"
 
-  battle_allert_broadcast: "La fortezza &e{0}&r protetta dalla citta' di &e{1}&r sta per essere attaccata!"
+  battle_allert_broadcast: "&8[G]&r La fortezza &e{0}&r protetta dalla citta' di &e{1}&r sta per essere attaccata!"
   battle_start_invaders_allert: "L'invasione di &e{0}&r e' cominciata! Da questo momento abbandonare la fortezza sara' letale"
   battle_start_countdown_allert: "L'attacco alla fortezza &e{0}&r partira' tra &e{1} secondi&r"
   battle_start_allert: "L'attacco a &e{0}&r comincera' tra pochi secondi"
-  battle_ended_broadcast1: "La fortezza &e{0}&r ha respinto egregiamente l'attacco"
-  battle_ended_broadcast2: "La fortezza &e{0}&r e' caduta sotto il controllo di &e{1}&r"
+  battle_ended_broadcast1: "&8[G]&r La fortezza &e{0}&r ha respinto egregiamente l'attacco"
+  battle_ended_broadcast2: "&8[G]&r La fortezza &e{0}&r e' caduta sotto il controllo di &e{1}&r"
 
   battle_leave_actionbar: "&c&lTORNA NELLA FORTEZZA"
 
   town_lost_fortress: "La tua citta' ha perso una fortezza : &e{0}"
-  fortress_fall_in_ruin1: "La fortezza &e{0}&r e' caduta in rovina"
-  fortress_fall_in_ruin2: "La fortezza &e{0}&r e' tornata sotto il controllo di &e{1}"
+  fortress_fall_in_ruin1: "&8[G]&r La fortezza &e{0}&r e' caduta in rovina"
+  fortress_fall_in_ruin2: "&8[G]&r La fortezza &e{0}&r e' tornata sotto il controllo di &e{1}"
 
-  fortress_deleted_broadcast: "La fortezza &e{0}&r costruita da &e{1}&r e controllata da &e{2}&r e' stata eliminata"
+  fortress_deleted_broadcast: "&8[G]&r La fortezza &e{0}&r costruita da &e{1}&r e controllata da &e{2}&r e' stata eliminata"
