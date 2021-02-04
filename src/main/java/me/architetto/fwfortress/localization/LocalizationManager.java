@@ -1,4 +1,4 @@
-package me.architetto.fwfortress.util.localization;
+package me.architetto.fwfortress.localization;
 
 import me.architetto.fwfortress.config.ConfigManager;
 import org.bukkit.ChatColor;

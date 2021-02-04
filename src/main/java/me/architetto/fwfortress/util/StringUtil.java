@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 
 import java.util.Collections;
 
-public class ChatFormatter {
+public class StringUtil {
 
     public static String chatHeaderFortInfo() {
         return  ChatColor.YELLOW + "[*]----------------[ " +

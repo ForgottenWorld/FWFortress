@@ -1,16 +1,15 @@
 package me.architetto.fwfortress.fortress;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.exceptions.TownyException;
+import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.config.SettingsHandler;
-import me.architetto.fwfortress.util.localization.Message;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import me.architetto.fwfortress.localization.Message;
+import me.architetto.fwfortress.util.LocationUtil;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class FortressCreationService {
 
@@ -40,19 +39,16 @@ public class FortressCreationService {
 
     public void fortressCreationMethod(Player sender, Location location) {
 
-        if(!playerCreationMode.contains(sender.getUniqueId())) {
+        if(!playerCreationMode.contains(sender.getUniqueId()))
+            return;
+
+        if (checkFortressesDistance(sender,location)) {
+            removePlayerToFortressCreationMode(sender.getUniqueId());
             return;
         }
 
-        if (FortressService.getInstance().getFortressContainer().values().stream()
-                .filter(fortress -> fortress.getWorldName().equals(location.getWorld().getName()))
-                .anyMatch(fortress -> fortress.getFortressVector()
-                        .distance(location.toVector()) < SettingsHandler.getInstance().getDistanceBetweenFortresses())) {
-
-            Message.ERR_FORTRESS_DISTANCE.send(sender, SettingsHandler.getInstance().getDistanceBetweenFortresses());
-
+        if (checkTownDistance(sender, location)) {
             removePlayerToFortressCreationMode(sender.getUniqueId());
-
             return;
         }
 
@@ -61,7 +57,7 @@ public class FortressCreationService {
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
                 location,
                 SettingsHandler.getInstance().getFortressHP(),
-                0,0);
+                0,0, LocationUtil.area3x3ChunkKeys(location));
 
         spawnParticleEffectOnFortressCreation(location.clone());
         Message.SUCCESS_FORTRESS_CREATED.send(sender,this.playerFortressNameCreation.get(sender.getUniqueId()));
@@ -71,30 +67,17 @@ public class FortressCreationService {
 
     public void addNewFortress(String fortressName, String firstOwner,
                                String currentOwner, Location fortressPosition,
-                               int fortressHP, long lastBattle, long lastRepair) {
+                               int fortressHP, long lastBattle, long lastRepair, List<Long> chunkKeys) {
 
         Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner,
-                fortressPosition, fortressHP, lastBattle, lastRepair);
+                fortressPosition, fortressHP, lastBattle, lastRepair, chunkKeys);
 
-        FortressService.getInstance().getFortressContainer().put(fortressName, fortress);
-        FortressService.getInstance().getProtectedChunkKeys().put(fortressName, fortress.getChunkKeys());
+        FortressService.getInstance().getFortressContainer().add(fortress);
 
         FortressService.getInstance().saveFortress(fortress);
 
     }
 
-
-    public void addNewFortress(String fortressName, String firstOwner,
-                               String currentOwner, Location fortressPosition,
-                               int fortressHP, long lastBattle, long lastRepair, List<Long> fortressChunkKeys) {
-
-        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner,
-                fortressPosition, fortressHP, lastBattle, lastRepair);
-
-        FortressService.getInstance().getFortressContainer().put(fortressName, fortress);
-        FortressService.getInstance().getProtectedChunkKeys().put(fortressName, fortressChunkKeys);
-
-    }
 
     public void addPlayerToFortressCreationMode(Player player, String fortressName, String fortressOwner) {
 
@@ -121,5 +104,52 @@ public class FortressCreationService {
         loc.getWorld().spawnParticle(Particle.REDSTONE,loc,10,dustOptions);
 
     }
+
+    public boolean checkDistance(Location locA, Location locB) {
+
+        if (!locA.getWorld().getName().equals(locB.getWorld().getName()))
+            return true;
+
+        Bukkit.getConsoleSender().sendMessage(String.valueOf(locA.toVector().distance(locB.toVector())));
+
+        return locA.toVector()
+                .distance(locB.toVector()) > SettingsHandler.getInstance().getDistanceBetweenFortresses();
+
+    }
+
+    public boolean checkFortressesDistance(Player sender, Location location) {
+        Optional<Fortress> optFortress = FortressService.getInstance().getFortressContainer()
+                .stream().filter(f -> !checkDistance(f.getLocation(),location)).findFirst();
+
+        if (optFortress.isPresent()) {
+            Message.ERR_FORTRESS_DISTANCE.send(sender, optFortress.get().getFormattedName(), SettingsHandler.getInstance().getDistanceBetweenFortresses());
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean checkTownDistance(Player sender, Location location) {
+
+
+        for (Town town : TownyAPI.getInstance().getDataSource().getTowns()) {
+
+            Location spawn = null;
+            Bukkit.getConsoleSender().sendMessage(town.getFormattedName());
+            try {
+                spawn = town.getSpawn();
+            } catch (TownyException e) {
+                e.printStackTrace();
+            }
+
+            if (spawn != null && !checkDistance(spawn,location)) {
+                Message.ERR_FORTRESS_DISTANCE.send(sender, town.getFormattedName() ,SettingsHandler.getInstance().getDistanceBetweenFortresses());
+                return false;
+            }
+
+        }
+        return true;
+    }
+
 
 }

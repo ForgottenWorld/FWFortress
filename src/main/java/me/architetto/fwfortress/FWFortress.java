@@ -7,7 +7,8 @@ import me.architetto.fwfortress.listener.FortressCreationListener;
 import me.architetto.fwfortress.listener.PlayerListener;
 import me.architetto.fwfortress.listener.TownListener;
 
-import me.architetto.fwfortress.util.localization.LocalizationManager;
+import me.architetto.fwfortress.localization.LocalizationManager;
+import me.architetto.fwfortress.task.FortressAreaTask;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,6 +34,8 @@ public final class FWFortress extends JavaPlugin {
         loadListener();
 
         loadFortress();
+
+        FortressAreaTask.checkPlayerPositiontask();
 
     }
 

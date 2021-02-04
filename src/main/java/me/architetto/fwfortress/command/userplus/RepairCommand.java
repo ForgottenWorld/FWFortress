@@ -1,4 +1,4 @@
-package me.architetto.fwfortress.command.extra;
+package me.architetto.fwfortress.command.userplus;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.EconomyException;
@@ -11,15 +11,16 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
-import me.architetto.fwfortress.util.cmd.CommandDescription;
+import me.architetto.fwfortress.util.TownyUtil;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.localization.Message;
+import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class RepairCommand extends SubCommand {
     @Override
@@ -29,12 +30,12 @@ public class RepairCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return CommandDescription.REPAIR_CMD_DESCRIPTION;
+        return Message.REPAIR_COMMAND.asString();
     }
 
     @Override
     public String getSyntax() {
-        return null;
+        return "/fwfortress " + CommandName.REPAIR_CMD + " <fortress_name>";
     }
 
     @Override
@@ -62,7 +63,7 @@ public class RepairCommand extends SubCommand {
         Fortress fortress = fortressO.get();
 
         if (BattleService.getInstance().isOccupied(fortressName)) {
-            Message.ERR_REPAIR_1.send(sender,fortress.getFortressName());
+            Message.ERR_REPAIR_1.send(sender,fortress.getFormattedName());
 
             return;
         }
@@ -80,17 +81,17 @@ public class RepairCommand extends SubCommand {
         try {
             town = resident.getTown();
         } catch (NotRegisteredException e) {
-            Message.ERR_NOT_A_MAJOR.send(sender);
+            Message.ERR_NOT_A_MAYOR.send(sender);
             return;
         }
 
         if (!resident.isMayor()) {
-            Message.ERR_NOT_A_MAJOR.send(sender);
+            Message.ERR_NOT_A_MAYOR.send(sender);
             return;
         }
 
         if (!fortress.getCurrentOwner().equals(town.getName())) {
-            Message.ERR_REPAIR_2.send(sender,fortress.getFortressName());
+            Message.ERR_REPAIR_2.send(sender,fortress.getFormattedName());
             return;
         }
 
@@ -101,7 +102,7 @@ public class RepairCommand extends SubCommand {
                     (System.currentTimeMillis() - fortress.getLastRepair());
 
             if (remainCooldown > 0) {
-                Message.ERR_REPAIR_COOLDOWN.send(sender,fortress.getFortressName(),
+                Message.ERR_REPAIR_COOLDOWN.send(sender,fortress.getFormattedName(),
                         TimeUnit.MILLISECONDS.toHours(remainCooldown),
                         TimeUnit.MILLISECONDS.toMinutes(remainCooldown) -
                                 TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(remainCooldown)),
@@ -114,7 +115,7 @@ public class RepairCommand extends SubCommand {
         double missingHP = settingsHandler.getFortressHP() - fortress.getCurrentHP();
 
         if (missingHP == 0) {
-            Message.ERR_FORTRESS_MAX_HP.send(sender,fortress.getFortressName());
+            Message.ERR_FORTRESS_MAX_HP.send(sender,fortress.getFormattedName());
             return;
         }
 
@@ -138,15 +139,24 @@ public class RepairCommand extends SubCommand {
         fortress.setLastRepair(System.currentTimeMillis());
         FortressService.getInstance().saveFortress(fortress);
 
-        Message.SUCCESS_REPAIR.send(sender,fortress.getFortressName());
+        Message.SUCCESS_REPAIR.send(sender,fortress.getFormattedName());
 
     }
 
     @Override
     public List<String> getSubcommandArguments(Player player, String[] args) {
         if (args.length == 2) {
-            return new ArrayList<>(FortressService.getInstance().getFortressContainer().keySet());
+
+            Town town = TownyUtil.getTownFromPlayerName(player.getName());
+
+            if (Objects.isNull(town))
+                return null;
+
+            return FortressService.getInstance().getFortressContainer().stream()
+                    .filter(fortress -> fortress.getCurrentOwner().equals(town.getName()))
+                    .map(Fortress::getFortressName).collect(Collectors.toList());
         }
+
         return null;
     }
 }

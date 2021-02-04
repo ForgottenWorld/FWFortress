@@ -20,6 +20,10 @@ permissions:
     description: description
     default: op
 
+  fwfortress.claim:
+    description: description
+    default: op
+
   fwfortress.user:
     description: description
     default: true

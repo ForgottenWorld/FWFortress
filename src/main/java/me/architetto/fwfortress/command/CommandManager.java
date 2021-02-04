@@ -1,14 +1,12 @@
 package me.architetto.fwfortress.command;
 
-import me.architetto.fwfortress.command.admin.CreateCommand;
-import me.architetto.fwfortress.command.admin.DeleteCommand;
-import me.architetto.fwfortress.command.admin.ReloadCommand;
-import me.architetto.fwfortress.command.admin.ToggleCommand;
-import me.architetto.fwfortress.command.extra.RepairCommand;
+import me.architetto.fwfortress.command.admin.*;
+import me.architetto.fwfortress.command.userplus.ClaimCommand;
+import me.architetto.fwfortress.command.userplus.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
-import me.architetto.fwfortress.command.user.InvadeCommand;
-import me.architetto.fwfortress.util.ChatFormatter;
-import me.architetto.fwfortress.util.localization.Message;
+import me.architetto.fwfortress.command.userplus.InvadeCommand;
+import me.architetto.fwfortress.localization.Message;
+import me.architetto.fwfortress.util.StringUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -29,7 +27,8 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new ReloadCommand());
         subcommands.add(new ToggleCommand());
         subcommands.add(new RepairCommand());
-
+        subcommands.add(new StopBattleCommand());
+        subcommands.add(new ClaimCommand());
     }
 
     @Override
@@ -63,7 +62,7 @@ public class CommandManager implements TabExecutor{
                 }
             }
         }else{
-            p.sendMessage(ChatFormatter.commandsInfo());
+            p.sendMessage(StringUtil.commandsInfo());
 
             for (int i = 0; i < getSubcommands().size(); i++) {
 
@@ -72,11 +71,11 @@ public class CommandManager implements TabExecutor{
                 if (!sender.hasPermission(subCommand.getPermission()))
                     continue;
 
-                p.sendMessage(ChatFormatter.formatListMessage(subCommand.getSyntax()
+                p.sendMessage(StringUtil.formatListMessage(subCommand.getSyntax()
                         + " - " + subCommand.getDescription()));
             }
 
-            p.sendMessage(ChatFormatter.chatFooter());
+            p.sendMessage(StringUtil.chatFooter());
         }
 
         return true;

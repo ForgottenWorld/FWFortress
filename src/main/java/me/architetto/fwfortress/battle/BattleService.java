@@ -1,5 +1,6 @@
 package me.architetto.fwfortress.battle;
 
+import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
@@ -11,8 +12,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BattleService {
-
-    //WIP WIP WIP WIP
 
     private static BattleService battleService;
 
@@ -33,22 +32,22 @@ public class BattleService {
         return battleService;
     }
 
-    public void startBattle(Fortress fortress, List<UUID> enemies, String enemyTown) {
+    public void startBattle(Fortress fortress, List<UUID> enemies, Town enemyTown) {
 
         Battle battle = new Battle(fortress, enemies, enemyTown);
 
         this.battleContainer.put(fortress.getFortressName(), battle);
 
-        battle.initBattle();
+        battle.firstStepBattle();
 
     }
 
     public boolean isOccupied(String fortressName) {
-        return battleContainer.values().stream().anyMatch(battle -> battle.getFortressInBattle().getFortressName().equals(fortressName));
+        return battleContainer.values().stream().anyMatch(battle -> battle.getFortress().getFortressName().equals(fortressName));
     }
 
     public List<String> getOccupiedFortresses() {
-        return battleContainer.values().stream().map(Battle::getFortressInBattle).map(Fortress::getFortressName).collect(Collectors.toList());
+        return battleContainer.values().stream().map(Battle::getFortress).map(Fortress::getFortressName).collect(Collectors.toList());
     }
 
     public void resolveBattle(Fortress fortress, String newOwner, int fortressHP) {

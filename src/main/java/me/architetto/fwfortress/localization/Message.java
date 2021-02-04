@@ -1,15 +1,19 @@
-package me.architetto.fwfortress.util.localization;
+package me.architetto.fwfortress.localization;
 
-
-import me.architetto.fwfortress.util.ChatFormatter;
+import me.architetto.fwfortress.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.List;
 
 public enum Message {
 
     PREFIX("fwfortress_prefix", false),
     BOSSBAR_FORMAT("bossbar_format",false),
+    BOSSBAR_COUNTDOWN_FORMAT("bossbar_countdown_format",false),
+
+    FORTRESS_AREA_ALLERT("fortress_area_allert",false),
 
     ERR_PERMISSION("err_permission",true),
     ERR_SYNTAX("err_syntax",true),
@@ -34,18 +38,21 @@ public enum Message {
     ERR_REPAIR_1("err_repair1",true),
     ERR_REPAIR_2("err_repair2",true),
     ERR_FORTRESS_DISTANCE("err_fortress_distance",true),
+    ERR_NO_BATTLE_IS_RUNNING("err_no_battle_is_running",true),
+    ERR_TOWN_DISTANCE("err_town_distance",true),
 
     ERR_BLOCK_EVENT("err_block_event",true),
 
     ERR_RES_NOT_REGISTERED("err_res_not_registered",true),
     ERR_NOT_PART_OF_A_TOWN("err_not_part_of_a_town",true),
-    ERR_NOT_A_MAJOR("err_not_a_major",true),
+    ERR_NOT_A_MAYOR("err_not_a_mayor",true),
+    ERR_CLAIM_MAYOR_ONLY("err_claim_mayor_only",true),
 
     TELEPORT_DEATH_EVENT("teleport_death_event",true),
 
     SUCCESS_RELOAD("success_reload",true),
     SUCCESS_FORTRESS_CREATED("success_fortress_created",true),
-    SUCCESS_FORTRESS_DELETE("success_fortress_deleted",true),
+    SUCCESS_FORTRESS_CLAIM_BRADCAST("success_fortress_claim_broadcast",true),
     SUCCESS_REPAIR("success_repair",true),
 
     TOGGLE_BATTLE_ENABLED("toggle_battle_enabled",true),
@@ -56,25 +63,33 @@ public enum Message {
     FORTRESS_FALL_IN_RUIN2("fortress_fall_in_ruin2",true),
     FORTRESS_DELETED_BROADCAST("fortress_deleted_broadcast",true),
 
-    TOWN_LOST_FORTRESS("town_lost_fortress",false),
-
     BATTLE_ALLERT("battle_allert_broadcast",true),
-    BATTLE_START_INVADERS_ALLERT("battle_start_invaders_allert",true),
-    BATTLE_START_COUNTDOWN_ALLERT("battle_start_countdown_allert",true),
-    BATTLE_START_ALLERT("battle_start_allert",true),
+    BATTLE_START_BROADCAST("battle_start_broadcast",true),
     BATTLE_ENDED_BROADCAST1("battle_ended_broadcast1",true),
     BATTLE_ENDED_BROADCAST2("battle_ended_broadcast2",true),
+    BATTLE_STOPPED("battle_stopped",true),
 
     BATTLE_LEAVE_ACTIONBAR("battle_leave_actionbar",false),
 
-    CREATION_MODE_MSG_1("creation_mode_msg1",true);
+    CREATION_MODE_MSG_1("creation_mode_msg1",true),
+
+    CREATE_COMMAND("create_command",false),
+    DELETE_COMMAND("delete_command",false),
+    RELOAD_COMMAND("reload_command",false),
+    TOGGLE_COMMAND("toggle_command",false),
+    STOP_COMMAND("stop_command",false),
+
+    INFO_COMMAND("info_command",false),
+    CLAIM_COMMAND("claim_command",false),
+    INVADE_COMMAND("invade_command",false),
+    REPAIR_COMMAND("repair_command",false);
 
     private final String message;
     private final boolean showPrefix;
     private final LocalizationManager localizationManager;
 
     Message(String message, boolean showPrefix) {
-        this.message = ChatFormatter.rewritePlaceholders(message);
+        this.message = StringUtil.rewritePlaceholders(message);
         this.showPrefix = showPrefix;
         this.localizationManager = LocalizationManager.getInstance();
     }
@@ -82,6 +97,13 @@ public enum Message {
     public void send(CommandSender sender, Object... objects) {
         sender.sendMessage(asString(objects));
     }
+
+    public void groupSend(List<CommandSender> senders, Object... objects) {
+        String s = asString(objects);
+        senders.forEach(p -> p.sendMessage(s));
+    }
+
+
 
     public void broadcast(Object... objects) {
         Bukkit.getServer().broadcastMessage(asString(objects));

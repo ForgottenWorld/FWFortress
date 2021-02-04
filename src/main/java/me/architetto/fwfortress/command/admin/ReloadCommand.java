@@ -3,10 +3,9 @@ package me.architetto.fwfortress.command.admin;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
-import me.architetto.fwfortress.util.cmd.CommandDescription;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.localization.LocalizationManager;
-import me.architetto.fwfortress.util.localization.Message;
+import me.architetto.fwfortress.localization.LocalizationManager;
+import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class ReloadCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return CommandDescription.RELOAD_CMD_DESCRIPTION;
+        return Message.RELOAD_COMMAND.asString();
     }
 
     @Override

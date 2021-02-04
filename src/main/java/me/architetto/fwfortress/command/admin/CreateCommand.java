@@ -3,50 +3,46 @@ package me.architetto.fwfortress.command.admin;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.command.SubCommand;
+import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressCreationService;
 import me.architetto.fwfortress.fortress.FortressService;
-import me.architetto.fwfortress.util.cmd.CommandDescription;
+import me.architetto.fwfortress.util.TownyUtil;
 import me.architetto.fwfortress.util.cmd.CommandName;
-import me.architetto.fwfortress.util.localization.Message;
+import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class CreateCommand extends SubCommand {
+
     @Override
     public String getName() {
         return CommandName.CREATE_CMD;
     }
-
     @Override
     public String getDescription() {
-        return CommandDescription.CREATE_CMD_DESCRIPTION;
+        return Message.CREATE_COMMAND.asString();
     }
-
     @Override
     public String getSyntax() {
         return "/fwfortress " + CommandName.CREATE_CMD + " <fortress_townOwnerName> <fortress_name>";
     }
-
     @Override
     public String getPermission() {
         return "fwfortress.admin";
     }
-
     @Override
     public int getArgsRequired() {
         return 3;
     }
-
     @Override
     public void perform(Player sender, String[] args) {
 
         String fortressOwner = args[1];
 
-        //check if town exist
-        if (TownyAPI.getInstance().getDataSource().getTowns().stream().noneMatch(t -> t.getName().equals(args[1]))) {
+        Town senderTown = TownyUtil.getTownFromTownName(args[1]);
+
+        if (Objects.isNull(senderTown)) {
             Message.ERR_TOWN_NAME.send(sender);
             return;
         }
@@ -54,16 +50,18 @@ public class CreateCommand extends SubCommand {
         FortressService fortressService = FortressService.getInstance();
 
         //check if is the town's first fortress
-        if (fortressService.getFortressContainer().values().stream().anyMatch(f -> f.getFirstOwner().equals(args[1]))) {
+        if (fortressService.getFortressContainer().stream().anyMatch(f -> f.getFirstOwner().equals(args[1]))) {
             Message.ERR_TOWN_ALREADY_BUILD_FORTRESS.send(sender,fortressOwner);
             return;
         }
 
         String fortressName = String.join("_", Arrays.copyOfRange(args, 2, args.length));
 
+        Optional<Fortress> fortress = fortressService.getFortress(fortressName);
+
         //check if this fortress's name already exist
-        if (fortressService.getFortressContainer().containsKey(fortressName)) {
-            Message.ERR_FORTRESS_NAME_ALREADY_EXIST.send(sender,fortressName);
+        if (fortress.isPresent()) {
+            Message.ERR_FORTRESS_NAME_ALREADY_EXIST.send(sender,fortress.get().getFormattedName());
             return;
         }
 

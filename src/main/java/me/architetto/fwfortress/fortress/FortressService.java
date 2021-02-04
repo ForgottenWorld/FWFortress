@@ -10,16 +10,14 @@ public class FortressService {
 
     private static FortressService fortressService;
 
-    private HashMap<String,Fortress> fortressContainer;
-    private HashMap<String,List<Long>> fortressChunkKey;
+    private List<Fortress> fortressContainer;
 
     private FortressService() {
         if(fortressService != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
 
-        this.fortressContainer = new HashMap<>();
-        this.fortressChunkKey = new HashMap<>();
+        this.fortressContainer = new ArrayList<>();
 
     }
 
@@ -32,7 +30,7 @@ public class FortressService {
 
     public void saveFortress(Fortress fortress) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(FWFortress.plugin, () -> {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(FWFortress.plugin, () -> {
 
             ConfigManager configManager = ConfigManager.getInstance();
 
@@ -50,54 +48,39 @@ public class FortressService {
                     fortress.getFortressName() + ".LAST_REPAIR", fortress.getLastRepair());
             configManager.setData(configManager.getConfig("Fortress.yml"),
                     fortress.getFortressName() + ".CHUNKKEYS",
-                    fortressChunkKey.get(fortress.getFortressName()));
+                    fortress.getCunkKeys());
 
         });
     }
 
     public Optional<Fortress> getFortress(String name) {
-        return fortressContainer.containsKey(name) ? Optional.of(fortressContainer.get(name)) : Optional.empty();
+        return fortressContainer.stream()
+                .filter(fortress -> fortress.getFortressName().contains(name)).findFirst();
     }
 
     public Optional<Fortress> getFortress(long chunkKey) {
-        //todo questo si può fare sicuramente molto meglio ma sono le 5 di mattina quindi nisba
-        String fortressName = null;
-        for (String s : fortressChunkKey.keySet()) {
-            if (fortressChunkKey.get(s).contains(chunkKey))
-                fortressName = s;
-
-        }
-
-        if (fortressName == null)
-            return Optional.empty();
-
-        return fortressContainer.containsKey(fortressName) ? Optional.of(fortressContainer.get(fortressName)) : Optional.empty();
-
+        return fortressContainer.stream()
+                .filter(fortress -> fortress.getCunkKeys().contains(chunkKey)).findFirst();
     }
 
-    public HashMap<String, Fortress> getFortressContainer() {
+    public List<Fortress> getFortressContainer() {
         return this.fortressContainer;
     }
 
     public void clearFortressContainer() {
         this.fortressContainer.clear();
-        this.fortressChunkKey.clear();
     }
 
-    public HashMap<String,List<Long>> getProtectedChunkKeys() {
-        return this.fortressChunkKey;
-    }
-
-    public void removeFortress(String fortressName) {
-
-        fortressContainer.remove(fortressName);
-        fortressChunkKey.remove(fortressName);
+    public void removeFortress(Fortress fortress) {
 
         ConfigManager configManager = ConfigManager.getInstance();
-        ConfigManager.getInstance().setData(configManager.getConfig("Fortress.yml"),fortressName,null);
+        ConfigManager.getInstance().setData(configManager.getConfig("Fortress.yml"),fortress.getFortressName(),null);
+
+        fortressContainer.remove(fortress);
+
     }
 
     public int getAmountOfFortressOwnedByTown(String townName) {
-        return (int) this.fortressContainer.values().stream().filter(fortress -> fortress.getCurrentOwner().equals(townName)).count();
+        return (int) this.fortressContainer.stream().filter(fortress -> fortress.getCurrentOwner().equals(townName)).count();
     }
 }
