@@ -1,5 +1,7 @@
 package me.architetto.fwfortress.command.userplus;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.SubCommand;
@@ -10,6 +12,8 @@ import me.architetto.fwfortress.util.TimeUtil;
 import me.architetto.fwfortress.util.TownyUtil;
 import me.architetto.fwfortress.util.cmd.CommandName;
 import me.architetto.fwfortress.localization.Message;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -115,7 +119,7 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        List<UUID> invadersListUUID = new ArrayList<>(fortress.get().getPlayersUUID());
+        List<UUID> invadersListUUID = new ArrayList<>(getInvaders(fortress.get(),invaderTown.getName()));
 
         if (invadersListUUID.size() < settingsHandler.getMinInvaders()) {
             Message.ERR_INSUFFICIENT_INVADERS.send(sender,settingsHandler.getMinInvaders());
@@ -131,6 +135,24 @@ public class InvadeCommand extends SubCommand {
     @Override
     public List<String> getSubcommandArguments(Player player, String[] args) {
         return null;
+    }
+
+    private Set<UUID> getInvaders(Fortress fortress,String townName) {
+
+        String worldName = fortress.getLocation().getWorld().getName();
+        Set<UUID> list = new HashSet<>();
+
+        fortress.getCunkKeys().forEach(key -> {
+            Chunk chunk = Bukkit.getWorld(worldName).getChunkAt(key);
+            Arrays.stream(chunk.getEntities()).filter(entity -> entity instanceof Player).forEach(entity -> {
+                Resident resident = TownyUtil.getResidentFromPlayerName(entity.getName());
+                Town town = TownyUtil.getTownFromPlayerName(entity.getName());
+                if (resident != null && town != null && town.getName().equals(townName))
+                    list.add(entity.getUniqueId());
+            });
+        });
+
+        return list;
     }
 
 }

@@ -42,12 +42,12 @@ public class FortressCreationService {
         if(!playerCreationMode.contains(sender.getUniqueId()))
             return;
 
-        if (checkFortressesDistance(sender,location)) {
+        if (!checkFortressesDistance(sender,location)) {
             removePlayerToFortressCreationMode(sender.getUniqueId());
             return;
         }
 
-        if (checkTownDistance(sender, location)) {
+        if (!checkTownDistance(sender, location)) {
             removePlayerToFortressCreationMode(sender.getUniqueId());
             return;
         }
