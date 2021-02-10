@@ -19,6 +19,9 @@
 
 FORTRESS_HP: 200
 
+#periodo successivo alla creazione della fortezza in cui questa è modificabile
+BUILDABLE_DELAY: 7
+
 REPAIR_PERCENTAGE: 25
 
 REPAIR_COST: 10000

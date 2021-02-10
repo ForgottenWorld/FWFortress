@@ -3,7 +3,6 @@ package me.architetto.fwfortress.fortress;
 
 import me.architetto.fwfortress.config.SettingsHandler;
 import org.bukkit.*;
-import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 
 import java.util.*;
@@ -23,10 +22,12 @@ public class Fortress {
 
     private long lastBattle;
     private long lastRepair;
+    private final long creationDate;
 
-    public Fortress(String fortressName, String firstOwner, String currentOwner,
+    public Fortress(String fortressName, long creationDate ,String firstOwner, String currentOwner,
                     Location fortressLocation, int currentHP, long lastBattle, long lastRepair, List<Long> chunkKeys) {
 
+        this.creationDate = creationDate;
         this.fortressName = fortressName;
         this.firstOwner = firstOwner;
         this.currentOwner = currentOwner;
@@ -62,6 +63,10 @@ public class Fortress {
 
     public Location getLocation() {
         return this.fortressLocation;
+    }
+
+    public long getCreationDate() {
+        return this.creationDate;
     }
 
     public String getFormattedLocation() {
@@ -103,18 +108,6 @@ public class Fortress {
 
     public List<Long> getCunkKeys() {
         return this.chunkKeys;
-    }
-
-    public Set<UUID> getPlayersUUID() {
-
-        Set<UUID> list = new HashSet<>();
-
-        this.chunkKeys.forEach(key -> {
-            Chunk chunk = Bukkit.getWorld(this.fortressLocation.getWorld().getName()).getChunkAt(key);
-            Arrays.stream(chunk.getEntities()).filter(entity -> entity instanceof Player).forEach(entity -> list.add(entity.getUniqueId()));
-        });
-
-        return list;
     }
 
     public String getFormattedName() {

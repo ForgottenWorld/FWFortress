@@ -25,6 +25,7 @@ public class SettingsHandler {
 
     private long battleCooldown;
     private long repairCooldown;
+    private long buildableCooldown;
 
     private List<String> date;
     private List<Integer> time;
@@ -69,6 +70,7 @@ public class SettingsHandler {
 
         this.battleCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
         this.repairCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"REPAIR_COOLDOWN"));
+        this.buildableCooldown = TimeUnit.DAYS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BUILDABLE_DELAY"));
 
         this.date = (List<String>) configManager.getList(configManager.getConfig("Settings.yml"),"DATE"); //OK
         this.time = (List<Integer>) configManager.getList(configManager.getConfig("Settings.yml"),"TIME_RANGE"); //OK
@@ -91,7 +93,8 @@ public class SettingsHandler {
 
         for (String fortressName : configurationSection.getKeys(false)) {
 
-            fortressCreationService.addNewFortress(fortressName,
+            fortressCreationService.loadFortress(fortressName,
+                    configManager.getLong(configManager.getConfig("Fortress.yml"), fortressName + ".CREATION_DATE"),
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".FIRTS_OWNER"),
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".OWNER"),
                     configManager.getLocation(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_POSITION"),
@@ -134,6 +137,8 @@ public class SettingsHandler {
     public int getRepairCost() { return this.repairCost; }
 
     public long getRepairCooldown() { return this.repairCooldown; }
+
+    public long getBuildableCooldown() { return this.buildableCooldown; }
 
     public int getDistanceBetweenFortresses() { return this.distanceBetweenFortresses; }
 

@@ -35,6 +35,8 @@ public class FortressService {
             ConfigManager configManager = ConfigManager.getInstance();
 
             configManager.setData(configManager.getConfig("Fortress.yml"),
+                    fortress.getFortressName() + ".CREATION_DATE", fortress.getCreationDate());
+            configManager.setData(configManager.getConfig("Fortress.yml"),
                     fortress.getFortressName() + ".FIRTS_OWNER", fortress.getFirstOwner());
             configManager.setData(configManager.getConfig("Fortress.yml"),
                     fortress.getFortressName() + ".OWNER", fortress.getCurrentOwner());
@@ -51,6 +53,26 @@ public class FortressService {
                     fortress.getCunkKeys());
 
         });
+    }
+
+    public void updateFortress(Fortress fortress) {
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(FWFortress.plugin, () -> {
+
+            ConfigManager configManager = ConfigManager.getInstance();
+
+
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    fortress.getFortressName() + ".OWNER", fortress.getCurrentOwner());
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    fortress.getFortressName() + ".FORTRESS_HP", fortress.getCurrentHP());
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    fortress.getFortressName() + ".LAST_BATTLE", fortress.getLastBattle());
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    fortress.getFortressName() + ".LAST_REPAIR", fortress.getLastRepair());
+
+        });
+
     }
 
     public Optional<Fortress> getFortress(String name) {

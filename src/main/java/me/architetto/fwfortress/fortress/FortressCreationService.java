@@ -2,10 +2,12 @@ package me.architetto.fwfortress.fortress;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.localization.Message;
 import me.architetto.fwfortress.util.LocationUtil;
+import me.architetto.fwfortress.util.TownyUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 
@@ -53,23 +55,91 @@ public class FortressCreationService {
         }
 
         addNewFortress(playerFortressNameCreation.get(sender.getUniqueId()),
+                System.currentTimeMillis(),
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
                 playerFortressOwnerCreation.get(sender.getUniqueId()),
                 location,
                 SettingsHandler.getInstance().getFortressHP(),
                 0,0, LocationUtil.area3x3ChunkKeys(location));
 
-        spawnParticleEffectOnFortressCreation(location.clone());
+
+        FortressParticleEffects.getInstance().fortressGreenAreaEffect(location);
+
+        FortressParticleEffects.getInstance().fortressBlueAreaEffect(location);
+
         Message.SUCCESS_FORTRESS_CREATED.send(sender,this.playerFortressNameCreation.get(sender.getUniqueId()));
+
         removePlayerToFortressCreationMode(sender.getUniqueId());
 
     }
 
-    public void addNewFortress(String fortressName, String firstOwner,
+    public void fortressClaimMethod(Player player, String fortressName) {
+
+        Resident resident = TownyUtil.getResidentFromPlayerName(player.getName());
+
+        if (Objects.isNull(resident))
+            return;
+
+        Town senderTown = TownyUtil.getTownFromPlayerName(player.getName());
+
+        if (Objects.isNull(senderTown) || !resident.isMayor()) {
+            Message.ERR_CLAIM_MAYOR_ONLY.send(player);
+            return;
+        }
+
+        if (FortressService.getInstance().getFortressContainer().stream().anyMatch(f -> f.getFirstOwner().equals(senderTown.getName()))) {
+            Message.ERR_TOWN_ALREADY_BUILD_FORTRESS.send(player,senderTown.getFormattedName());
+            return;
+        }
+
+        Location location = player.getLocation();
+
+        if (!checkFortressesDistance(player, location))
+            return;
+
+        if  (!checkTownDistance(player, location))
+            return;
+
+        Optional<Fortress> optionalFortress = FortressService.getInstance().getFortress(fortressName);
+
+        if (optionalFortress.isPresent()) {
+            Message.ERR_FORTRESS_NAME_ALREADY_EXIST.send(player);
+            return;
+        }
+
+        addNewFortress(fortressName,
+                System.currentTimeMillis(),
+                senderTown.getName(),
+                senderTown.getName(),
+                location,
+                SettingsHandler.getInstance().getFortressHP(),
+                0,
+                0,
+                LocationUtil.area3x3ChunkKeys(location));
+
+        FortressParticleEffects.getInstance().fortressGreenAreaEffect(location);
+
+        FortressParticleEffects.getInstance().fortressBlueAreaEffect(location);
+
+        Message.SUCCESS_FORTRESS_CLAIM_BRADCAST.broadcast(senderTown.getFormattedName(),fortressName.replace("_"," "));
+    }
+
+    public void loadFortress(String fortressName, long creationDate ,String firstOwner,
+                             String currentOwner, Location fortressPosition,
+                             int fortressHP, long lastBattle, long lastRepair, List<Long> chunkKeys) {
+
+        Fortress fortress = new Fortress(fortressName, creationDate ,firstOwner, currentOwner,
+                fortressPosition, fortressHP, lastBattle, lastRepair, chunkKeys);
+
+        FortressService.getInstance().getFortressContainer().add(fortress);
+
+    }
+
+    public void addNewFortress(String fortressName, long creationDate ,String firstOwner,
                                String currentOwner, Location fortressPosition,
                                int fortressHP, long lastBattle, long lastRepair, List<Long> chunkKeys) {
 
-        Fortress fortress = new Fortress(fortressName, firstOwner, currentOwner,
+        Fortress fortress = new Fortress(fortressName, creationDate ,firstOwner, currentOwner,
                 fortressPosition, fortressHP, lastBattle, lastRepair, chunkKeys);
 
         FortressService.getInstance().getFortressContainer().add(fortress);
@@ -97,20 +167,10 @@ public class FortressCreationService {
         return this.playerCreationMode.contains(player.getUniqueId());
     }
 
-    public void spawnParticleEffectOnFortressCreation(Location loc) {
-
-        loc.add(0.5,2,0.5);
-        Particle.DustOptions dustOptions = new Particle.DustOptions(Color.fromRGB(255, 69, 0), 5);
-        loc.getWorld().spawnParticle(Particle.REDSTONE,loc,10,dustOptions);
-
-    }
-
     public boolean checkDistance(Location locA, Location locB) {
 
         if (!locA.getWorld().getName().equals(locB.getWorld().getName()))
             return true;
-
-        Bukkit.getConsoleSender().sendMessage(String.valueOf(locA.toVector().distance(locB.toVector())));
 
         return locA.toVector()
                 .distance(locB.toVector()) > SettingsHandler.getInstance().getDistanceBetweenFortresses();
@@ -135,7 +195,7 @@ public class FortressCreationService {
         for (Town town : TownyAPI.getInstance().getDataSource().getTowns()) {
 
             Location spawn = null;
-            Bukkit.getConsoleSender().sendMessage(town.getFormattedName());
+
             try {
                 spawn = town.getSpawn();
             } catch (TownyException e) {
@@ -143,7 +203,9 @@ public class FortressCreationService {
             }
 
             if (spawn != null && !checkDistance(spawn,location)) {
-                Message.ERR_FORTRESS_DISTANCE.send(sender, town.getFormattedName() ,SettingsHandler.getInstance().getDistanceBetweenFortresses());
+                Message.ERR_FORTRESS_DISTANCE.send(sender,
+                        town.getFormattedName() ,
+                        SettingsHandler.getInstance().getDistanceBetweenFortresses());
                 return false;
             }
 

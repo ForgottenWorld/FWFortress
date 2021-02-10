@@ -6,6 +6,7 @@ import me.architetto.fwfortress.command.userplus.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.userplus.InvadeCommand;
 import me.architetto.fwfortress.localization.Message;
+import me.architetto.fwfortress.util.NameUtil;
 import me.architetto.fwfortress.util.StringUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -88,8 +89,11 @@ public class CommandManager implements TabExecutor{
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        String argChar = "";
 
         if (args.length == 1) {
+            argChar = args[0];
+
             ArrayList<String> subcommandsArguments = new ArrayList<>();
 
             for (int i = 0; i < getSubcommands().size(); i++) {
@@ -101,12 +105,14 @@ public class CommandManager implements TabExecutor{
                 subcommandsArguments.add(subCommand.getName());
             }
 
-            return subcommandsArguments;
+            return NameUtil.filterByStart(subcommandsArguments,argChar);
 
         }else if (args.length >= 2) {
+            argChar = args[1];
+
             for (int i = 0; i < getSubcommands().size(); i++) {
                 if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())) {
-                    return getSubcommands().get(i).getSubcommandArguments((Player) sender, args);
+                    return NameUtil.filterByStart(getSubcommands().get(i).getSubcommandArguments((Player) sender, args),argChar);
                 }
             }
         }

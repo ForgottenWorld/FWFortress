@@ -41,6 +41,8 @@ public enum Message {
     ERR_NO_BATTLE_IS_RUNNING("err_no_battle_is_running",true),
     ERR_TOWN_DISTANCE("err_town_distance",true),
 
+    ERR_INVADE_BUILDABLE("err_invade_buildable",true),
+
     ERR_BLOCK_EVENT("err_block_event",true),
 
     ERR_RES_NOT_REGISTERED("err_res_not_registered",true),

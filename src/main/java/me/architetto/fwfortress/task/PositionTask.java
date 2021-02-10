@@ -6,31 +6,34 @@ import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.localization.Message;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
-public class FortressAreaTask {
+public class PositionTask {
 
-    public static void checkPlayerPositiontask() {
+    public static int schedulePlayerPositionStalker() {
 
         List<UUID> uuids = new ArrayList<>();
 
-        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(FWFortress.getPlugin(FWFortress.class),
+        return Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(FWFortress.getPlugin(FWFortress.class),
                 () -> Bukkit.getServer().getOnlinePlayers()
                         .forEach(player -> {
+
                             Optional<Fortress> fortress = FortressService.getInstance()
                                     .getFortress(player.getLocation().getChunk().getChunkKey());
+
                             if (fortress.isPresent()) {
+
                                 if (!uuids.contains(player.getUniqueId())) {
+
                                     uuids.add(player.getUniqueId());
                                     player.sendActionBar(Message.FORTRESS_AREA_ALLERT.asString(fortress.get().getFormattedName()));
+
                                 }
+
                             } else
                                 uuids.remove(player.getUniqueId());
+
                         }), 30, 30);
 
     }
-
 }

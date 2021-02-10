@@ -69,7 +69,7 @@ public class BattleService {
 
         this.battleContainer.remove(fortress.getFortressName());
 
-        FortressService.getInstance().saveFortress(fortress);
+        FortressService.getInstance().updateFortress(fortress);
 
     }
 

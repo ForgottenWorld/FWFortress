@@ -137,7 +137,7 @@ public class RepairCommand extends SubCommand {
 
         fortress.setCurrentHP(repairedFortressHP);
         fortress.setLastRepair(System.currentTimeMillis());
-        FortressService.getInstance().saveFortress(fortress);
+        FortressService.getInstance().updateFortress(fortress);
 
         Message.SUCCESS_REPAIR.send(sender,fortress.getFormattedName());
 

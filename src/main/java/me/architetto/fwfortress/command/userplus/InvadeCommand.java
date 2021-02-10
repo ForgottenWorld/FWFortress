@@ -1,6 +1,5 @@
 package me.architetto.fwfortress.command.userplus;
 
-import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.battle.BattleService;
@@ -97,9 +96,17 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        if (FortressService.getInstance().getFortressContainer()
-                .stream().noneMatch(f -> f.getFirstOwner().equals(invaderTown.getName()))) {
+        Optional<Fortress> optInvaderFirstFortress = FortressService.getInstance().getFortressContainer()
+                .stream().filter(f -> f.getFirstOwner().equals(invaderTown.getName())).findFirst();
+
+        if (!optInvaderFirstFortress.isPresent()
+                || !TimeUtil.buildableTimeCheck(optInvaderFirstFortress.get())) {
             Message.ERR_TONW_CAN_NOT_INVADE.send(sender);
+            return;
+        }
+
+        if (!TimeUtil.buildableTimeCheck(fortress.get())) {
+            Message.ERR_INVADE_BUILDABLE.send(sender);
             return;
         }
 

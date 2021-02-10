@@ -29,7 +29,7 @@ strings:
 
   err_fortress_already_owned: "&cLa fortezza &e{0}&c e' gia' sotto il controllo della tua citta'"
   err_fortress_under_invade: "&cLa fortezza &e{0}&c e' gia' sotto attacco..."
-  err_town_can_not_invade: "&cLa tua citta' non puo' invadere fortezze poiche' non ne ha mai costruita una"
+  err_town_can_not_invade: "&cLa tua citta' non puo' invadere fortezze poiche' non ne ha mai costruita una oppure non e' terminato il periodo di protezione della propria fortezza"
   err_invade_allied_fortress: "&cLa fortezza &e{0}&c e' sotto il controllo di una citta' alleata"
   err_insufficient_invaders: "&cNon sono presenti abbastanza invasori per attaccare la fortezza. Minimo numero di invasori : &e{0}"
   err_battle_time_range: "&cE' possibile invadere fortini solo in determinati giorni e range orari.&r
@@ -47,12 +47,14 @@ strings:
 
   err_no_battle_is_running: "&cNessuna battaglia in corso su &e{0}"
 
+  err_invade_buildable: "&cLa fortezza &e{0} &cè sotto protezione"
+
   err_block_event: "&cNon puoi costruire e/o distruggere blocchi in una fortezza"
   teleport_death_event: "&cNon puoi fuggire dalla battaglia. Mi disp"
 
   success_reload: "Reload effettuato"
   success_fortress_created: "Fortezza &e{0}&r creata"
-  success_fortress_claim_broadcast: "&8[G]&r La citta' di &e{0}&r  ha castruito la fortezza &e{1}&r"
+  success_fortress_claim_broadcast: "&8[G]&r La citta' di &e{0}&r  ha costruito la fortezza &e{1}&r"
   success_repair: "La fortezza &e{0}&f e' stata riparata."
 
   fortress_info: "[] &bNOME FORTEZZA : &e{0}&r
