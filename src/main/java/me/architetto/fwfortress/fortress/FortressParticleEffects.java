@@ -43,11 +43,12 @@ public class FortressParticleEffects {
         greenArea.setLocation(cornerGreen);
         greenArea.particle = Particle.REDSTONE;
         greenArea.color = Color.GREEN;
-        greenArea.particleSize = 3;
+        greenArea.visibleRange = 70F;
+        greenArea.particleSize = 2;
         greenArea.period = 20;
         greenArea.xLength = 16;
         greenArea.zLength = 16;
-        greenArea.yLength = 3;
+        greenArea.yLength = 8;
         greenArea.iterations = 30;
         greenArea.start();
 
@@ -65,7 +66,8 @@ public class FortressParticleEffects {
         blueArea.setLocation(cornerBlue);
         blueArea.particle = Particle.REDSTONE;
         blueArea.color = Color.BLUE;
-        blueArea.particleSize = 3;
+        blueArea.visibleRange = 70F;
+        blueArea.particleSize = 2;
         blueArea.particles = 24;
         blueArea.period = 20;
         blueArea.xLength = 48;

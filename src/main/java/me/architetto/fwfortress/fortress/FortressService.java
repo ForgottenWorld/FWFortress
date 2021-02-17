@@ -61,7 +61,6 @@ public class FortressService {
 
             ConfigManager configManager = ConfigManager.getInstance();
 
-
             configManager.setData(configManager.getConfig("Fortress.yml"),
                     fortress.getFortressName() + ".OWNER", fortress.getCurrentOwner());
             configManager.setData(configManager.getConfig("Fortress.yml"),

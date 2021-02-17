@@ -4,7 +4,7 @@ import me.architetto.fwfortress.command.admin.*;
 import me.architetto.fwfortress.command.userplus.ClaimCommand;
 import me.architetto.fwfortress.command.userplus.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
-import me.architetto.fwfortress.command.userplus.InvadeCommand;
+import me.architetto.fwfortress.command.user.InvadeCommand;
 import me.architetto.fwfortress.localization.Message;
 import me.architetto.fwfortress.util.NameUtil;
 import me.architetto.fwfortress.util.StringUtil;

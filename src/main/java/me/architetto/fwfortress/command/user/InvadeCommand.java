@@ -1,4 +1,4 @@
-package me.architetto.fwfortress.command.userplus;
+package me.architetto.fwfortress.command.user;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;

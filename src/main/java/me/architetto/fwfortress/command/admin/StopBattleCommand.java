@@ -19,7 +19,7 @@ public class StopBattleCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return Message.STOP_COMMAND.asString();
+        return Message.STOPBATTLE_COMMAND.asString();
     }
 
     @Override

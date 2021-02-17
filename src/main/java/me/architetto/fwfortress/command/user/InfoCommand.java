@@ -54,7 +54,6 @@ public class InfoCommand extends SubCommand {
                 fortress.get().getCurrentOwner(),fortress.get().getCurrentHP(),fortress.get().getFormattedLocation());
 
         sender.sendMessage(StringUtil.chatFooter());
-
     }
 
     @Override

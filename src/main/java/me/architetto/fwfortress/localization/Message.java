@@ -79,7 +79,7 @@ public enum Message {
     DELETE_COMMAND("delete_command",false),
     RELOAD_COMMAND("reload_command",false),
     TOGGLE_COMMAND("toggle_command",false),
-    STOP_COMMAND("stop_command",false),
+    STOPBATTLE_COMMAND("stopbattle_command",false),
 
     INFO_COMMAND("info_command",false),
     CLAIM_COMMAND("claim_command",false),
@@ -104,8 +104,6 @@ public enum Message {
         String s = asString(objects);
         senders.forEach(p -> p.sendMessage(s));
     }
-
-
 
     public void broadcast(Object... objects) {
         Bukkit.getServer().broadcastMessage(asString(objects));
