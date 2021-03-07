@@ -1,19 +1,20 @@
 package me.architetto.fwfortress.battle;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+
 import me.architetto.fwfortress.FWFortress;
 import me.architetto.fwfortress.battle.util.Countdown;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.localization.Message;
-import me.architetto.fwfortress.util.TownyUtil;
 import org.bukkit.Bukkit;
-
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
-
 import org.bukkit.util.BoundingBox;
 
 import java.util.*;
@@ -21,167 +22,183 @@ import java.util.*;
 public class Battle {
 
     private Fortress fortress;
-
-    private BoundingBox greenArea;
-    private BoundingBox blueArea;
-
-    private List<UUID> activeInvaders;
-
-    private Town attackersTown;
-
+    private Town defendersTown;
+    private Town invadersTown;
+    private Set<UUID> invadersUUID;
+    private BoundingBox greenBox;
+    private BoundingBox blueBox;
     private BossBar bossBar;
 
-    private int fortressHP;
+    private int staticHP;
+    private int mutableHP;
 
-    private int fortressBorderDamage;
-    private int maxDamageForSeconds;
-
-    private int battleTaskID;
+    private int firstTaskID;
+    private int secondTaskID;
     private int positionTaskID;
 
-    public Battle(Fortress fortress, List<UUID> invaders, Town enemyTownName) {
+    private final int maxDamageForSeconds;
+    private final double fortressBorderDamage;
 
+    public Battle(Fortress fortress, Town invadersTown, Set<UUID> invadersUUID) {
         this.fortress = fortress;
 
-        this.greenArea = fortress.getGreenBoundingBox();
-        this.blueArea = fortress.getBlueBoundingBox();
+        try {
+            this.defendersTown = TownyAPI.getInstance().getDataSource().getTown(fortress.getOwner());
+        } catch (NotRegisteredException e) {
+            e.printStackTrace();
+        }
 
-        this.fortressHP = fortress.getCurrentHP();
+        this.invadersTown = invadersTown;
+        this.invadersUUID = invadersUUID;
+
+        this.greenBox = fortress.getGreenBoundingBox();
+        this.blueBox = fortress.getBlueBoundingBox();
+
+        this.bossBar = Bukkit
+                .createBossBar(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getName(),
+                        SettingsHandler.getInstance().getStartBattleDelay()),
+                        BarColor.YELLOW, BarStyle.SOLID);
+
+        this.staticHP = SettingsHandler.getInstance().getFortressHP(); //da config
+        this.mutableHP = staticHP;
 
         this.fortressBorderDamage = SettingsHandler.getInstance().getFortressBorderDamage();
         this.maxDamageForSeconds = SettingsHandler.getInstance().getMaxDamageForSeconds();
 
-        this.activeInvaders = invaders;
-
-        this.attackersTown = enemyTownName;
-
     }
 
-    public boolean isInvaders(UUID uuid) {
-        return this.activeInvaders.contains(uuid);
-    }
+    public void firstPhase() {
 
-    public void removeInvaders(UUID uuid) {
-        this.bossBar.removePlayer(Bukkit.getPlayer(uuid));
-        this.activeInvaders.remove(uuid);
-    }
-
-    public Fortress getFortress() {
-        return this.fortress;
-    }
-
-    public void firstStepBattle() {
-
-        Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class),SettingsHandler.getInstance().getStartBattleDelay(),
+        Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class), SettingsHandler.getInstance().getStartBattleDelay(),
                 () -> {
 
-                    Message.BATTLE_ALLERT.broadcast(fortress.getFortressName(), fortress.getCurrentOwner());
+                    Message.BATTLE_ALLERT.broadcast(fortress.getFormattedName(), defendersTown.getFormattedName());
 
-                    this.bossBar = Bukkit
-                            .createBossBar(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFortressName(),
+                    bossBar = Bukkit
+                            .createBossBar(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFormattedName(),
                                     SettingsHandler.getInstance().getStartBattleDelay()),
                                     BarColor.YELLOW, BarStyle.SOLID);
 
-                    this.bossBar.setProgress(0);
+                    bossBar.setProgress(0);
 
-                    this.activeInvaders.forEach(uuid -> this.bossBar.addPlayer(Bukkit.getPlayer(uuid)));
+                    invadersTown.getResidents().stream().map(Resident::getPlayer).filter(Objects::nonNull)
+                            .forEach(p -> bossBar.addPlayer(p));
 
-                    TownyUtil.getTownResidentsFromTownName(this.fortress.getCurrentOwner()).forEach(resident -> {
-                        if (resident.getPlayer() != null)
-                            this.bossBar.addPlayer(resident.getPlayer());});
+                    defendersTown.getResidents().stream().map(Resident::getPlayer).filter(Objects::nonNull)
+                            .forEach(p -> bossBar.addPlayer(p));
 
                 },
                 () -> {
-            //
-                    Message.BATTLE_START_BROADCAST.broadcast(this.fortress.getFormattedName());
 
-                    checkInvadersPositionTask();
-
-                    secondStepBattle();
+                    Message.BATTLE_START_BROADCAST.broadcast(fortress.getFormattedName());
+                    secondPhase();
 
                 },
                 (s) -> {
-            //
-                    this.bossBar.setTitle(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFortressName(), s.getSecondsLeft()));
-                    this.bossBar.setProgress((float) (s.getTotalSeconds() - s.getSecondsLeft()) / s.getTotalSeconds());
+
+                    bossBar.setTitle(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFormattedName(), s.getSecondsLeft()));
+                    bossBar.setProgress((float) (s.getTotalSeconds() - s.getSecondsLeft()) / s.getTotalSeconds());
 
                 });
-        countdown.scheduleTimer();
+
+        firstTaskID = countdown.scheduleTimer();
+
     }
 
-    private void secondStepBattle() {
+    public void secondPhase() {
 
         Countdown countdown = new Countdown(FWFortress.getPlugin(FWFortress.class), SettingsHandler.getInstance().getBattleTimeLimit(),
                 () -> {
-            //
-                    this.bossBar.setColor(BarColor.RED);
-                    this.bossBar.setProgress(1);
+                    //
+                    bossBar.setColor(BarColor.RED);
+                    bossBar.setProgress(1);
+                    checkInvadersPositionTask();
 
                 },
 
                 () -> {
 
-                    Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getFortressName());
+                    Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getName());
 
-                    BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(), this.fortressHP);
+                    BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getOwner(), staticHP - mutableHP);
 
                 },
                 (s) -> {
 
-                    this.fortressHP = Math.max(0,this.fortressHP - Math.min(this.maxDamageForSeconds,getInvadersInsideGreenArea()));
+                    mutableHP = Math.max(0, mutableHP - Math.min(maxDamageForSeconds, countGreenBoxInvaders()));
 
-                    this.bossBar.setTitle(Message.BOSSBAR_FORMAT.asString(fortress.getFortressName(),
+                    bossBar.setTitle(Message.BOSSBAR_FORMAT.asString(fortress.getFormattedName(),
                             s.getSecondsLeft(),
-                            this.fortressHP));
+                            mutableHP));
 
-                    this.bossBar.setProgress((float) this.fortressHP / this.fortress.getCurrentHP());
+                    bossBar.setProgress((float) mutableHP / staticHP);
 
-                    if (this.activeInvaders.isEmpty()) {
+                    if (invadersUUID.isEmpty()) {
 
-                        Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getFortressName());
+                        Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getFormattedName());
 
-                        BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getCurrentOwner(),
-                                this.fortressHP);
+                        BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getOwner(),
+                                staticHP - mutableHP);
                     }
 
-                    if (this.fortressHP <= 0) {
+                    if (this.mutableHP <= 0) {
 
-                        Message.BATTLE_ENDED_BROADCAST2.broadcast(fortress.getFortressName(),this.attackersTown.getFormattedName());
+                        Message.BATTLE_ENDED_BROADCAST2.broadcast(fortress.getFormattedName(),invadersTown.getFormattedName());
 
-                        BattleService.getInstance().resolveBattle(this.fortress, this.attackersTown.getFormattedName(),
-                                SettingsHandler.getInstance().getFortressHP());
+                        BattleService.getInstance().resolveBattle(fortress, invadersTown.getName(),
+                                staticHP);
                     }
 
                 });
-        this.battleTaskID = countdown.scheduleTimer();
+        this.secondTaskID = countdown.scheduleTimer();
+
     }
 
+    private Integer countGreenBoxInvaders() {
 
+        return Math.toIntExact(new HashSet<>(invadersUUID)
+                .stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .map(player -> player.getLocation().toVector())
+                .filter(vector -> greenBox.contains(vector))
+                .count());
+
+    }
 
     private void checkInvadersPositionTask() {
+
         this.positionTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(FWFortress.plugin, () ->
-                new ArrayList<>(activeInvaders)
-                .stream().map(Bukkit::getPlayer)
-                .filter(player -> player != null && !blueArea.contains(player.getBoundingBox()))
-                .forEach(this::playerLeaveFortressArea),0L,20L);
-        }
-
-    private Integer getInvadersInsideGreenArea() {
-
-        return (int) new ArrayList<>(this.activeInvaders).stream().map(Bukkit::getPlayer)
-                .filter(player -> player != null && this.greenArea.contains(player.getLocation().toVector())).count();
-
-    }
-
-    public void playerLeaveFortressArea(Player player) {
-        player.damage(this.fortressBorderDamage);
-        player.sendActionBar(Message.BATTLE_LEAVE_ACTIONBAR.asString());
+                new HashSet<>(invadersUUID)
+                        .stream()
+                        .map(Bukkit::getPlayer)
+                        .filter(Objects::nonNull)
+                        .filter(p -> !blueBox.contains(p.getBoundingBox()))
+                        .forEach(player -> player.damage(fortressBorderDamage)), 0L, 20L);
     }
 
     public void stopBattle() {
         this.bossBar.removeAll();
+        Bukkit.getScheduler().cancelTask(this.firstTaskID);
+        Bukkit.getScheduler().cancelTask(this.secondTaskID);
         Bukkit.getScheduler().cancelTask(this.positionTaskID);
-        Bukkit.getScheduler().cancelTask(this.battleTaskID);
+
     }
+
+    public Fortress getFortress() {
+        return fortress;
+    }
+
+    public boolean isInvaders(UUID uuid) {
+        return invadersUUID.contains(uuid);
+    }
+
+    public void removeInvaders(Player player) {
+        //todo: la bossbar viene tolta solo al termine della battaglia
+        //bossBar.removePlayer(player);
+        invadersUUID.remove(player.getUniqueId());
+    }
+        
+
 
 }

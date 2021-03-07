@@ -2,7 +2,7 @@ package me.architetto.fwfortress.command.admin;
 
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
-import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.command.CommandName;
 import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
 

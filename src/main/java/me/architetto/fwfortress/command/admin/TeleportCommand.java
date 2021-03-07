@@ -1,10 +1,8 @@
 package me.architetto.fwfortress.command.admin;
 
-import com.palmergames.bukkit.towny.TownyUniverse;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
-import me.architetto.fwfortress.command.CommandName;
 import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
 
@@ -12,20 +10,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class DeleteCommand extends SubCommand {
+public class TeleportCommand extends SubCommand {
     @Override
     public String getName() {
-        return CommandName.DELETE_CMD;
+        return "tp";
     }
 
     @Override
     public String getDescription() {
-        return Message.DELETE_COMMAND.asString();
+        return Message.TELEPORT_COMMAND.asString();
     }
 
     @Override
     public String getSyntax() {
-        return "/fwfortress " + CommandName.DELETE_CMD + " <fortress_name>";
+        return "/fwfortress tp <fortress_name>";
     }
 
     @Override
@@ -40,12 +38,7 @@ public class DeleteCommand extends SubCommand {
 
     @Override
     public void perform(Player sender, String[] args) {
-
-        String fortressName = args[1];
-
-        FortressService fortressService = FortressService.getInstance();
-
-        Optional<Fortress> optFortress = fortressService.getFortress(fortressName);
+        Optional<Fortress> optFortress = FortressService.getInstance().getFortress(args[1]);
 
         if (!optFortress.isPresent()) {
             Message.ERR_FORTRESS_DOES_NOT_EXIST.send(sender);
@@ -53,16 +46,7 @@ public class DeleteCommand extends SubCommand {
         }
 
         Fortress fortress = optFortress.get();
-        String owner;
-
-        if (optFortress.get().getOwner() != null) {
-            owner = TownyUniverse.getInstance().getTownsMap().get(fortress.getOwner()).getFormattedName();
-            Message.FORTRESS_OWNED_DELETED.broadcast(fortress.getFormattedName(),
-                    owner);
-        } else
-            Message.SUCCESS_FORTRESS_DELETED.send(sender,fortress.getFormattedName());
-
-        fortressService.removeFortress(fortress);
+        sender.teleport(fortress.getLocation().add(0,2,0));
 
     }
 

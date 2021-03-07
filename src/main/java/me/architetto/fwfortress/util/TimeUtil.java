@@ -1,7 +1,6 @@
 package me.architetto.fwfortress.util;
 
 import me.architetto.fwfortress.config.SettingsHandler;
-import me.architetto.fwfortress.fortress.Fortress;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -22,9 +21,5 @@ public class TimeUtil {
         return settingsHandler.getDate().contains(dayName)
                 && dateTime.getHour() > settingsHandler.getTime().get(0)
                 && dateTime.getHour() < settingsHandler.getTime().get(1);
-    }
-
-    public static boolean buildableTimeCheck(Fortress fortress) {
-        return (System.currentTimeMillis() - fortress.getCreationDate()) > SettingsHandler.getInstance().getBuildableCooldown();
     }
 }

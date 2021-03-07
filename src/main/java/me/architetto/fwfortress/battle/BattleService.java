@@ -1,14 +1,10 @@
 package me.architetto.fwfortress.battle;
 
 import com.palmergames.bukkit.towny.object.Town;
-import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BattleService {
@@ -32,42 +28,39 @@ public class BattleService {
         return battleService;
     }
 
-    public void startBattle(Fortress fortress, List<UUID> enemies, Town enemyTown) {
+    public void startBattle(Fortress fortress, Town enemyTown, Set<UUID> enemies) {
 
-        Battle battle = new Battle(fortress, enemies, enemyTown);
+        Battle battle = new Battle(fortress, enemyTown, enemies);
 
-        this.battleContainer.put(fortress.getFortressName(), battle);
+        this.battleContainer.put(fortress.getName(), battle);
 
-        battle.firstStepBattle();
+        battle.firstPhase();
 
     }
 
     public boolean isOccupied(String fortressName) {
-        return battleContainer.values().stream().anyMatch(battle -> battle.getFortress().getFortressName().equals(fortressName));
+        return battleContainer.values().stream().anyMatch(battle -> battle.getFortress().getName().equals(fortressName));
     }
 
     public List<String> getOccupiedFortresses() {
-        return battleContainer.values().stream().map(Battle::getFortress).map(Fortress::getFortressName).collect(Collectors.toList());
+        return battleContainer.values().stream().map(Battle::getFortress).map(Fortress::getName).collect(Collectors.toList());
     }
 
-    public void resolveBattle(Fortress fortress, String newOwner, int fortressHP) {
+    public void resolveBattle(Fortress fortress, String newOwner, long exp) {
 
-        if (!fortress.getCurrentOwner().equals(newOwner)) {
+        if (!fortress.getOwner().equals(newOwner)) {
 
-            fortress.setCurrentOwner(newOwner);
-            fortress.setCurrentHP(SettingsHandler.getInstance().getFortressHP());
-
-        } else {
-
-            fortress.setCurrentHP(fortressHP);
+            fortress.setOwner(newOwner);
 
         }
 
+        fortress.setExperience(fortress.getExperience() + exp);
+
         fortress.setLastBattle(System.currentTimeMillis());
 
-        stopBattle(fortress.getFortressName());
+        stopBattle(fortress.getName());
 
-        this.battleContainer.remove(fortress.getFortressName());
+        this.battleContainer.remove(fortress.getName());
 
         FortressService.getInstance().updateFortress(fortress);
 
@@ -75,6 +68,10 @@ public class BattleService {
 
     public void stopBattle(String fortressName) {
         Battle battle = this.battleContainer.get(fortressName);
+
+        if (Objects.isNull(battle))
+            return;
+
         battle.stopBattle();
         this.battleContainer.remove(fortressName);
     }
@@ -82,7 +79,4 @@ public class BattleService {
     public List<Battle> getCurrentBattle() {
         return new ArrayList<>(this.battleContainer.values());
     }
-
-    //todo
-
 }

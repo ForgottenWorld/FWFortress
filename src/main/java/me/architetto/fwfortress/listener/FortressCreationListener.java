@@ -14,6 +14,7 @@ import java.util.Objects;
 
 public class FortressCreationListener implements Listener {
 
+
     @EventHandler
     public void fortressCreationListener(PlayerInteractEvent event) {
         if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
@@ -22,14 +23,13 @@ public class FortressCreationListener implements Listener {
         if(event.getItem() == null || event.getItem().getType() != Material.STICK)
             return;
 
-        if(!event.getHand().equals(EquipmentSlot.HAND))
+        if(event.getHand() == null ||  !event.getHand().equals(EquipmentSlot.HAND))
             return;
 
         Player player = event.getPlayer();
 
-        if(!FortressCreationService.getInstance().isPlayerInFortressCreationMode(player)) {
+        if(!FortressCreationService.getInstance().isPlayerInFortressCreationMode(player))
             return;
-        }
 
         Block block = event.getClickedBlock();
 
@@ -41,7 +41,4 @@ public class FortressCreationListener implements Listener {
         event.setCancelled(true);
 
     }
-
-
-
 }

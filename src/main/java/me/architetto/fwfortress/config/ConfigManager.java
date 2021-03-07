@@ -3,7 +3,6 @@ package me.architetto.fwfortress.config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,7 +32,6 @@ public class ConfigManager{
                 }
             }
         }
-
         return createNewCustomConfig(name);
     }
 
@@ -62,7 +60,6 @@ public class ConfigManager{
         return null;
     }
 
-    //Returns true if saved successfully, returns false in case of error and prints error to console
     public boolean setData(FileConfiguration conf, String path, Object data){
         conf.set(path, data);
         return saveData(conf);
@@ -79,50 +76,38 @@ public class ConfigManager{
     }
 
     public String getStringRaw(FileConfiguration conf, String path){
-        //Create dummy if not available
-        if (!conf.contains(path)) {
+        if (!conf.contains(path))
             return null;
-            // setData(conf, path, "null"); //todo
-        }
         return conf.getString(path);
     }
 
     public int getInt(FileConfiguration conf, String path){
-        //Create dummy if not available
-        if (!conf.contains(path)) {
-            setData(conf, path, 0);
-        }
+        if (!conf.contains(path))
+            return 0;
         return conf.getInt(path);
     }
 
     public double getDouble(FileConfiguration conf, String path){
-        //Create dummy if not available
-        if (!conf.contains(path)) {
-            setData(conf, path, 1.0);
-        }
+        if (!conf.contains(path))
+            return 0;
         return conf.getDouble(path);
     }
 
     public long getLong(FileConfiguration conf, String path) {
-        if (!conf.contains(path)) {
-            setData(conf, path, 0);
-        }
+        if (!conf.contains(path))
+            return 0;
         return conf.getLong(path);
     }
 
     public boolean getBoolean(FileConfiguration conf, String path){
-        //Create dummy if not available
-        if (!conf.contains(path)) {
-            setData(conf, path, false);
-        }
+        if (!conf.contains(path))
+            return false;
         return conf.getBoolean(path);
     }
 
     public List<?> getList(FileConfiguration conf, String path){
-        //Create dummy list if not available
-        if (!conf.contains(path)) {
-            setData(conf, path, new ArrayList<Location>().add(new Location(Bukkit.getWorld("world"), 10, 10, 10)));
-        }
+        if (!conf.contains(path))
+            return null;
         return conf.getList(path);
     }
 
@@ -136,13 +121,13 @@ public class ConfigManager{
     }
 
     public Location getLocation(FileConfiguration conf, String path) {
+        if (!conf.contains(path))
+            return null;
 
         String worldName = getStringRaw(conf, String.format("%s.world", path));
 
         if (worldName == null)
             return null;
-
-        Bukkit.getServer().createWorld(new WorldCreator(worldName));
 
         World world = Bukkit.getWorld(worldName);
         int x = getInt(conf, String.format("%s.x", path));

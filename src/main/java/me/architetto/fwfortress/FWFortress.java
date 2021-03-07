@@ -8,8 +8,9 @@ import me.architetto.fwfortress.listener.PlayerListener;
 import me.architetto.fwfortress.listener.TownListener;
 
 import me.architetto.fwfortress.localization.LocalizationManager;
-import me.architetto.fwfortress.task.PositionTask;
 import me.architetto.fwfortress.task.TaskService;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,17 +27,29 @@ public final class FWFortress extends JavaPlugin {
 
         ConfigManager.getInstance().setPlugin(this);
 
+        Bukkit.getConsoleSender().sendMessage("=====================[   FWFortress   ]======================");
+
+        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[]" + ChatColor.RESET + " Loading messages...");
         loadLocalization();
 
+        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[]" + ChatColor.RESET + " Loading settings...");
         loadSettings();
 
+        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[]" + ChatColor.RESET
+                + " Loading commands and listeners...");
         loadCommands();
 
         loadListener();
 
+        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[]" + ChatColor.RESET + " Loading fortresses...");
         loadFortress();
 
         TaskService.getInstance().schedulePositionTask();
+
+        Bukkit.getConsoleSender().sendMessage("=============================================================");
+
+
+
 
 
     }

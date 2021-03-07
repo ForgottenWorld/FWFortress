@@ -8,19 +8,10 @@ commands:
   fwfortress:
     description: Plugin per la gestione delle fortezze.
     aliases:
-      - fwfort
-      - fort
+      - fwf
 
 permissions:
   fwfortress.admin:
-    description: description
-    default: op
-
-  fwfortress.repair:
-    description: description
-    default: op
-
-  fwfortress.claim:
     description: description
     default: op
 

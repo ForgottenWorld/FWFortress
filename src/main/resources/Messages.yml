@@ -11,7 +11,6 @@ strings:
   toggle_battle_enabled: "Le battaglie sono state &2abilitate&f. Da questo momento e' possibile invadere fortezze"
   toggle_battle_disabled: "Le battaglie sono state &4disabilitate&f. Da questo momento &4NON&f e' possibile invadere fortezze"
 
-  err_res_not_registered: "&cNon sei un cittadino"
   err_not_part_of_a_town: "&cNon fai parte di nesuna citta'."
   err_not_a_mayor: "&cNon sei il sindaco della citta' che possiede la fortezza"
 
@@ -22,48 +21,38 @@ strings:
   err_town_name: "&cNon esiste alcuna citta' con questo nome"
   err_fortress_name_already_exist: "&cIl nome &e{0}&c e' gia' utilizzato da un'altra fortezza"
   err_fortress_does_not_exist: "&cNon e' presente nessuna fortezza con questo nome"
-  err_town_already_build_fortress: "&cLa citta' &e{0}&c ha gia' costruito la sua fortezza"
   err_creation_mode: "&cStai gia' creando una zona fortezza"
-  err_fortress_distance: "&cQuesto chunk è troppo vicino ad un'altra fortezza e/o ad un'altra citta' [ &e{0} ]. Distanza minima : &e{1} blocchi"
-  err_town_distance: "&cQuesto chunk è troppo vicino ad una fortezza. Distanza minima : &e{0} blocchi"
 
   err_fortress_already_owned: "&cLa fortezza &e{0}&c e' gia' sotto il controllo della tua citta'"
+  err_fortress_disabled: "&cLa fortezza &e{0}&c e' disabilitata"
   err_fortress_under_invade: "&cLa fortezza &e{0}&c e' gia' sotto attacco..."
-  err_town_can_not_invade: "&cLa tua citta' non puo' invadere fortezze poiche' non ne ha mai costruita una oppure non e' terminato il periodo di protezione della propria fortezza"
   err_invade_allied_fortress: "&cLa fortezza &e{0}&c e' sotto il controllo di una citta' alleata"
   err_insufficient_invaders: "&cNon sono presenti abbastanza invasori per attaccare la fortezza. Minimo numero di invasori : &e{0}"
   err_battle_time_range: "&cE' possibile invadere fortini solo in determinati giorni e range orari.&r
     \n[] &bGiorni attivi : &e{0}&r
     \n[] &bOrari attivi : &rdalle &e{1}&r alle &e{2}&r"
   err_invalid_invade_position: "&cIl comando deve essere eseguito all'interno di una fortezza"
-  err_invade_cooldown: "&cLa fortezza &e{0}&c potra' essere attaccata tra : &e{1}&f ORE &e{2}&f MINUTI e &e{3}&f SECONDI"
+  err_invade_cooldown: "&cLa fortezza &e{0}&c potra' essere attaccata dal &e{1}&f"
 
-  err_repair_cooldown: "&cLa fortezza &e{0}&c potra' essere riparata tra : &e{1}&f ORE &e{2}&f MINUTI e &e{3}&f SECONDI"
-  err_repair1: "&cLa fortezza &e{0} &ce' sotto attacco e non puo' essere riparata"
-  err_repair2: "&cLa fortezza &e{0} &cnon appartiene alla tua citta'"
-  err_pay_repair: "&cLa citta' non possiede i fondi necessari per la riparazione della fortezza. Costo riparazione : &e{0} zenar"
-  err_fortress_max_hp: "&cLa fortezza &e{0} &ce' gia' al massimo degli HP possibili"
-  err_claim_mayor_only: "&cSolo il sindaco di una citta' può claimare una fortezza"
+  err_town_distance: "&cDistanza inferiore a &e{0}&c chunk dalle seguenti città : &e{1}&f"
+  err_fortress_distance: "&cDistanza inferiore a &e{0}&c chunk dalle seguenti fortezze : &e{1}&f"
 
   err_no_battle_is_running: "&cNessuna battaglia in corso su &e{0}"
-
-  err_invade_buildable: "&cLa fortezza &e{0} &cnon può essere attaccata poiche' e' sotto protezione"
 
   err_block_event: "&cNon puoi costruire e/o distruggere blocchi in una fortezza"
   teleport_death_event: "&cNon puoi fuggire dalla battaglia. Mi disp"
 
   success_reload: "Reload effettuato"
   success_fortress_created: "Fortezza &e{0}&r creata"
-  success_fortress_claim_broadcast: "&8[G]&r La citta' di &e{0}&r  ha costruito la fortezza &e{1}&r"
-  success_repair: "La fortezza &e{0}&f e' stata riparata."
 
   fortress_info: "[] &bNOME FORTEZZA : &e{0}&r
-    \n[] &bPRIMO PROPRIETARIO : &e{1}&r
-    \n[] &bPROPRIETARIO ATTUALE : &e{2}&r
-    \n[] &bHP : &e{3}&r
-    \n[] &bPOSIZIONE : &e{4}&r"
+    \n[] &bPROPRIETARIO ATTUALE : &e{1}&r
+    \n[] &bULTIMA BATTAGLIA : &e{2}&r
+    \n[] &bEXP ACCUMULATA : &e{3}&r
+    \n[] &bPOSIZIONE : &e{4}&r
+    \n[] &bABILITATA : &e{5}&r"
 
-  creation_mode_msg1: "Indica la posizione del chunk conquistabile ... &8(CLICK DX con STICK equipaggiato)"
+  creation_mode_msg: "Indica la posizione della fortezza ... &8(CLICK DX con STICK equipaggiato)"
 
   battle_allert_broadcast: "&8[G]&r La fortezza &e{0}&r protetta dalla citta' di &e{1}&r sta per essere attaccata!"
   battle_start_broadcast: "&8[G]&r L'attacco alla fortezza &e{0}&r è cominciato!"
@@ -73,19 +62,18 @@ strings:
 
   battle_leave_actionbar: "&c&lTORNA NELLA FORTEZZA"
 
-  fortress_fall_in_ruin1: "&8[G]&r La fortezza &e{0}&r e' caduta in rovina"
-  fortress_fall_in_ruin2: "&8[G]&r La fortezza &e{0}&r e' tornata sotto il controllo di &e{1}"
-
-  fortress_deleted_broadcast: "&8[G]&r La fortezza &e{0}&r costruita da &e{1}&r e controllata da &e{2}&r e' stata eliminata"
+  fortress_return_free: "&8[G]&r La fortezza &e{0}&r non e' più controllata da &e{1}&r"
+  fortress_deleted: "La fortezza &e{0}&r e' stata eliminata"
+  fortress_claim_broadcast: "&8[G]&r La fortezza &e{0}&r non e' ora controllata da &e{1}&r"
+  fortress_owned_deleted_broadcast: "&8[G]&r La fortezza &e{0}&r controllata da &e{1}&r e' stata eliminata"
 
   #COMMAND DESCRIPTION
   create_command: "&6Permette di creare una fortezza e di assegnarla a una citta' (Staff)"
   delete_command: "&6Permette di eliminare definitivamente una fortezza (Staff)"
   reload_command: "&6Ricarica i settings (Staff)"
   toggle_command: "&6Disabilita / Abilita la possibilità di invadere fortezze (Staff)"
-  stopbattle_command: "&6Permette di annullare una battaglia attualmente in corso (Staff)"
+  stop_command: "&6Permette di annullare una battaglia attualmente in corso (Staff)"
+  teleport_command: "&6Permette di teletrasportarsi in una fortezza (Staff)"
 
   info_command: "&6Restituisce informazioni su una fortezza"
-  claim_command: "&6Reclama la zona circostante come fortezza della citta' (Solo sindaco)"
   invade_command: "&6Comando da utilizzare per invadere una fortezza (Solo sindaco)"
-  repair_command: "&6Permette di riparare una fortezza (Solo sindaco)"

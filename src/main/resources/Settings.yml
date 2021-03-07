@@ -17,16 +17,7 @@
 ## * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ##
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
-FORTRESS_HP: 200
-
-#periodo successivo alla creazione della fortezza in cui questa è modificabile
-BUILDABLE_DELAY: 7
-
-REPAIR_PERCENTAGE: 25
-
-REPAIR_COST: 10000
-
-REPAIR_COOLDOWN: 24 #hour
+FORTRESS_HP: 1000
 
 MAX_DAMAGE_FOR_SECOND: 10
 
@@ -34,7 +25,7 @@ BATTLE_TIME_LIMIT: 300
 
 START_BATTLE_DELAY: 15
 
-DISTANCE_BETWEEN_FORTRESSES: 30
+MIN_FORTRESS_DISTANCE: 10
 
 MAX_GROUND_DISTANCE: 25
 

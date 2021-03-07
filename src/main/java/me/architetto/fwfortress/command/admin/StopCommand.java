@@ -5,13 +5,13 @@ import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.localization.Message;
-import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.command.CommandName;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Optional;
 
-public class StopBattleCommand extends SubCommand {
+public class StopCommand extends SubCommand {
     @Override
     public String getName() {
         return CommandName.STOPBATTLE_CMD;
@@ -19,12 +19,12 @@ public class StopBattleCommand extends SubCommand {
 
     @Override
     public String getDescription() {
-        return Message.STOPBATTLE_COMMAND.asString();
+        return Message.STOP_COMMAND.asString();
     }
 
     @Override
     public String getSyntax() {
-        return "/fwfortress " + CommandName.STOPBATTLE_CMD + " <fortress_name>";
+        return "/fwfortress " + CommandName.STOPBATTLE_CMD + " [fortress_name]";
     }
 
     @Override
@@ -49,12 +49,13 @@ public class StopBattleCommand extends SubCommand {
 
         Fortress fortress = optionalFortress.get();
 
-        if (!BattleService.getInstance().isOccupied(fortress.getFortressName())) {
+        if (!BattleService.getInstance().isOccupied(fortress.getName())) {
             Message.ERR_NO_BATTLE_IS_RUNNING.send(sender,fortress.getFormattedName());
             return;
         }
 
-        BattleService.getInstance().stopBattle(optionalFortress.get().getFortressName());
+        BattleService.getInstance().stopBattle(optionalFortress.get().getName());
+
         Message.BATTLE_STOPPED.broadcast(fortress.getFormattedName());
 
     }

@@ -37,7 +37,7 @@ public class FortressParticleEffects {
         int blockX = c.getX() << 4;
         int blockZ = c.getZ() << 4;
 
-        Location cornerGreen = new Location(c.getWorld(),blockX,location.getBlockY() + 3,blockZ);
+        Location cornerGreen = new Location(c.getWorld(),blockX - 16,location.getBlockY() + 3,blockZ - 16);
 
         CuboidEffect greenArea = new CuboidEffect(effectManager);
         greenArea.setLocation(cornerGreen);
@@ -45,9 +45,9 @@ public class FortressParticleEffects {
         greenArea.color = Color.GREEN;
         greenArea.visibleRange = 70F;
         greenArea.particleSize = 2;
-        greenArea.period = 20;
-        greenArea.xLength = 16;
-        greenArea.zLength = 16;
+        greenArea.period = 10;
+        greenArea.xLength = 48;
+        greenArea.zLength = 48;
         greenArea.yLength = 8;
         greenArea.iterations = 30;
         greenArea.start();
@@ -60,7 +60,7 @@ public class FortressParticleEffects {
         int blockX = c.getX() << 4;
         int blockZ = c.getZ() << 4;
 
-        Location cornerBlue = new Location(c.getWorld(),blockX - 16,location.getBlockY() + 3,blockZ - 16);
+        Location cornerBlue = new Location(c.getWorld(),blockX - 32,location.getBlockY() + 3,blockZ - 32);
 
         CuboidEffect blueArea = new CuboidEffect(effectManager);
         blueArea.setLocation(cornerBlue);
@@ -69,9 +69,9 @@ public class FortressParticleEffects {
         blueArea.visibleRange = 70F;
         blueArea.particleSize = 2;
         blueArea.particles = 24;
-        blueArea.period = 20;
-        blueArea.xLength = 48;
-        blueArea.zLength = 48;
+        blueArea.period = 10;
+        blueArea.xLength = 80;
+        blueArea.zLength = 80;
         blueArea.yLength = 8;
         blueArea.iterations = 30;
         blueArea.start();

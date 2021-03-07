@@ -1,13 +1,11 @@
 package me.architetto.fwfortress.command;
 
 import me.architetto.fwfortress.command.admin.*;
-import me.architetto.fwfortress.command.userplus.ClaimCommand;
-import me.architetto.fwfortress.command.userplus.RepairCommand;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.user.InvadeCommand;
 import me.architetto.fwfortress.localization.Message;
 import me.architetto.fwfortress.util.NameUtil;
-import me.architetto.fwfortress.util.StringUtil;
+import me.architetto.fwfortress.util.MessageUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -27,11 +25,11 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new InfoCommand());
         subcommands.add(new ReloadCommand());
         subcommands.add(new ToggleCommand());
-        subcommands.add(new RepairCommand());
-        subcommands.add(new StopBattleCommand());
-        subcommands.add(new ClaimCommand());
+        subcommands.add(new StopCommand());
+        subcommands.add(new TeleportCommand());
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
@@ -63,7 +61,7 @@ public class CommandManager implements TabExecutor{
                 }
             }
         }else{
-            p.sendMessage(StringUtil.commandsInfo());
+            p.sendMessage(MessageUtil.commandsInfo());
 
             for (int i = 0; i < getSubcommands().size(); i++) {
 
@@ -72,11 +70,11 @@ public class CommandManager implements TabExecutor{
                 if (!sender.hasPermission(subCommand.getPermission()))
                     continue;
 
-                p.sendMessage(StringUtil.formatListMessage(subCommand.getSyntax()
+                p.sendMessage(MessageUtil.formatListMessage(subCommand.getSyntax()
                         + " - " + subCommand.getDescription()));
             }
 
-            p.sendMessage(StringUtil.chatFooter());
+            p.sendMessage(MessageUtil.chatFooter());
         }
 
         return true;
@@ -87,6 +85,7 @@ public class CommandManager implements TabExecutor{
     }
 
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         String argChar = "";

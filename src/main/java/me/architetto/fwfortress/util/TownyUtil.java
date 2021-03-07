@@ -37,8 +37,4 @@ public class TownyUtil {
         return null;
     }
 
-    public static void sendMessageToTown(Town town, String message) {
-        town.getResidents().stream().map(Resident::getPlayer).forEach(p -> p.sendMessage(message));
-    }
-
 }

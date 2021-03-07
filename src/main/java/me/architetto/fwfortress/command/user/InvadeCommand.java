@@ -9,14 +9,19 @@ import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.TimeUtil;
 import me.architetto.fwfortress.util.TownyUtil;
-import me.architetto.fwfortress.util.cmd.CommandName;
+import me.architetto.fwfortress.command.CommandName;
 import me.architetto.fwfortress.localization.Message;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class InvadeCommand extends SubCommand {
     @Override
@@ -68,18 +73,26 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        if (fortress.get().getLastBattle() != 0) {
+        Fortress fort = fortress.get();
+
+        if (!fort.isEnabled()) {
+            Message.ERR_FORTRESS_DISABLED.send(sender,fort.getFormattedName());
+            return;
+        }
+
+        if (fort.getLastBattle() != 0) {
             long remain = SettingsHandler.getInstance().getBattleCooldown() -
-                    (System.currentTimeMillis() - fortress.get().getLastBattle());
+                    (System.currentTimeMillis() - fort.getLastBattle());
 
             if (remain > 0) {
 
-                Message.ERR_INVADE_COOLDOWN.send(sender,fortress.get().getFortressName(),
-                        TimeUnit.MILLISECONDS.toHours(remain),
-                        TimeUnit.MILLISECONDS.toMinutes(remain) -
-                                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(remain)),
-                        TimeUnit.MILLISECONDS.toSeconds(remain) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(remain)));
+                ZonedDateTime zonedDateTime = Instant
+                        .ofEpochMilli(SettingsHandler.getInstance().getBattleCooldown() + fortress.get().getLastBattle())
+                        .atZone(ZoneId.of("Europe/Paris"));
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss z");
+
+                Message.ERR_INVADE_COOLDOWN.send(sender,fort.getFormattedName(),zonedDateTime.format(dateTimeFormatter));
+
                 return;
             }
         }
@@ -91,51 +104,48 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        if (fortress.get().getCurrentOwner().equals(invaderTown.getName())) {
+        if (Objects.isNull(fort.getOwner())) {
+            fort.setOwner(invaderTown.getName());
+            fort.setLastBattle(System.currentTimeMillis());
+            FortressService.getInstance().updateFortress(fort);
+            Message.FORTRESS_CLAIM_BROADCAST.broadcast(fort.getFormattedName(),invaderTown.getFormattedName());
+            return;
+        }
+
+        if (fort.getOwner().equals(invaderTown.getName())) {
             Message.ERR_FORTRESS_ALREADY_OWNED.send(sender,fortress.get().getFormattedName());
             return;
         }
 
         Optional<Fortress> optInvaderFirstFortress = FortressService.getInstance().getFortressContainer()
-                .stream().filter(f -> f.getFirstOwner().equals(invaderTown.getName())).findFirst();
-
-        if (!optInvaderFirstFortress.isPresent()
-                || !TimeUtil.buildableTimeCheck(optInvaderFirstFortress.get())) {
-            Message.ERR_TONW_CAN_NOT_INVADE.send(sender);
-            return;
-        }
-
-        if (!TimeUtil.buildableTimeCheck(fortress.get())) {
-            Message.ERR_INVADE_BUILDABLE.send(sender);
-            return;
-        }
+                .stream().filter(f -> f.getOwner().equals(invaderTown.getName())).findFirst();
 
         if (!settingsHandler.allowInvadeAlliedFortress()) {
 
-            Town fortressOwnerTown = TownyUtil.getTownFromTownName(fortress.get().getCurrentOwner());
+            Town fortressOwnerTown = TownyUtil.getTownFromTownName(fort.getOwner());
 
-            if (Objects.isNull(fortressOwnerTown) || fortressOwnerTown.isAlliedWith(invaderTown)) {
-                Message.ERR_INVADE_ALLIED_FORTRESS.send(sender,fortress.get().getFormattedName());
+            if (Objects.nonNull(fortressOwnerTown) && fortressOwnerTown.isAlliedWith(invaderTown)) {
+                Message.ERR_INVADE_ALLIED_FORTRESS.send(sender,fort.getFormattedName());
                 return;
             }
 
         }
 
-        if (BattleService.getInstance().isOccupied(fortress.get().getFortressName())) {
+        if (BattleService.getInstance().isOccupied(fortress.get().getName())) {
             Message.ERR_FORTRESS_UNDER_INVADE.send(sender,fortress.get().getFormattedName());
             return;
         }
 
-        List<UUID> invadersListUUID = new ArrayList<>(getInvaders(fortress.get(),invaderTown.getName()));
+        Set<UUID> invadersUUID = getInvaders(fortress.get(), invaderTown);
 
-        if (invadersListUUID.size() < settingsHandler.getMinInvaders()) {
+        if (invadersUUID.size() < settingsHandler.getMinInvaders()) {
             Message.ERR_INSUFFICIENT_INVADERS.send(sender,settingsHandler.getMinInvaders());
             return;
         }
 
         BattleService.getInstance().startBattle(fortress.get(),
-                invadersListUUID ,
-                invaderTown);
+                invaderTown,
+                invadersUUID);
 
     }
 
@@ -144,22 +154,29 @@ public class InvadeCommand extends SubCommand {
         return null;
     }
 
-    private Set<UUID> getInvaders(Fortress fortress,String townName) {
+    private Set<UUID> getInvaders(Fortress fortress,Town invadersTown) {
 
-        String worldName = fortress.getLocation().getWorld().getName();
-        Set<UUID> list = new HashSet<>();
+        Set<UUID> resUUID = invadersTown.getResidents()
+                .stream()
+                .map(Resident::getPlayer)
+                .map(Player::getUniqueId)
+                .collect(Collectors.toSet());
+
+        World world = fortress.getLocation().getWorld();
+
+        Set<UUID> invaders = new HashSet<>();
 
         fortress.getCunkKeys().forEach(key -> {
-            Chunk chunk = Bukkit.getWorld(worldName).getChunkAt(key);
-            Arrays.stream(chunk.getEntities()).filter(entity -> entity instanceof Player).forEach(entity -> {
-                Resident resident = TownyUtil.getResidentFromPlayerName(entity.getName());
-                Town town = TownyUtil.getTownFromPlayerName(entity.getName());
-                if (resident != null && town != null && town.getName().equals(townName))
-                    list.add(entity.getUniqueId());
-            });
+
+            Chunk chunk = world.getChunkAt(key);
+            invaders.addAll(Arrays.stream(chunk.getEntities())
+                    .filter(e -> e instanceof Player)
+                    .map(Entity::getUniqueId)
+                    .filter(resUUID::contains)
+                    .collect(Collectors.toSet()));
         });
 
-        return list;
+        return invaders;
     }
 
 }
