@@ -49,9 +49,6 @@ public final class FWFortress extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("=============================================================");
 
 
-
-
-
     }
 
     @Override

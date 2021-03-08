@@ -26,7 +26,7 @@ public class CreateCommand extends SubCommand {
     }
     @Override
     public String getPermission() {
-        return "fwfortress.admin";
+        return "fwfortress.create";
     }
     @Override
     public int getArgsRequired() {

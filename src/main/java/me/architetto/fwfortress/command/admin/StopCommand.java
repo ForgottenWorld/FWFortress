@@ -29,7 +29,7 @@ public class StopCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "fwfortress.admin";
+        return "fwfortress.stop";
     }
 
     @Override

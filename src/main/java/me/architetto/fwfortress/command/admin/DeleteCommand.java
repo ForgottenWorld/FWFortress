@@ -30,7 +30,7 @@ public class DeleteCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "fwfortress.admin";
+        return "fwfortress.delete";
     }
 
     @Override

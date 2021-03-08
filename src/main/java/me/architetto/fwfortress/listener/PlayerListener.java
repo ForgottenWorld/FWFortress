@@ -6,6 +6,7 @@ import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.localization.Message;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -21,8 +22,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
 
-        if (event.getPlayer().hasPermission("fwfortress.admin")
-                && event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+        if (event.getPlayer().hasPermission("fwfortress.build")
+                || event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
@@ -37,8 +38,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
 
-        if (event.getPlayer().hasPermission("fwfortress.admin")
-                && event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+        if (event.getPlayer().hasPermission("fwfortress.build")
+                || event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
@@ -53,8 +54,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBucketUse(PlayerBucketEmptyEvent event) {
 
-        if (event.getPlayer().hasPermission("fwfortress.admin")
-                && event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+        if (event.getPlayer().hasPermission("fwfortress.build")
+                || event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
@@ -69,8 +70,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event) {
 
-        if (event.getPlayer().hasPermission("fwfortress.admin")
-                && event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
+        if (event.getPlayer().hasPermission("fwfortress.build")
+                || event.getPlayer().getGameMode().equals(GameMode.CREATIVE))
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
@@ -102,7 +103,7 @@ public class PlayerListener implements Listener {
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST,ignoreCancelled = true)
     public void onPlayerTelepor(PlayerTeleportEvent event) {
 
         if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL

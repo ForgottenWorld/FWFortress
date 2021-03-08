@@ -41,7 +41,7 @@ public class InvadeCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "fwfortress.user";
+        return "fwfortress.invade";
     }
 
     @Override

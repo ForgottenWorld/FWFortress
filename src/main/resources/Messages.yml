@@ -67,6 +67,8 @@ strings:
   fortress_claim_broadcast: "&8[G]&r La fortezza &e{0}&r non e' ora controllata da &e{1}&r"
   fortress_owned_deleted_broadcast: "&8[G]&r La fortezza &e{0}&r controllata da &e{1}&r e' stata eliminata"
 
+  town_spawn_deny: "&cAzione negata poichè stai invadendo una fortezza"
+
   #COMMAND DESCRIPTION
   create_command: "&6Permette di creare una fortezza e di assegnarla a una citta' (Staff)"
   delete_command: "&6Permette di eliminare definitivamente una fortezza (Staff)"

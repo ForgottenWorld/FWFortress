@@ -36,7 +36,7 @@ public class InfoCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "fwfortress.user";
+        return "fwfortress.info";
     }
 
     @Override

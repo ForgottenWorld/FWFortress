@@ -26,7 +26,7 @@ public class ToggleCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "fwfortress.admin";
+        return "fwfortress.toggle";
     }
 
     @Override

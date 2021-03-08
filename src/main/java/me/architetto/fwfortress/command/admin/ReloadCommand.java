@@ -28,7 +28,7 @@ public class ReloadCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "fwfortress.admin";
+        return "fwfortress.reload";
     }
 
     @Override

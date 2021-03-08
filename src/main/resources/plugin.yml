@@ -11,10 +11,30 @@ commands:
       - fwf
 
 permissions:
-  fwfortress.admin:
-    description: description
+  fwfortress.create:
+    description: create command permission
     default: op
-
-  fwfortress.user:
-    description: description
+  fwfortress.delete:
+    description: delete command permission
+    default: op
+  fwfortress.reload:
+    description: reload command permission
+    default: op
+  fwfortress.stop:
+    description: stop command permission
+    default: op
+  fwfortress.teleport:
+    description: teleport command permission
+    default: op
+  fwfortress.toggle:
+    description: toggle command permission
+    default: op
+  fwfortress.info:
+    description: info command permission
     default: true
+  fwfortress.invade:
+    description: invade command permission
+    default: op
+  fwfortress.build:
+    description: allow to build inside fortress area
+    default: op

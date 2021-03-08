@@ -67,6 +67,8 @@ public enum Message {
 
     CREATION_MODE_MSG("creation_mode_msg",true),
 
+    TOWN_SPAWN_DENY("town_spawn_deny",true),
+
     //Command description
     CREATE_COMMAND("create_command",false),
     DELETE_COMMAND("delete_command",false),

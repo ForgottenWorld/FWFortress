@@ -28,7 +28,7 @@ public class TeleportCommand extends SubCommand {
 
     @Override
     public String getPermission() {
-        return "fwfortress.admin";
+        return "fwfortress.teleport";
     }
 
     @Override
