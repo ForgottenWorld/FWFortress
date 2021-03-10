@@ -63,7 +63,9 @@ public class InfoCommand extends SubCommand {
             try {
                 owner = TownyAPI.getInstance().getDataSource().getTown(fortress.getOwner()).getFormattedName();
             } catch (NotRegisteredException e) {
+                Message.EXCEPTION_MESSAGE.send(sender);
                 e.printStackTrace();
+                return;
             }
         }
 

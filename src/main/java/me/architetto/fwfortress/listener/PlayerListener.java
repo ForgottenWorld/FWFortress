@@ -112,6 +112,7 @@ public class PlayerListener implements Listener {
 
         battleService.getCurrentBattle().forEach(battle -> {
             if (battle.isInvaders(event.getPlayer().getUniqueId())) {
+                //Oppure sarebbe il caso di cancellare semplicemente l'evento ?
                 Message.TELEPORT_DEATH_EVENT.send(event.getPlayer());
                 event.getPlayer().setHealth(0);
             }

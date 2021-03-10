@@ -14,7 +14,7 @@ import java.util.Optional;
 public class StopCommand extends SubCommand {
     @Override
     public String getName() {
-        return CommandName.STOPBATTLE_CMD;
+        return CommandName.STOP_CMD;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class StopCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/fwfortress " + CommandName.STOPBATTLE_CMD + " [fortress_name]";
+        return "/fwfortress " + CommandName.STOP_CMD + " [fortress_name]";
     }
 
     @Override

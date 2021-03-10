@@ -26,9 +26,6 @@ permissions:
   fwfortress.teleport:
     description: teleport command permission
     default: op
-  fwfortress.toggle:
-    description: toggle command permission
-    default: op
   fwfortress.info:
     description: info command permission
     default: true

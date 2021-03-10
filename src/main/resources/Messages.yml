@@ -7,10 +7,6 @@ strings:
   bossbar_format: "&e&l{0}&r &b[ TIMER : &e&l{1}&r &b] [ HP : &e&l{2}&r &b]"
   bossbar_countdown_format: "&e&l{0}&r &b[ COUNTDOWN BATTAGLIA : &e&l{1}&r &b]"
 
-  err_battle_disabled: "&cLe conquiste sono momentaneamente disabilitate"
-  toggle_battle_enabled: "Le battaglie sono state &2abilitate&f. Da questo momento e' possibile invadere fortezze"
-  toggle_battle_disabled: "Le battaglie sono state &4disabilitate&f. Da questo momento &4NON&f e' possibile invadere fortezze"
-
   err_not_part_of_a_town: "&cNon fai parte di nesuna citta'."
   err_not_a_mayor: "&cNon sei il sindaco della citta' che possiede la fortezza"
 
@@ -64,16 +60,17 @@ strings:
 
   fortress_return_free: "&8[G]&r La fortezza &e{0}&r non e' più controllata da &e{1}&r"
   fortress_deleted: "La fortezza &e{0}&r e' stata eliminata"
-  fortress_claim_broadcast: "&8[G]&r La fortezza &e{0}&r non e' ora controllata da &e{1}&r"
+  fortress_claim_broadcast: "&8[G]&r La fortezza &e{0}&r e' ora controllata da &e{1}&r"
   fortress_owned_deleted_broadcast: "&8[G]&r La fortezza &e{0}&r controllata da &e{1}&r e' stata eliminata"
 
-  town_spawn_deny: "&cAzione negata poichè stai invadendo una fortezza"
+  teleport_deny: "&cTeleport negato: stai invadendo una fortezza"
+
+  exception_allert_message: "&cERRORE: Se ricevi questo messaggio avverti subito un membro dello staff, grazie"
 
   #COMMAND DESCRIPTION
-  create_command: "&6Permette di creare una fortezza e di assegnarla a una citta' (Staff)"
+  create_command: "&6Permette di creare una fortezza (Staff)"
   delete_command: "&6Permette di eliminare definitivamente una fortezza (Staff)"
   reload_command: "&6Ricarica i settings (Staff)"
-  toggle_command: "&6Disabilita / Abilita la possibilità di invadere fortezze (Staff)"
   stop_command: "&6Permette di annullare una battaglia attualmente in corso (Staff)"
   teleport_command: "&6Permette di teletrasportarsi in una fortezza (Staff)"
 

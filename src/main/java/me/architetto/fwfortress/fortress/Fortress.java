@@ -65,7 +65,7 @@ public class Fortress {
     }
 
     public Location getLocation() {
-        return this.position;
+        return position.toCenterLocation();
     }
 
     public String getFormattedLocation() {

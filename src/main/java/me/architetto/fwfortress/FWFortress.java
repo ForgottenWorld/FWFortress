@@ -1,5 +1,7 @@
 package me.architetto.fwfortress;
 
+import me.architetto.fwfortress.battle.Battle;
+import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.CommandManager;
 import me.architetto.fwfortress.config.ConfigManager;
 import me.architetto.fwfortress.config.SettingsHandler;
@@ -54,6 +56,9 @@ public final class FWFortress extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        if (!BattleService.getInstance().getCurrentBattle().isEmpty())
+            BattleService.getInstance().getCurrentBattle().forEach(Battle::stopBattle);
+
     }
 
     public void loadSettings() {

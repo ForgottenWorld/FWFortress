@@ -29,7 +29,6 @@ public enum Message {
     ERR_INVADE_ALLIED_FORTRESS("err_invade_allied_fortress",true),
     ERR_INSUFFICIENT_INVADERS("err_insufficient_invaders",true),
     ERR_CREATION_MODE("err_creation_mode",true),
-    ERR_BATTLE_DISABLED("err_battle_disabled",true),
     ERR_BATTLE_TIME_RANGE("err_battle_time_range",true),
     ERR_INVALID_INVADE_POSITION("err_invalid_invade_position",true),
     ERR_INVADE_COOLDOWN("err_invade_cooldown",true),
@@ -49,9 +48,6 @@ public enum Message {
     SUCCESS_FORTRESS_CREATED("success_fortress_created",true),
     SUCCESS_FORTRESS_DELETED("fortress_deleted",true),
 
-    TOGGLE_BATTLE_ENABLED("toggle_battle_enabled",true),
-    TOGGLE_BATTLE_DISABLED("toggle_battle_disabled",true),
-
     FORTRESS_INFO("fortress_info",false),
     FORTRESS_RETURN_FREE("fortress_return_free",true),
     FORTRESS_OWNED_DELETED("fortress_owned_deleted_broadcast",true),
@@ -67,13 +63,14 @@ public enum Message {
 
     CREATION_MODE_MSG("creation_mode_msg",true),
 
-    TOWN_SPAWN_DENY("town_spawn_deny",true),
+    TELEPORT_DENY("teleport_deny",true),
+
+    EXCEPTION_MESSAGE("exception_allert_message",true),
 
     //Command description
     CREATE_COMMAND("create_command",false),
     DELETE_COMMAND("delete_command",false),
     RELOAD_COMMAND("reload_command",false),
-    TOGGLE_COMMAND("toggle_command",false),
     STOP_COMMAND("stop_command",false),
     TELEPORT_COMMAND("teleport_command", false),
 

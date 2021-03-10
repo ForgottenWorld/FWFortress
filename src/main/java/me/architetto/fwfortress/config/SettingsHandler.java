@@ -20,22 +20,21 @@ public class SettingsHandler {
     private int minInvaders;
     private int maxDamageForSeconds;
 
-    private long battleCooldown;
+    private long battleCountdown;
 
     private List<String> date;
     private List<Integer> time;
 
     private boolean invadeAlliedFortress;
 
-    private boolean disableInvade;
+    private boolean glowInvaders;
+    private int glowPeriod;
+    private int glowDuration;
 
     private SettingsHandler() {
         if(instance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
-
-        //inizializzare
-        this.disableInvade = false;
 
     }
 
@@ -60,12 +59,16 @@ public class SettingsHandler {
 
         this.minInvaders = configManager.getInt(configManager.getConfig("Settings.yml"),"MIN_INVADERS");
 
-        this.battleCooldown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
+        this.battleCountdown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
 
         this.date = (List<String>) configManager.getList(configManager.getConfig("Settings.yml"),"DATE"); //OK
         this.time = (List<Integer>) configManager.getList(configManager.getConfig("Settings.yml"),"TIME_RANGE"); //OK
 
         this.invadeAlliedFortress = configManager.getBoolean(configManager.getConfig("Settings.yml"),"ALLOW_INVADE_ALLIED_FORTRESS");
+
+        this.glowInvaders = configManager.getBoolean(configManager.getConfig("Settings.yml"),"INVADERS_GLOWING_EFFECT.enable");
+        this.glowPeriod = configManager.getInt(configManager.getConfig("Settings.yml"),"INVADERS_GLOWING_EFFECT.seconds_period");
+        this.glowDuration = configManager.getInt(configManager.getConfig("Settings.yml"),"INVADERS_GLOWING_EFFECT.duration_tick");
 
     }
 
@@ -118,7 +121,7 @@ public class SettingsHandler {
         return this.minInvaders;
     }
 
-    public long getBattleCooldown() { return this.battleCooldown; }
+    public long getBattleCountdown() { return this.battleCountdown; }
 
     public int getMinFortressDistance() { return this.minFortressDistance; }
 
@@ -130,9 +133,12 @@ public class SettingsHandler {
 
     public boolean allowInvadeAlliedFortress() { return this.invadeAlliedFortress; }
 
-    public boolean isInvadeDisabled() { return this.disableInvade; }
+    public boolean isGlowInvaders() { return this.glowInvaders; }
 
-    public void setDisableInvade(boolean disableInvade) { this.disableInvade = disableInvade; }
+    public int getGlowPeriod() { return this.glowPeriod; }
+
+    public int getGlowDuration() { return this.glowDuration; }
+
 
 
 

@@ -85,7 +85,7 @@ public class TownListener implements Listener {
         if (BattleService.getInstance().getCurrentBattle()
                 .stream()
                 .anyMatch(battle -> battle.isInvaders(event.getPlayer().getUniqueId()))) {
-            event.setCancelMessage(Message.TOWN_SPAWN_DENY.asString());
+            event.setCancelMessage(Message.TELEPORT_DENY.asString());
             event.setCancelled(true);
         }
 

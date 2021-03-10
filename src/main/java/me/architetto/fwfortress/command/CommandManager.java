@@ -24,7 +24,6 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new InvadeCommand());
         subcommands.add(new InfoCommand());
         subcommands.add(new ReloadCommand());
-        subcommands.add(new ToggleCommand());
         subcommands.add(new StopCommand());
         subcommands.add(new TeleportCommand());
     }

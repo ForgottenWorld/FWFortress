@@ -15,10 +15,13 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BoundingBox;
 
 import java.util.*;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class Battle {
 
     private Fortress fortress;
@@ -39,14 +42,14 @@ public class Battle {
     private final int maxDamageForSeconds;
     private final double fortressBorderDamage;
 
-    public Battle(Fortress fortress, Town invadersTown, Set<UUID> invadersUUID) {
+    private final boolean glowInvaders;
+    private int glowPeriod;
+    private int glowDuration;
+
+    public Battle(Fortress fortress, Town invadersTown, Set<UUID> invadersUUID, Town defendersTown) {
         this.fortress = fortress;
 
-        try {
-            this.defendersTown = TownyAPI.getInstance().getDataSource().getTown(fortress.getOwner());
-        } catch (NotRegisteredException e) {
-            e.printStackTrace();
-        }
+        this.defendersTown = defendersTown;
 
         this.invadersTown = invadersTown;
         this.invadersUUID = invadersUUID;
@@ -54,16 +57,25 @@ public class Battle {
         this.greenBox = fortress.getGreenBoundingBox();
         this.blueBox = fortress.getBlueBoundingBox();
 
+        SettingsHandler settingsHandler = SettingsHandler.getInstance();
+
         this.bossBar = Bukkit
                 .createBossBar(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getName(),
-                        SettingsHandler.getInstance().getStartBattleDelay()),
+                        settingsHandler.getStartBattleDelay()),
                         BarColor.YELLOW, BarStyle.SOLID);
 
-        this.staticHP = SettingsHandler.getInstance().getFortressHP(); //da config
+        this.staticHP = settingsHandler.getFortressHP(); //da config
         this.mutableHP = staticHP;
 
-        this.fortressBorderDamage = SettingsHandler.getInstance().getFortressBorderDamage();
-        this.maxDamageForSeconds = SettingsHandler.getInstance().getMaxDamageForSeconds();
+        this.fortressBorderDamage = settingsHandler.getFortressBorderDamage();
+        this.maxDamageForSeconds = settingsHandler.getMaxDamageForSeconds();
+
+        this.glowInvaders = settingsHandler.isGlowInvaders();
+
+        if (glowInvaders) {
+            this.glowPeriod = settingsHandler.getGlowPeriod();
+            this.glowDuration = settingsHandler.getGlowDuration();
+        }
 
     }
 
@@ -81,10 +93,16 @@ public class Battle {
 
                     bossBar.setProgress(0);
 
-                    invadersTown.getResidents().stream().map(Resident::getPlayer).filter(Objects::nonNull)
+                    invadersTown.getResidents()
+                            .stream()
+                            .map(Resident::getPlayer)
+                            .filter(Objects::nonNull)
                             .forEach(p -> bossBar.addPlayer(p));
 
-                    defendersTown.getResidents().stream().map(Resident::getPlayer).filter(Objects::nonNull)
+                    defendersTown.getResidents()
+                            .stream()
+                            .map(Resident::getPlayer)
+                            .filter(Objects::nonNull)
                             .forEach(p -> bossBar.addPlayer(p));
 
                 },
@@ -96,7 +114,9 @@ public class Battle {
                 },
                 (s) -> {
 
-                    bossBar.setTitle(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFormattedName(), s.getSecondsLeft()));
+                    bossBar.setTitle(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFormattedName(),
+                            s.getSecondsLeft()));
+
                     bossBar.setProgress((float) (s.getTotalSeconds() - s.getSecondsLeft()) / s.getTotalSeconds());
 
                 });
@@ -133,20 +153,37 @@ public class Battle {
 
                     bossBar.setProgress((float) mutableHP / staticHP);
 
+                    if (this.mutableHP <= 0) {
+
+                        Message.BATTLE_ENDED_BROADCAST2.broadcast(fortress.getFormattedName(),
+                                invadersTown.getFormattedName());
+
+                        BattleService.getInstance().resolveBattle(fortress,
+                                invadersTown.getName(),
+                                staticHP);
+                    }
+
+                    if (glowInvaders
+                            && s.getTotalSeconds() != 0
+                            && s.getSecondsLeft() % glowPeriod == 0
+                            && s.getTotalSeconds() != s.getSecondsLeft()) {
+                        invadersUUID.stream()
+                                .map(Bukkit::getPlayer)
+                                .filter(Objects::nonNull)
+                                .forEach(player -> player
+                                        .addPotionEffect(new PotionEffect(PotionEffectType.GLOWING,
+                                                glowDuration,
+                                                1)));
+                    }
+
+
                     if (invadersUUID.isEmpty()) {
 
                         Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getFormattedName());
 
-                        BattleService.getInstance().resolveBattle(this.fortress, this.fortress.getOwner(),
+                        BattleService.getInstance().resolveBattle(fortress,
+                                fortress.getOwner(),
                                 staticHP - mutableHP);
-                    }
-
-                    if (this.mutableHP <= 0) {
-
-                        Message.BATTLE_ENDED_BROADCAST2.broadcast(fortress.getFormattedName(),invadersTown.getFormattedName());
-
-                        BattleService.getInstance().resolveBattle(fortress, invadersTown.getName(),
-                                staticHP);
                     }
 
                 });
@@ -174,7 +211,10 @@ public class Battle {
                         .map(Bukkit::getPlayer)
                         .filter(Objects::nonNull)
                         .filter(p -> !blueBox.contains(p.getBoundingBox()))
-                        .forEach(player -> player.damage(fortressBorderDamage)), 0L, 20L);
+                        .forEach(player -> {
+                            player.damage(fortressBorderDamage);
+                            player.sendActionBar(Message.BATTLE_LEAVE_ACTIONBAR.asString());
+                        }), 0L, 20L);
     }
 
     public void stopBattle() {

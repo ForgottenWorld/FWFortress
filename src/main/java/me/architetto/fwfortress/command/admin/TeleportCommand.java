@@ -1,5 +1,6 @@
 package me.architetto.fwfortress.command.admin;
 
+import me.architetto.fwfortress.command.CommandName;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class TeleportCommand extends SubCommand {
     @Override
     public String getName() {
-        return "tp";
+        return CommandName.TELEPORT_CMD;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class TeleportCommand extends SubCommand {
 
     @Override
     public String getSyntax() {
-        return "/fwfortress tp <fortress_name>";
+        return "/fwfortress " + CommandName.TELEPORT_CMD + " <fortress_name>";
     }
 
     @Override

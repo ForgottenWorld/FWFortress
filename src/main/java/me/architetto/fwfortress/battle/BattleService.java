@@ -28,9 +28,9 @@ public class BattleService {
         return battleService;
     }
 
-    public void startBattle(Fortress fortress, Town enemyTown, Set<UUID> enemies) {
+    public void startBattle(Fortress fortress, Town enemyTown, Set<UUID> enemies, Town defendersTown) {
 
-        Battle battle = new Battle(fortress, enemyTown, enemies);
+        Battle battle = new Battle(fortress, enemyTown, enemies, defendersTown);
 
         this.battleContainer.put(fortress.getName(), battle);
 
@@ -48,19 +48,14 @@ public class BattleService {
 
     public void resolveBattle(Fortress fortress, String newOwner, long exp) {
 
-        if (!fortress.getOwner().equals(newOwner)) {
-
+        if (!fortress.getOwner().equals(newOwner))
             fortress.setOwner(newOwner);
-
-        }
 
         fortress.setExperience(fortress.getExperience() + exp);
 
         fortress.setLastBattle(System.currentTimeMillis());
 
         stopBattle(fortress.getName());
-
-        this.battleContainer.remove(fortress.getName());
 
         FortressService.getInstance().updateFortress(fortress);
 
@@ -73,10 +68,11 @@ public class BattleService {
             return;
 
         battle.stopBattle();
+
         this.battleContainer.remove(fortressName);
     }
 
-    public List<Battle> getCurrentBattle() {
-        return new ArrayList<>(this.battleContainer.values());
+    public Set<Battle> getCurrentBattle() {
+        return new HashSet<>(battleContainer.values());
     }
 }

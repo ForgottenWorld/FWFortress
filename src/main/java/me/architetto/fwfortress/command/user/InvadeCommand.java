@@ -1,5 +1,7 @@
 package me.architetto.fwfortress.command.user;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.battle.BattleService;
@@ -8,7 +10,6 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.TimeUtil;
-import me.architetto.fwfortress.util.TownyUtil;
 import me.architetto.fwfortress.command.CommandName;
 import me.architetto.fwfortress.localization.Message;
 import org.bukkit.Chunk;
@@ -54,8 +55,11 @@ public class InvadeCommand extends SubCommand {
 
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
-        if (settingsHandler.isInvadeDisabled()) {
-            Message.ERR_BATTLE_DISABLED.send(sender);
+        Optional<Fortress> optFortress = FortressService.getInstance()
+                .getFortress(sender.getLocation().getChunk().getChunkKey());
+
+        if (!optFortress.isPresent()) {
+            Message.ERR_INVALID_INVADE_POSITION.send(sender);
             return;
         }
 
@@ -65,87 +69,100 @@ public class InvadeCommand extends SubCommand {
             return;
         }
 
-        Optional<Fortress> fortress = FortressService.getInstance()
-                .getFortress(sender.getLocation().getChunk().getChunkKey());
+        Fortress fortress = optFortress.get();
 
-        if (!fortress.isPresent()) {
-            Message.ERR_INVALID_INVADE_POSITION.send(sender);
+        if (!fortress.isEnabled()) {
+            Message.ERR_FORTRESS_DISABLED.send(sender,fortress.getFormattedName());
             return;
         }
 
-        Fortress fort = fortress.get();
+        Resident senderRes;
 
-        if (!fort.isEnabled()) {
-            Message.ERR_FORTRESS_DISABLED.send(sender,fort.getFormattedName());
+        try {
+            senderRes = TownyAPI.getInstance().getDataSource().getResident(sender.getName());
+        } catch (NotRegisteredException e) {
+            Message.EXCEPTION_MESSAGE.send(sender);
+            e.printStackTrace();
             return;
         }
 
-        if (fort.getLastBattle() != 0) {
-            long remain = SettingsHandler.getInstance().getBattleCooldown() -
-                    (System.currentTimeMillis() - fort.getLastBattle());
-
-            if (remain > 0) {
-
-                ZonedDateTime zonedDateTime = Instant
-                        .ofEpochMilli(SettingsHandler.getInstance().getBattleCooldown() + fortress.get().getLastBattle())
-                        .atZone(ZoneId.of("Europe/Paris"));
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss z");
-
-                Message.ERR_INVADE_COOLDOWN.send(sender,fort.getFormattedName(),zonedDateTime.format(dateTimeFormatter));
-
-                return;
-            }
-        }
-
-        Town invaderTown = TownyUtil.getTownFromPlayerName(sender.getName());
-
-        if (Objects.isNull(invaderTown)) {
+        if (!senderRes.hasTown()) {
             Message.ERR_NOT_PART_OF_A_TOWN.send(sender);
             return;
         }
 
-        if (Objects.isNull(fort.getOwner())) {
-            fort.setOwner(invaderTown.getName());
-            fort.setLastBattle(System.currentTimeMillis());
-            FortressService.getInstance().updateFortress(fort);
-            Message.FORTRESS_CLAIM_BROADCAST.broadcast(fort.getFormattedName(),invaderTown.getFormattedName());
+        Town invaderTown;
+
+        try {
+            invaderTown = senderRes.getTown();
+        } catch (NotRegisteredException e) {
+            Message.EXCEPTION_MESSAGE.send(sender);
+            e.printStackTrace();
             return;
         }
 
-        if (fort.getOwner().equals(invaderTown.getName())) {
-            Message.ERR_FORTRESS_ALREADY_OWNED.send(sender,fortress.get().getFormattedName());
+
+        if (Objects.isNull(fortress.getOwner())) {
+            fortress.setOwner(invaderTown.getName());
+            fortress.setLastBattle(System.currentTimeMillis());
+            FortressService.getInstance().updateFortress(fortress);
+            Message.FORTRESS_CLAIM_BROADCAST.broadcast(fortress.getFormattedName(),invaderTown.getFormattedName());
             return;
         }
 
-        Optional<Fortress> optInvaderFirstFortress = FortressService.getInstance().getFortressContainer()
-                .stream().filter(f -> f.getOwner().equals(invaderTown.getName())).findFirst();
+        Town defendersTown;
 
-        if (!settingsHandler.allowInvadeAlliedFortress()) {
-
-            Town fortressOwnerTown = TownyUtil.getTownFromTownName(fort.getOwner());
-
-            if (Objects.nonNull(fortressOwnerTown) && fortressOwnerTown.isAlliedWith(invaderTown)) {
-                Message.ERR_INVADE_ALLIED_FORTRESS.send(sender,fort.getFormattedName());
-                return;
-            }
-
-        }
-
-        if (BattleService.getInstance().isOccupied(fortress.get().getName())) {
-            Message.ERR_FORTRESS_UNDER_INVADE.send(sender,fortress.get().getFormattedName());
+        try {
+            defendersTown = TownyAPI.getInstance().getDataSource().getTown(fortress.getOwner());
+        } catch (NotRegisteredException e) {
+            Message.EXCEPTION_MESSAGE.send(sender);
+            e.printStackTrace();
             return;
         }
 
-        Set<UUID> invadersUUID = getInvaders(fortress.get(), invaderTown);
+
+        if (defendersTown.getName().equals(invaderTown.getName())) {
+            Message.ERR_FORTRESS_ALREADY_OWNED.send(sender,optFortress.get().getFormattedName());
+            return;
+        }
+
+        if (fortress.getLastBattle() != 0 &&
+                settingsHandler.getBattleCountdown() - (System.currentTimeMillis() - fortress.getLastBattle()) > 0) {
+
+            ZonedDateTime zonedDateTime = Instant
+                    .ofEpochMilli(SettingsHandler.getInstance().getBattleCountdown() + optFortress.get().getLastBattle())
+                    .atZone(ZoneId.of("Europe/Paris"));
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss z");
+
+            Message.ERR_INVADE_COOLDOWN.send(sender,fortress.getFormattedName(),zonedDateTime.format(dateTimeFormatter));
+
+            return;
+        }
+
+        if (!settingsHandler.allowInvadeAlliedFortress()
+                && defendersTown.isAlliedWith(invaderTown)) {
+
+            Message.ERR_INVADE_ALLIED_FORTRESS.send(sender,fortress.getFormattedName());
+            return;
+
+        }
+
+        if (BattleService.getInstance().isOccupied(optFortress.get().getName())) {
+            Message.ERR_FORTRESS_UNDER_INVADE.send(sender,optFortress.get().getFormattedName());
+            return;
+        }
+
+        Set<UUID> invadersUUID = getInvaders(optFortress.get(), invaderTown);
 
         if (invadersUUID.size() < settingsHandler.getMinInvaders()) {
             Message.ERR_INSUFFICIENT_INVADERS.send(sender,settingsHandler.getMinInvaders());
             return;
         }
 
-        BattleService.getInstance().startBattle(fortress.get(),
+        BattleService.getInstance().startBattle(optFortress.get(),
                 invaderTown,
-                invadersUUID);
+                invadersUUID,
+                defendersTown);
 
     }
 
@@ -159,6 +176,7 @@ public class InvadeCommand extends SubCommand {
         Set<UUID> resUUID = invadersTown.getResidents()
                 .stream()
                 .map(Resident::getPlayer)
+                .filter(Objects::nonNull)
                 .map(Player::getUniqueId)
                 .collect(Collectors.toSet());
 
