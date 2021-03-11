@@ -3,6 +3,7 @@ package me.architetto.fwfortress.command.user;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import me.architetto.fwfortress.command.SubCommand;
+import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.MessageUtil;
@@ -41,11 +42,28 @@ public class InfoCommand extends SubCommand {
 
     @Override
     public int getArgsRequired() {
-        return 2;
+        return 1;
     }
 
     @Override
     public void perform(Player sender, String[] args) {
+
+        if (args.length == 1) {
+            SettingsHandler settingsHandler = SettingsHandler.getInstance();
+            sender.sendMessage(MessageUtil.settingsInfo());
+            Message.SETTINGS_INFO.send(sender,
+                    settingsHandler.getDate(),
+                    settingsHandler.getTime(),
+                    settingsHandler.getMinInvaders(),
+                    settingsHandler.getBattleTimeLimit(),
+                    settingsHandler.getFortressHP(),
+                    settingsHandler.getMaxDamageForSeconds(),
+                    settingsHandler.getBattleCountdown(),
+                    settingsHandler.allowInvadeAlliedFortress());
+            sender.sendMessage(MessageUtil.chatFooter());
+
+            return;
+        }
 
         Optional<Fortress> optFortress = FortressService.getInstance().getFortress(args[1]);
 

@@ -18,6 +18,12 @@ public class MessageUtil {
                 ChatColor.YELLOW + " ]----------------[*]";
     }
 
+    public static String settingsInfo() {
+        return  ChatColor.YELLOW + "[*]----------------[ " +
+                ChatColor.DARK_AQUA + ChatColor.BOLD + "SETTINGS INFO" +
+                ChatColor.YELLOW + " ]----------------[*]";
+    }
+
     public static String chatFooter() {
         return  ChatColor.YELLOW + String.join("", Collections.nCopies(53, "-"));
     }

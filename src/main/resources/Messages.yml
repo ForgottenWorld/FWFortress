@@ -4,17 +4,15 @@ strings:
 
   fortress_area_allert: "&8[&6Fortezza&8]&f ~ &b&e{0}"
 
-  bossbar_format: "&e&l{0}&r &b[ TIMER : &e&l{1}&r &b] [ HP : &e&l{2}&r &b]"
+  bossbar_format: "&e&l{0}&r &b[ TIMER : &e&l{1}&r &b] [ LP : &e&l{2}&r &b]"
   bossbar_countdown_format: "&e&l{0}&r &b[ COUNTDOWN BATTAGLIA : &e&l{1}&r &b]"
 
   err_not_part_of_a_town: "&cNon fai parte di nesuna citta'."
-  err_not_a_mayor: "&cNon sei il sindaco della citta' che possiede la fortezza"
 
   err_permission: "&cNon possiedi i permessi necessari per eseguire questo comando"
   err_syntax: "&cNon hai inserito correttamente il comando"
   err_reload: "&cCi sono una o piu' fortezze sotto attacco, non e' possibile ricaricare i config in questo momento."
 
-  err_town_name: "&cNon esiste alcuna citta' con questo nome"
   err_fortress_name_already_exist: "&cIl nome &e{0}&c e' gia' utilizzato da un'altra fortezza"
   err_fortress_does_not_exist: "&cNon e' presente nessuna fortezza con questo nome"
   err_creation_mode: "&cStai gia' creando una zona fortezza"
@@ -47,6 +45,15 @@ strings:
     \n[] &bEXP ACCUMULATA : &e{3}&r
     \n[] &bPOSIZIONE : &e{4}&r
     \n[] &bABILITATA : &e{5}&r"
+
+  settings_info: "[] &bINVASIONI ATTIVE NEI GIORNI : &e{0}&r
+    \n[] &bINVASIONI ATTIVE NELLA FASCIA ORARIA : &e{1}&r
+    \n[] &bNUMERO MINIMO DI INVASORI : &e{2}&r
+    \n[] &bDURATA MASSIMA INVASIONE : &e{3}&r
+    \n[] &bPUNTI SALUTE FORTEZZA : &e{4}&r
+    \n[] &bDANNI MASSIMI AL SECONDO : &e{5}&r
+    \n[] &bCD INVASIONE (per fortezza) : &e{6}&r
+    \n[] &bINVASIONE FORTEZZE ALLEATE : &e{7}&r"
 
   creation_mode_msg: "Indica la posizione della fortezza ... &8(CLICK DX con STICK equipaggiato)"
 

@@ -97,7 +97,10 @@ public class FortressService {
     }
 
     public int getAmountOfFortressOwnedByTown(String townName) {
-        return (int) this.fortressContainer.stream().filter(fortress -> fortress.getOwner() != null
-                && fortress.getOwner().equals(townName)).count();
+        return (int) this.fortressContainer
+                .stream()
+                .filter(fortress -> fortress.getOwner() != null
+                        && fortress.getOwner().equals(townName))
+                .count();
     }
 }

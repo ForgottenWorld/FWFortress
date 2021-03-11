@@ -59,10 +59,6 @@ public class TownListener implements Listener {
 
     @EventHandler
     public void onRenameTown(TownPreRenameEvent event) {
-        //todo:
-        //Cosa succede se viene modificato il nome di una town durante una battaglia ? IDK
-        //Va eventualmente cancellato l'evento se la città interessata ha una fortezza sotto attacco oppure sta invadedo
-        //una fortezza avversaria
         FortressService fortressService = FortressService.getInstance();
         fortressService.getFortressContainer()
                 .stream()
@@ -73,7 +69,7 @@ public class TownListener implements Listener {
 
                     //LOG
                     Bukkit.getLogger().log(Level.INFO, ChatColor.YELLOW + "[RenameTownEvent]" + ChatColor.RESET +
-                            "Changed fortress owner name from " + ChatColor.YELLOW + event.getOldName()
+                            " Changed fortress owner name from " + ChatColor.YELLOW + event.getOldName()
                             + ChatColor.RESET + " to " + ChatColor.YELLOW + event.getNewName()
                             + ChatColor.RESET);
 

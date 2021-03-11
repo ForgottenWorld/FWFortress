@@ -20,7 +20,6 @@ public enum Message {
     ERR_SYNTAX("err_syntax",true),
 
     ERR_RELOAD("err_reload",true),
-    ERR_TOWN_NAME("err_town_name",true),
     ERR_FORTRESS_NAME_ALREADY_EXIST("err_fortress_name_already_exist",true),
     ERR_FORTRESS_DOES_NOT_EXIST("err_fortress_does_not_exist",true),
     ERR_FORTRESS_DISABLED("err_fortress_disabled",true),
@@ -40,7 +39,6 @@ public enum Message {
     ERR_BLOCK_EVENT("err_block_event",true),
 
     ERR_NOT_PART_OF_A_TOWN("err_not_part_of_a_town",true),
-    ERR_NOT_A_MAYOR("err_not_a_mayor",true),
 
     TELEPORT_DEATH_EVENT("teleport_death_event",true),
 
@@ -66,6 +64,8 @@ public enum Message {
     TELEPORT_DENY("teleport_deny",true),
 
     EXCEPTION_MESSAGE("exception_allert_message",true),
+
+    SETTINGS_INFO("settings_info",false),
 
     //Command description
     CREATE_COMMAND("create_command",false),
