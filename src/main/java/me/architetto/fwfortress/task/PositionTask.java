@@ -26,7 +26,7 @@ public class PositionTask {
                             if (fortress.isPresent()) {
                                 if (!uuids.contains(player.getUniqueId())) {
                                     uuids.add(player.getUniqueId());
-                                    actionBarMessageTimeExtender(player,Message.FORTRESS_AREA_ALLERT
+                                    actionBarMessageTimeExtender(player,Message.FORTRESS_AREA_ACTIONBAR
                                             .asString(fortress.get().getFormattedName()));
                                 }
                             } else

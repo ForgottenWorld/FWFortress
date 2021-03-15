@@ -5,8 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.List;
-
 public enum Message {
 
     PREFIX("fwfortress_prefix", false),
@@ -14,7 +12,8 @@ public enum Message {
     BOSSBAR_FORMAT("bossbar_format",false),
     BOSSBAR_COUNTDOWN_FORMAT("bossbar_countdown_format",false),
 
-    FORTRESS_AREA_ALLERT("fortress_area_allert",false),
+    FORTRESS_AREA_ACTIONBAR("fortress_area_actionbar",false),
+    BATTLE_LEAVE_ACTIONBAR("battle_leave_actionbar",false),
 
     ERR_PERMISSION("err_permission",true),
     ERR_SYNTAX("err_syntax",true),
@@ -32,12 +31,9 @@ public enum Message {
     ERR_INVALID_INVADE_POSITION("err_invalid_invade_position",true),
     ERR_INVADE_COOLDOWN("err_invade_cooldown",true),
     ERR_NO_BATTLE_IS_RUNNING("err_no_battle_is_running",true),
-
     ERR_TOWN_DISTANCE("err_town_distance", true),
     ERR_FORTRESS_DISTANCE("err_fortress_distance",true),
-
     ERR_BLOCK_EVENT("err_block_event",true),
-
     ERR_NOT_PART_OF_A_TOWN("err_not_part_of_a_town",true),
 
     TELEPORT_DEATH_EVENT("teleport_death_event",true),
@@ -57,8 +53,6 @@ public enum Message {
     BATTLE_ENDED_BROADCAST2("battle_ended_broadcast2",true),
     BATTLE_STOPPED("battle_stopped",true),
 
-    BATTLE_LEAVE_ACTIONBAR("battle_leave_actionbar",false),
-
     CREATION_MODE_MSG("creation_mode_msg",true),
 
     TELEPORT_DENY("teleport_deny",true),
@@ -73,7 +67,6 @@ public enum Message {
     RELOAD_COMMAND("reload_command",false),
     STOP_COMMAND("stop_command",false),
     TELEPORT_COMMAND("teleport_command", false),
-
     INFO_COMMAND("info_command",false),
     INVADE_COMMAND("invade_command",false);
 
@@ -89,11 +82,6 @@ public enum Message {
 
     public void send(CommandSender sender, Object... objects) {
         sender.sendMessage(asString(objects));
-    }
-
-    public void groupSend(List<CommandSender> senders, Object... objects) {
-        String s = asString(objects);
-        senders.forEach(p -> p.sendMessage(s));
     }
 
     public void broadcast(Object... objects) {

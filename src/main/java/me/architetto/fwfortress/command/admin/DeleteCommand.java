@@ -1,6 +1,8 @@
 package me.architetto.fwfortress.command.admin;
 
-import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
@@ -53,12 +55,21 @@ public class DeleteCommand extends SubCommand {
         }
 
         Fortress fortress = optFortress.get();
-        String owner;
 
-        if (optFortress.get().getOwner() != null) {
-            owner = TownyUniverse.getInstance().getTownsMap().get(fortress.getOwner()).getFormattedName();
+        if (fortress.getOwner() != null) {
+
+            Town owner;
+
+            try {
+                owner = TownyAPI.getInstance().getDataSource().getTown(fortress.getOwner());
+            } catch (NotRegisteredException e) {
+                Message.EXCEPTION_MESSAGE.send(sender);
+                e.printStackTrace();
+                return;
+            }
+
             Message.FORTRESS_OWNED_DELETED.broadcast(fortress.getFormattedName(),
-                    owner);
+                    owner.getFormattedName());
         } else
             Message.SUCCESS_FORTRESS_DELETED.send(sender,fortress.getFormattedName());
 

@@ -2,7 +2,7 @@ strings:
 
   fwfortress_prefix: "&8[&6FW Fortress&8]&f"
 
-  fortress_area_allert: "&8[&6Fortezza&8]&f ~ &b&e{0}"
+  fortress_area_actionbar: "&8[&6Fortezza&8]&f ~ &b&e{0}"
 
   bossbar_format: "&e&l{0}&r &b[ TIMER : &e&l{1}&r &b] [ LP : &e&l{2}&r &b]"
   bossbar_countdown_format: "&e&l{0}&r &b[ COUNTDOWN BATTAGLIA : &e&l{1}&r &b]"
