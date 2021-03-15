@@ -63,6 +63,8 @@ public class FortressService {
                     fortress.getName() + ".EXPERIENCE", fortress.getExperience());
             configManager.setData(configManager.getConfig("Fortress.yml"),
                     fortress.getName() + ".LAST_BATTLE", fortress.getLastBattle());
+            configManager.setData(configManager.getConfig("Fortress.yml"),
+                    fortress.getName() + ".ENABLED", fortress.isEnabled());
 
         });
 

@@ -27,9 +27,14 @@ strings:
     \n[] &bOrari attivi : &rdalle &e{1}&r alle &e{2}&r"
   err_invalid_invade_position: "&cIl comando deve essere eseguito all'interno di una fortezza"
   err_invade_cooldown: "&cLa fortezza &e{0}&c potra' essere attaccata dal &e{1}&f"
+  err_fortress_occupied: "&cERRORE: La fortezza e' sotto attacco e non può essere modificata in questo momento"
+
 
   err_town_distance: "&cDistanza inferiore a &e{0}&c chunk dalle seguenti città : &e{1}&f"
   err_fortress_distance: "&cDistanza inferiore a &e{0}&c chunk dalle seguenti fortezze : &e{1}&f"
+
+  err_invalid_town_name: "&cNessuna citta' con questo nome"
+  err_invalid_input_value: "&cIl valore inserito non è applicabile"
 
   err_no_battle_is_running: "&cNessuna battaglia in corso su &e{0}"
 
@@ -38,6 +43,7 @@ strings:
 
   success_reload: "Reload effettuato"
   success_fortress_created: "Fortezza &e{0}&r creata"
+  success_message: "Modifica effettuata correttamente"
 
   fortress_info: "[] &bNOME FORTEZZA : &e{0}&r
     \n[] &bPROPRIETARIO ATTUALE : &e{1}&r
@@ -80,6 +86,7 @@ strings:
   reload_command: "&6Ricarica i settings (Staff)"
   stop_command: "&6Permette di annullare una battaglia attualmente in corso (Staff)"
   teleport_command: "&6Permette di teletrasportarsi in una fortezza (Staff)"
+  set_command: "&6Permette di modificare il proprietario e/o l'exp di una fortezza oltre che ad abilitarla o disabilitarla (Staff)"
 
   info_command: "&6Restituisce informazioni su una fortezza"
   invade_command: "&6Comando da utilizzare per invadere una fortezza (Solo sindaco)"

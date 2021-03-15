@@ -35,12 +35,16 @@ public enum Message {
     ERR_FORTRESS_DISTANCE("err_fortress_distance",true),
     ERR_BLOCK_EVENT("err_block_event",true),
     ERR_NOT_PART_OF_A_TOWN("err_not_part_of_a_town",true),
+    ERR_INVALID_TOWN_NAME("err_invalid_town_name",true),
+    ERR_INVALID_INPUT_VALUE("err_invalid_input_value",true),
+    ERR_FORTRESS_OCCUPIED("err_fortress_occupied",true),
 
     TELEPORT_DEATH_EVENT("teleport_death_event",true),
 
     SUCCESS_RELOAD("success_reload",true),
     SUCCESS_FORTRESS_CREATED("success_fortress_created",true),
     SUCCESS_FORTRESS_DELETED("fortress_deleted",true),
+    SUCCESS_MESSAGE("success_message",true),
 
     FORTRESS_INFO("fortress_info",false),
     FORTRESS_RETURN_FREE("fortress_return_free",true),
@@ -67,6 +71,7 @@ public enum Message {
     RELOAD_COMMAND("reload_command",false),
     STOP_COMMAND("stop_command",false),
     TELEPORT_COMMAND("teleport_command", false),
+    SET_COMMAND("set_command",false),
     INFO_COMMAND("info_command",false),
     INVADE_COMMAND("invade_command",false);
 

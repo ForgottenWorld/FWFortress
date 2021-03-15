@@ -16,5 +16,7 @@ public class CommandName {
 
     public static String TELEPORT_CMD = "tp";
 
+    public static String SET_CMD = "set";
+
 
 }

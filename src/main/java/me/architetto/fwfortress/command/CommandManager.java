@@ -26,6 +26,8 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new ReloadCommand());
         subcommands.add(new StopCommand());
         subcommands.add(new TeleportCommand());
+        //TEST
+        subcommands.add(new SetCommand());
     }
 
     @SuppressWarnings("NullableProblems")
@@ -106,7 +108,7 @@ public class CommandManager implements TabExecutor{
             return NameUtil.filterByStart(subcommandsArguments,argChar);
 
         }else if (args.length >= 2) {
-            argChar = args[1];
+            argChar = args[args.length - 1];
 
             for (int i = 0; i < getSubcommands().size(); i++) {
                 if (args[0].equalsIgnoreCase(getSubcommands().get(i).getName())) {

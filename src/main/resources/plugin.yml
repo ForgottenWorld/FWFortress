@@ -20,6 +20,9 @@ permissions:
   fwfortress.reload:
     description: reload command permission
     default: op
+  fwfortress.set:
+    description: set command permission
+    default: op
   fwfortress.stop:
     description: stop command permission
     default: op
