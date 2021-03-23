@@ -5,6 +5,7 @@ import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.CommandManager;
 import me.architetto.fwfortress.config.ConfigManager;
 import me.architetto.fwfortress.config.SettingsHandler;
+import me.architetto.fwfortress.echelon.EchelonService;
 import me.architetto.fwfortress.listener.FortressCreationListener;
 import me.architetto.fwfortress.listener.PlayerListener;
 import me.architetto.fwfortress.listener.TownListener;
@@ -46,6 +47,8 @@ public final class FWFortress extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[]" + ChatColor.RESET + " Loading fortresses...");
         loadFortress();
 
+        loadEchelon();
+
         TaskService.getInstance().schedulePositionTask();
 
         Bukkit.getConsoleSender().sendMessage("=============================================================");
@@ -85,6 +88,20 @@ public final class FWFortress extends JavaPlugin {
 
     public void loadLocalization() {
         LocalizationManager.getInstance().loadLanguageFile();
+    }
+
+    public void loadEchelon() {
+        if (Bukkit.getPluginManager().getPlugin("FWEchelon") != null) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "[]" + ChatColor.RESET + " Loading FWEchelon ...");
+            if (EchelonService.getInstance().loadEchelonService()) {
+                SettingsHandler.getInstance().setFwechelon(true);
+                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "   +" + ChatColor.RESET + "  FWEchelon enabled!");
+            } else {
+                SettingsHandler.getInstance().setFwechelon(false);
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "   -" + ChatColor.RESET + "  ERROR: FWEchelon not enabled");
+            }
+        } else
+            SettingsHandler.getInstance().setFwechelon(false);
     }
 
 

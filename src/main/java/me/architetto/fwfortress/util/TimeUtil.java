@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class TimeUtil {
 
@@ -21,5 +22,11 @@ public class TimeUtil {
         return settingsHandler.getDate().contains(dayName)
                 && dateTime.getHour() > settingsHandler.getTime().get(0)
                 && dateTime.getHour() < settingsHandler.getTime().get(1);
+    }
+
+    public static String formatSeconds(int s) {
+        return String.format("%d:%d",
+                TimeUnit.SECONDS.toMinutes(s),
+                s - (TimeUnit.SECONDS.toMinutes(s) * 60));
     }
 }

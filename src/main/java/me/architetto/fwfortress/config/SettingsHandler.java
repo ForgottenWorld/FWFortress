@@ -11,6 +11,8 @@ public class SettingsHandler {
 
     private static SettingsHandler instance;
 
+    private boolean fwechelon;
+
     private int fortressHP;
     private int battleTimeLimit;
     private int startBattleDelay;
@@ -105,6 +107,14 @@ public class SettingsHandler {
 
         FortressService.getInstance().clearFortressContainer();
         loadFortress();
+    }
+
+    public boolean isFWEchelonLoaded() {
+        return fwechelon;
+    }
+
+    public void setFwechelon(boolean enable) {
+        fwechelon = enable;
     }
 
     public int getFortressHP() { return this.fortressHP; }

@@ -6,8 +6,10 @@ import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.FWFortress;
 import me.architetto.fwfortress.battle.util.Countdown;
 import me.architetto.fwfortress.config.SettingsHandler;
+import me.architetto.fwfortress.echelon.EchelonService;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.localization.Message;
+import me.architetto.fwfortress.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -86,7 +88,7 @@ public class Battle {
 
                     bossBar = Bukkit
                             .createBossBar(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFormattedName(),
-                                    SettingsHandler.getInstance().getStartBattleDelay()),
+                                    TimeUtil.formatSeconds(SettingsHandler.getInstance().getStartBattleDelay())),
                                     BarColor.YELLOW, BarStyle.SOLID);
 
                     bossBar.setProgress(0);
@@ -113,9 +115,18 @@ public class Battle {
                 (s) -> {
 
                     bossBar.setTitle(Message.BOSSBAR_COUNTDOWN_FORMAT.asString(fortress.getFormattedName(),
-                            s.getSecondsLeft()));
+                            TimeUtil.formatSeconds(s.getSecondsLeft())));
 
                     bossBar.setProgress((float) (s.getTotalSeconds() - s.getSecondsLeft()) / s.getTotalSeconds());
+
+                    if (invadersUUID.isEmpty()) {
+                        Message.BATTLE_ENDED_BROADCAST1.broadcast(fortress.getFormattedName());
+
+                        BattleService.getInstance().resolveBattle(fortress,
+                                fortress.getOwner(),
+                                0);
+
+                    }
 
                 });
 
@@ -146,7 +157,7 @@ public class Battle {
                     mutableHP = Math.max(0, mutableHP - Math.min(maxDamageForSeconds, countGreenBoxInvaders()));
 
                     bossBar.setTitle(Message.BOSSBAR_FORMAT.asString(fortress.getFormattedName(),
-                            s.getSecondsLeft(),
+                            TimeUtil.formatSeconds(s.getSecondsLeft()),
                             mutableHP));
 
                     bossBar.setProgress((float) mutableHP / staticHP);
@@ -216,6 +227,15 @@ public class Battle {
     }
 
     public void stopBattle() {
+        if (SettingsHandler.getInstance().isFWEchelonLoaded()) {
+            EchelonService echelonService = EchelonService.getInstance();
+            if (!invadersUUID.isEmpty())
+                invadersUUID.stream()
+                        .map(Bukkit::getPlayer)
+                        .filter(Objects::nonNull)
+                        .forEach(echelonService::removePlayerMutexActivity);
+        }
+
         this.bossBar.removeAll();
         Bukkit.getScheduler().cancelTask(this.firstTaskID);
         Bukkit.getScheduler().cancelTask(this.secondTaskID);
@@ -231,10 +251,18 @@ public class Battle {
         return invadersUUID.contains(uuid);
     }
 
+    public boolean isTownInvolved(String townname) {
+        return invadersTown.getName().equals(townname) || defendersTown.getName().equals(townname);
+    }
+
+    public void addPlayerToBossBar(Player player) {
+        bossBar.addPlayer(player);
+    }
+
     public void removeInvaders(Player player) {
-        //todo: la bossbar viene tolta solo al termine della battaglia
-        //bossBar.removePlayer(player);
         invadersUUID.remove(player.getUniqueId());
+        if (SettingsHandler.getInstance().isFWEchelonLoaded())
+            EchelonService.getInstance().removePlayerMutexActivity(player);
     }
         
 

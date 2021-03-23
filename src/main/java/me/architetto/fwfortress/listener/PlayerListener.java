@@ -1,5 +1,7 @@
 package me.architetto.fwfortress.listener;
 
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
@@ -117,6 +119,24 @@ public class PlayerListener implements Listener {
                 event.getPlayer().setHealth(0);
             }
         });
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST,ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+
+        String townName;
+
+        try {
+            townName = TownyAPI.getInstance().getDataSource().getResident(event.getPlayer().getName()).getTown().getName();
+        } catch (NotRegisteredException e) {
+            return;
+        }
+
+        battleService.getCurrentBattle().forEach(battle -> {
+            if (battle.isTownInvolved(townName))
+                battle.addPlayerToBossBar(event.getPlayer());
+            });
+
     }
 
 }

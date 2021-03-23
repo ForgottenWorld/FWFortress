@@ -5,16 +5,20 @@ import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.Fortress;
+import me.architetto.fwfortress.fortress.FortressParticleEffects;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.MessageUtil;
 import me.architetto.fwfortress.command.CommandName;
 import me.architetto.fwfortress.localization.Message;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +48,10 @@ public class InfoCommand extends SubCommand {
     public int getArgsRequired() {
         return 1;
     }
+
+    private static final List<String> param = Collections.singletonList(
+            "-z"
+    );
 
     @Override
     public void perform(Player sender, String[] args) {
@@ -99,6 +107,15 @@ public class InfoCommand extends SubCommand {
         Message.FORTRESS_INFO.send(sender,fortress.getFormattedName(),owner,lastBattleDate,
                 fortress.getExperience(),fortress.getFormattedLocation(),fortress.isEnabled());
         sender.sendMessage(MessageUtil.chatFooter());
+
+        if (args.length == 3
+                && sender.getGameMode().equals(GameMode.CREATIVE)
+                && args[2].equalsIgnoreCase("-z")) {
+            Location location = fortress.getLocation();
+            FortressParticleEffects.getInstance().fortressGreenAreaEffect(location);
+            FortressParticleEffects.getInstance().fortressBlueAreaEffect(location);
+        }
+
     }
 
     @Override
@@ -107,7 +124,8 @@ public class InfoCommand extends SubCommand {
         if (args.length == 2) {
             return FortressService.getInstance().getFortressContainer().stream()
                     .map(Fortress::getName).collect(Collectors.toList());
-        }
+        } else if (args.length == 3 && player.getGameMode().equals(GameMode.CREATIVE))
+            return param;
 
         return null;
     }

@@ -4,6 +4,7 @@ import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.command.CommandName;
+import me.architetto.fwfortress.echelon.EchelonService;
 import me.architetto.fwfortress.localization.LocalizationManager;
 import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
@@ -49,6 +50,9 @@ public class ReloadCommand extends SubCommand {
         LocalizationManager.getInstance().reload();
 
         Message.SUCCESS_RELOAD.send(sender);
+
+        if (SettingsHandler.getInstance().isFWEchelonLoaded())
+            EchelonService.getInstance().forceRemoveAllPlayersFromFortressActivity();
 
     }
 

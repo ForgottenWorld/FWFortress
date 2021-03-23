@@ -4,6 +4,8 @@ main: me.architetto.fwfortress.FWFortress
 api-version: 1.16
 authors: [ Architetto ]
 depend: [ Towny ]
+softdepend:
+  - FWEchelon
 commands:
   fwfortress:
     description: Plugin per la gestione delle fortezze.

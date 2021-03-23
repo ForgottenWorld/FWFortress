@@ -39,6 +39,7 @@ strings:
   err_no_battle_is_running: "&cNessuna battaglia in corso su &e{0}"
 
   err_block_event: "&cNon puoi costruire e/o distruggere blocchi in una fortezza"
+
   teleport_death_event: "&cNon puoi fuggire dalla battaglia. Mi disp"
 
   success_reload: "Reload effettuato"
@@ -90,3 +91,6 @@ strings:
 
   info_command: "&6Restituisce informazioni su una fortezza"
   invade_command: "&6Comando da utilizzare per invadere una fortezza (Solo sindaco)"
+
+  #FWEchelon messages
+  err_echelon_activity: "&cNon puoi partecipare all'invasione perche' sei gia' in una attivita' : &e{0}"

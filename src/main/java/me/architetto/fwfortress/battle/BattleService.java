@@ -1,8 +1,11 @@
 package me.architetto.fwfortress.battle;
 
 import com.palmergames.bukkit.towny.object.Town;
+import me.architetto.fwfortress.config.SettingsHandler;
+import me.architetto.fwfortress.echelon.EchelonService;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
+import org.bukkit.Bukkit;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +32,13 @@ public class BattleService {
     }
 
     public void startBattle(Fortress fortress, Town enemyTown, Set<UUID> enemies, Town defendersTown) {
+
+        if (SettingsHandler.getInstance().isFWEchelonLoaded()) {
+            EchelonService echelonService = EchelonService.getInstance();
+            enemies.stream()
+                    .map(Bukkit::getPlayer)
+                    .forEach(echelonService::addPlayerMutexActivity);
+        }
 
         Battle battle = new Battle(fortress, enemyTown, enemies, defendersTown);
 

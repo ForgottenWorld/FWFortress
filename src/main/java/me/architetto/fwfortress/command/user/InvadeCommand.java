@@ -7,11 +7,13 @@ import com.palmergames.bukkit.towny.object.Town;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.command.SubCommand;
 import me.architetto.fwfortress.config.SettingsHandler;
+import me.architetto.fwfortress.echelon.EchelonService;
 import me.architetto.fwfortress.fortress.Fortress;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.util.TimeUtil;
 import me.architetto.fwfortress.command.CommandName;
 import me.architetto.fwfortress.localization.Message;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -154,6 +156,19 @@ public class InvadeCommand extends SubCommand {
 
         Set<UUID> invadersUUID = getInvaders(optFortress.get(), invaderTown);
 
+        if (settingsHandler.isFWEchelonLoaded()) {
+            EchelonService echelonService = EchelonService.getInstance();
+            new HashSet<>(invadersUUID).stream()
+                    .map(Bukkit::getPlayer)
+                    .filter(Objects::nonNull)
+                    .forEach(player -> {
+                        if (echelonService.isPlayerInMutexActivity(player)) {
+                            invadersUUID.remove(player.getUniqueId());
+                            Message.ERR_ECHELON_ACTIVITY.send(player,echelonService.getPlayerMutexActivityName(player));
+                        }
+                    });
+        }
+
         if (invadersUUID.size() < settingsHandler.getMinInvaders()) {
             Message.ERR_INSUFFICIENT_INVADERS.send(sender,settingsHandler.getMinInvaders());
             return;
@@ -175,9 +190,7 @@ public class InvadeCommand extends SubCommand {
 
         Set<UUID> resUUID = invadersTown.getResidents()
                 .stream()
-                .map(Resident::getPlayer)
-                .filter(Objects::nonNull)
-                .map(Player::getUniqueId)
+                .map(Resident::getUUID)
                 .collect(Collectors.toSet());
 
         World world = fortress.getLocation().getWorld();

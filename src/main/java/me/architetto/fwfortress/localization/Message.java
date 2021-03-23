@@ -73,7 +73,10 @@ public enum Message {
     TELEPORT_COMMAND("teleport_command", false),
     SET_COMMAND("set_command",false),
     INFO_COMMAND("info_command",false),
-    INVADE_COMMAND("invade_command",false);
+    INVADE_COMMAND("invade_command",false),
+
+    //FWEchelon messages
+    ERR_ECHELON_ACTIVITY("err_echelon_activity",true);
 
     private final String message;
     private final boolean showPrefix;
