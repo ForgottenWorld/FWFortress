@@ -29,7 +29,7 @@ public class PlayerListener implements Listener {
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
-                .getFortress(event.getBlock().getChunk().getChunkKey());
+                .getFortress(event.getBlock().getChunk().getChunkKey(),event.getBlock().getWorld().getUID());
 
         if (fortress.isPresent()) {
             Message.ERR_BLOCK_EVENT.send(event.getPlayer());
@@ -45,7 +45,7 @@ public class PlayerListener implements Listener {
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
-                .getFortress(event.getBlock().getChunk().getChunkKey());
+                .getFortress(event.getBlock().getChunk().getChunkKey(),event.getBlock().getWorld().getUID());
 
         if (fortress.isPresent()) {
             Message.ERR_BLOCK_EVENT.send(event.getPlayer());
@@ -61,7 +61,7 @@ public class PlayerListener implements Listener {
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
-                .getFortress(event.getBlock().getChunk().getChunkKey());
+                .getFortress(event.getBlock().getChunk().getChunkKey(),event.getBlock().getWorld().getUID());
 
         if (fortress.isPresent()) {
             Message.ERR_BLOCK_EVENT.send(event.getPlayer());
@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
             return;
 
         Optional<Fortress> fortress = FortressService.getInstance()
-                .getFortress(event.getBlock().getChunk().getChunkKey());
+                .getFortress(event.getBlock().getChunk().getChunkKey(),event.getBlock().getWorld().getUID());
 
         if (fortress.isPresent()) {
             Message.ERR_BLOCK_EVENT.send(event.getPlayer());

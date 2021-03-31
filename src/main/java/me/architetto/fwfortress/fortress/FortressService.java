@@ -75,9 +75,10 @@ public class FortressService {
                 .filter(fortress -> fortress.getName().contains(name)).findFirst();
     }
 
-    public Optional<Fortress> getFortress(long chunkKey) {
+    public Optional<Fortress> getFortress(long chunkKey, UUID worldUUID) {
         return fortressContainer.stream()
-                .filter(fortress -> fortress.getCunkKeys().contains(chunkKey)).findFirst();
+                .filter(fortress -> fortress.getCunkKeys().contains(chunkKey)
+                        && fortress.getLightLocation().getWorldUUID().equals(worldUUID)).findFirst();
     }
 
     public Set<Fortress> getFortressContainer() {

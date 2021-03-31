@@ -21,7 +21,7 @@ public class PositionTask {
                         .forEach(player -> {
 
                             Optional<Fortress> fortress = FortressService.getInstance()
-                                    .getFortress(player.getLocation().getChunk().getChunkKey());
+                                    .getFortress(player.getLocation().getChunk().getChunkKey(),player.getWorld().getUID());
 
                             if (fortress.isPresent()) {
                                 if (!uuids.contains(player.getUniqueId())) {

@@ -69,6 +69,10 @@ public class Fortress {
         return lightLocation.loc().toCenterLocation();
     }
 
+    public LightLocation getLightLocation() {
+        return lightLocation;
+    }
+
     public String getFormattedLocation() {
         Location location = lightLocation.loc();
         return ChatColor.AQUA + "[X] " + ChatColor.YELLOW + location.getBlockX() +

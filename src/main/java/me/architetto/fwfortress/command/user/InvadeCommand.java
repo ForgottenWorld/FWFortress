@@ -58,7 +58,7 @@ public class InvadeCommand extends SubCommand {
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
         Optional<Fortress> optFortress = FortressService.getInstance()
-                .getFortress(sender.getLocation().getChunk().getChunkKey());
+                .getFortress(sender.getLocation().getChunk().getChunkKey(), sender.getWorld().getUID());
 
         if (!optFortress.isPresent()) {
             Message.ERR_INVALID_INVADE_POSITION.send(sender);
