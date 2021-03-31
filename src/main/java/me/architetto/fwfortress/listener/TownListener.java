@@ -8,30 +8,18 @@ import me.architetto.fwfortress.config.SettingsHandler;
 import me.architetto.fwfortress.fortress.FortressCreationService;
 import me.architetto.fwfortress.fortress.FortressService;
 import me.architetto.fwfortress.localization.Message;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 public class TownListener implements Listener {
 
     @EventHandler
     public void onTownDelete(PreDeleteTownEvent event) {
 
-        FortressService fortressService = FortressService.getInstance();
-        fortressService.getFortressContainer()
-                .stream()
-                .filter(fortress -> fortress.getOwner() != null && fortress.getOwner().equals(event.getTownName()))
-                .forEach(fortress -> {
-                    fortress.setOwner(null);
-                    fortressService.updateFortress(fortress);
-                    Message.FORTRESS_RETURN_FREE.broadcast(fortress.getFormattedName(), event.getTown().getFormattedName());
-                });
-
+        FortressService.getInstance().dispossessFortressesFromTown(event.getTown());
     }
 
     @EventHandler
@@ -59,21 +47,7 @@ public class TownListener implements Listener {
 
     @EventHandler
     public void onRenameTown(TownPreRenameEvent event) {
-        FortressService fortressService = FortressService.getInstance();
-        fortressService.getFortressContainer()
-                .stream()
-                .filter(fortress -> fortress.getOwner() != null && fortress.getOwner().equals(event.getOldName()))
-                .forEach(fortress -> {
-                    fortress.setOwner(event.getNewName());
-                    fortressService.updateFortress(fortress);
-
-                    //LOG
-                    Bukkit.getLogger().log(Level.INFO, ChatColor.YELLOW + "[RenameTownEvent]" + ChatColor.RESET +
-                            " Changed fortress owner name from " + ChatColor.YELLOW + event.getOldName()
-                            + ChatColor.RESET + " to " + ChatColor.YELLOW + event.getNewName()
-                            + ChatColor.RESET);
-
-                });
+        FortressService.getInstance().handleTownRename(event.getOldName(), event.getNewName());
     }
 
     @EventHandler(priority = EventPriority.LOW,ignoreCancelled = true)

@@ -14,7 +14,7 @@ public class BattleService {
 
     private static BattleService battleService;
 
-    private HashMap<String,Battle> battleContainer;
+    private final HashMap<String,Battle> battleContainer;
 
     private BattleService() {
         if(battleService != null) {

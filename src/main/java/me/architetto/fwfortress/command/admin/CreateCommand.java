@@ -8,7 +8,6 @@ import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.List;
 
 public class CreateCommand extends SubCommand {
 
@@ -42,8 +41,7 @@ public class CreateCommand extends SubCommand {
 
         String fortressName = String.join("_", Arrays.copyOfRange(args, 1, args.length));
 
-        if (FortressService.getInstance().getFortressContainer()
-                .stream().anyMatch(f-> f.getName().equals(fortressName))) {
+        if (FortressService.getInstance().getFortress(fortressName).isPresent()) {
 
             Message.ERR_FORTRESS_NAME_ALREADY_EXIST.send(sender,fortressName);
             return;

@@ -19,7 +19,7 @@ import java.util.Optional;
 
 public class PlayerListener implements Listener {
 
-    BattleService battleService = BattleService.getInstance();
+    final BattleService battleService = BattleService.getInstance();
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {

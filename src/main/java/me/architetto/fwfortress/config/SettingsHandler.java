@@ -63,7 +63,10 @@ public class SettingsHandler {
 
         this.battleCountdown = TimeUnit.HOURS.toMillis(configManager.getLong(configManager.getConfig("Settings.yml"),"BATTLE_COOLDOWN"));
 
+        //noinspection unchecked
         this.date = (List<String>) configManager.getList(configManager.getConfig("Settings.yml"),"DATE"); //OK
+
+        //noinspection unchecked
         this.time = (List<Integer>) configManager.getList(configManager.getConfig("Settings.yml"),"TIME_RANGE"); //OK
 
         this.invadeAlliedFortress = configManager.getBoolean(configManager.getConfig("Settings.yml"),"ALLOW_INVADE_ALLIED_FORTRESS");
@@ -88,6 +91,7 @@ public class SettingsHandler {
 
         for (String fortressName : configurationSection.getKeys(false)) {
 
+            //noinspection unchecked
             fortressCreationService.loadFortress(fortressName,
                     configManager.getStringRaw(configManager.getConfig("Fortress.yml"),fortressName + ".OWNER"),
                     configManager.getLocation(configManager.getConfig("Fortress.yml"), fortressName + ".FORTRESS_POSITION"),

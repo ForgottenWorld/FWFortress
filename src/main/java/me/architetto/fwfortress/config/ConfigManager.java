@@ -16,8 +16,8 @@ public class ConfigManager{
 
     private static ConfigManager single_inst = null;
 
-    private ArrayList<FileConfiguration> customConfigs = new ArrayList<>();
-    private ArrayList<String> configNames = new ArrayList<>();
+    private final ArrayList<FileConfiguration> customConfigs = new ArrayList<>();
+    private final ArrayList<String> configNames = new ArrayList<>();
     private Plugin plugin = null;
 
     public void setPlugin(Plugin plugin) {
@@ -44,6 +44,7 @@ public class ConfigManager{
         FileConfiguration fileConfiguration;
         File configFile = new File(plugin.getDataFolder(), name);
         if (!configFile.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             configFile.getParentFile().mkdirs();
             plugin.saveResource(name, false);
         }

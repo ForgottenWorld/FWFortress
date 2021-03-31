@@ -36,7 +36,7 @@ public class MessageUtil {
     public static String rewritePlaceholders(String input) {
         int i = 0;
         while (input.contains("{}")) {
-            input = input.replaceFirst("\\{\\}", "{" + i++ + "}");
+            input = input.replaceFirst("\\{}", "{" + i++ + "}");
         }
         return input;
     }

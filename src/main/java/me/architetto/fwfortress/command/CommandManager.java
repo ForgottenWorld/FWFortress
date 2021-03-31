@@ -89,7 +89,7 @@ public class CommandManager implements TabExecutor{
     @SuppressWarnings("NullableProblems")
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        String argChar = "";
+        String argChar;
 
         if (args.length == 1) {
             argChar = args[0];

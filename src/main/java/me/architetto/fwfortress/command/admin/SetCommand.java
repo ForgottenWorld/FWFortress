@@ -160,10 +160,7 @@ public class SetCommand extends SubCommand {
     public List<String> getSubcommandArguments(Player player, String[] args) {
 
         if (args.length == 2)
-            return FortressService.getInstance().getFortressContainer()
-                    .stream()
-                    .map(Fortress::getName)
-                    .collect(Collectors.toList());
+            return FortressService.getInstance().getFortressNames();
         else if (args.length == 3)
             return setOptions;
         else if (args.length == 4) {

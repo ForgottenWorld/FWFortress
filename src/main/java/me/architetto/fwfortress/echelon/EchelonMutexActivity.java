@@ -6,6 +6,8 @@ import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.localization.Message;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
+
 public class EchelonMutexActivity implements MutexActivity {
 
     @Override
