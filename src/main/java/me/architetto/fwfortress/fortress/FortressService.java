@@ -115,7 +115,7 @@ public class FortressService {
     }
 
     public void dispossessFortressesFromTown(Town town) {
-        List<Fortress> fortresses = fortressesByTownName.get(town.getName());
+        List<Fortress> fortresses = fortressesByTownName.remove(town.getName());
         if (fortresses == null) return;
         for (Fortress fortress : fortresses) {
             fortress.setOwner(null);
