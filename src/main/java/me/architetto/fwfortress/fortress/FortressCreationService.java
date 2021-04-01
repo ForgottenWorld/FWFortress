@@ -18,8 +18,8 @@ public class FortressCreationService {
 
     private static FortressCreationService fortressCreationService;
 
-    private HashMap<UUID, String> playerFortressNameCreation;
-    private List<UUID> playerCreationMode;
+    private final HashMap<UUID, String> playerFortressNameCreation;
+    private final List<UUID> playerCreationMode;
 
     private FortressCreationService() {
         if(fortressCreationService != null) {
@@ -82,7 +82,7 @@ public class FortressCreationService {
 
         Fortress fortress = new Fortress(fortressName, owner, fortressPosition, lastBattle, experience, chunkKeys, enabled);
 
-        FortressService.getInstance().getFortressContainer().add(fortress);
+        FortressService.getInstance().addFortress(fortress);
 
     }
 
@@ -90,7 +90,7 @@ public class FortressCreationService {
 
         Fortress fortress = new Fortress(fortressName, null, fortressPosition,0, 0 , chunkKeys, true);
 
-        FortressService.getInstance().getFortressContainer().add(fortress);
+        FortressService.getInstance().addFortress(fortress);
 
         FortressService.getInstance().saveFortress(fortress);
 
@@ -133,15 +133,9 @@ public class FortressCreationService {
     }
 
     public Set<String> checkFortressDistance(WorldCoord worldCoord) {
-        SettingsHandler settingsHandler = SettingsHandler.getInstance();
+        int minFortressDistance = SettingsHandler.getInstance().getMinFortressDistance();
 
-        return FortressService.getInstance().getFortressContainer()
-                .stream()
-                .filter(f -> f.getLocation().getWorld().getName().equals(worldCoord.getWorldName()))
-                .filter(f -> CoordUtil.distance(worldCoord.getCoord(),f.getCoord()) < settingsHandler.getMinFortressDistance())
-                .map(Fortress::getFormattedName)
-                .collect(Collectors.toSet());
-
+        return FortressService.getInstance().getFortressesWithinDistanceFromCoord(worldCoord, minFortressDistance);
     }
 
     private List<Long> area5x5ChunkKeys(Location location) {

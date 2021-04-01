@@ -18,6 +18,6 @@ public abstract class SubCommand {
 
     public abstract void perform(Player sender, String[] args);
 
-    public abstract List<String> getSubcommandArguments(Player player, String args[]);
+    public abstract List<String> getSubcommandArguments(Player player, String[] args);
 
 }

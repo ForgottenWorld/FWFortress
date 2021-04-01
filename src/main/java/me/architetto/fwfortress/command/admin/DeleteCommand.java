@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DeleteCommand extends SubCommand {
     @Override
@@ -81,8 +80,7 @@ public class DeleteCommand extends SubCommand {
     public List<String> getSubcommandArguments(Player player, String[] args) {
 
         if (args.length == 2) {
-            return FortressService.getInstance().getFortressContainer().stream()
-                    .map(Fortress::getName).collect(Collectors.toList());
+            return FortressService.getInstance().getFortressNames();
         }
 
         return null;

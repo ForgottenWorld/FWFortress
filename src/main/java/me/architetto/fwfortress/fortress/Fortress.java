@@ -117,7 +117,7 @@ public class Fortress {
         return new BoundingBox(b1.getX(), b1.getY(), b1.getZ(), b2.getX(), b2.getY(), b2.getZ());
     }
 
-    public Set<Long> getCunkKeys() {
+    public Set<Long> getChunkKeys() {
         return this.chunkKeys;
     }
 

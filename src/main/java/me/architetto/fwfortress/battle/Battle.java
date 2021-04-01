@@ -24,15 +24,15 @@ import java.util.*;
 @SuppressWarnings("FieldMayBeFinal")
 public class Battle {
 
-    private Fortress fortress;
-    private Town defendersTown;
-    private Town invadersTown;
-    private Set<UUID> invadersUUID;
-    private BoundingBox greenBox;
-    private BoundingBox blueBox;
+    private final Fortress fortress;
+    private final Town defendersTown;
+    private final Town invadersTown;
+    private final Set<UUID> invadersUUID;
+    private final BoundingBox greenBox;
+    private final BoundingBox blueBox;
     private BossBar bossBar;
 
-    private int staticHP;
+    private final int staticHP;
     private int mutableHP;
 
     private int firstTaskID;
@@ -207,7 +207,7 @@ public class Battle {
                 .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
                 .map(player -> player.getLocation().toVector())
-                .filter(vector -> greenBox.contains(vector))
+                .filter(greenBox::contains)
                 .count());
 
     }

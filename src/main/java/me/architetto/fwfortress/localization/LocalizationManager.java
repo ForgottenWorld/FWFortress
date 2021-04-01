@@ -2,16 +2,18 @@ package me.architetto.fwfortress.localization;
 
 import me.architetto.fwfortress.config.ConfigManager;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LocalizationManager {
 
     private static LocalizationManager localizationManager;
 
-    private Map<String, String> strings;
+    private final Map<String, String> strings;
 
     private LocalizationManager() {
         if (localizationManager != null){
@@ -31,8 +33,8 @@ public class LocalizationManager {
     public void loadLanguageFile() {
 
         FileConfiguration localization = ConfigManager.getInstance().getConfig("Messages.yml");
-
-        for (String key : localization.getConfigurationSection("strings").getKeys(false)) {
+        ConfigurationSection strings = Objects.requireNonNull(localization.getConfigurationSection("strings"));
+        for (String key : strings.getKeys(false)) {
             this.strings.put(key, localization.getString("strings." + key));
         }
     }

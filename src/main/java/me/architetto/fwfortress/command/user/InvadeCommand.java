@@ -197,7 +197,7 @@ public class InvadeCommand extends SubCommand {
 
         Set<UUID> invaders = new HashSet<>();
 
-        fortress.getCunkKeys().forEach(key -> {
+        fortress.getChunkKeys().forEach(key -> {
 
             Chunk chunk = world.getChunkAt(key);
             invaders.addAll(Arrays.stream(chunk.getEntities())
