@@ -33,6 +33,8 @@ public class SettingsHandler {
     private int glowPeriod;
     private int glowDuration;
 
+    private boolean leaveIfTownRuined;
+
     private SettingsHandler() {
         if(instance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
@@ -75,6 +77,7 @@ public class SettingsHandler {
         this.glowPeriod = configManager.getInt(configManager.getConfig("Settings.yml"),"INVADERS_GLOWING_EFFECT.seconds_period");
         this.glowDuration = configManager.getInt(configManager.getConfig("Settings.yml"),"INVADERS_GLOWING_EFFECT.duration_tick");
 
+        this.leaveIfTownRuined = configManager.getBoolean(configManager.getConfig("Settings.yml"),"LEAVE_FORTRESS_IF_TOWN_IN_RUIN");
     }
 
     public void loadFortress() {
@@ -146,6 +149,10 @@ public class SettingsHandler {
     public List<Integer> getTime() { return this.time; }
 
     public boolean allowInvadeAlliedFortress() { return this.invadeAlliedFortress; }
+
+    public boolean isLeaveIfTownRuined() {
+        return leaveIfTownRuined;
+    }
 
     public boolean isGlowInvaders() { return this.glowInvaders; }
 

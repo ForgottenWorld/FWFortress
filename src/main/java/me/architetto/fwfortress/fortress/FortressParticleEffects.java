@@ -3,10 +3,7 @@ package me.architetto.fwfortress.fortress;
 import de.slikey.effectlib.EffectManager;
 import de.slikey.effectlib.effect.*;
 import me.architetto.fwfortress.FWFortress;
-import org.bukkit.Chunk;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Particle;
+import org.bukkit.*;
 
 public class FortressParticleEffects {
     
@@ -19,12 +16,12 @@ public class FortressParticleEffects {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
 
-        effectManager = new EffectManager(FWFortress.getPlugin(FWFortress.class));
+        this.effectManager = new EffectManager(FWFortress.getPlugin(FWFortress.class));
 
     }
 
     public static FortressParticleEffects getInstance() {
-        if(fortressParticleEffects == null) {
+        if (fortressParticleEffects == null) {
             fortressParticleEffects = new FortressParticleEffects();
         }
         return fortressParticleEffects;
@@ -39,22 +36,29 @@ public class FortressParticleEffects {
 
         Location cornerGreen = new Location(c.getWorld(),blockX - 16,location.getBlockY() + 3,blockZ - 16);
 
-        CuboidEffect greenArea = new CuboidEffect(effectManager);
-        greenArea.setLocation(cornerGreen);
-        greenArea.particle = Particle.REDSTONE;
-        greenArea.color = Color.GREEN;
-        greenArea.visibleRange = 70F;
-        greenArea.particleSize = 2;
-        greenArea.period = 10;
-        greenArea.xLength = 48;
-        greenArea.zLength = 48;
-        greenArea.yLength = 8;
-        greenArea.iterations = 30;
-        greenArea.start();
+        CuboidEffect cuboidEffect = new CuboidEffect(this.effectManager);
+
+        cuboidEffect.setLocation(cornerGreen);
+        cuboidEffect.setTargetLocation(cornerGreen);
+
+        cuboidEffect.particle = Particle.REDSTONE;
+        cuboidEffect.color = Color.OLIVE;
+        cuboidEffect.particleSize = 2;
+        cuboidEffect.particles = 40;
+
+        cuboidEffect.xLength = 48;
+        cuboidEffect.zLength = 48;
+        cuboidEffect.yLength = 8;
+
+        cuboidEffect.iterations = 100;
+        cuboidEffect.visibleRange = 70F;
+
+        cuboidEffect.start();
 
     }
 
     public void fortressBlueAreaEffect(Location location) {
+
         Chunk c = location.getChunk();
 
         int blockX = c.getX() << 4;
@@ -62,19 +66,24 @@ public class FortressParticleEffects {
 
         Location cornerBlue = new Location(c.getWorld(),blockX - 32,location.getBlockY() + 3,blockZ - 32);
 
-        CuboidEffect blueArea = new CuboidEffect(effectManager);
-        blueArea.setLocation(cornerBlue);
-        blueArea.particle = Particle.REDSTONE;
-        blueArea.color = Color.BLUE;
-        blueArea.visibleRange = 70F;
-        blueArea.particleSize = 2;
-        blueArea.particles = 24;
-        blueArea.period = 10;
-        blueArea.xLength = 80;
-        blueArea.zLength = 80;
-        blueArea.yLength = 8;
-        blueArea.iterations = 30;
-        blueArea.start();
+        CuboidEffect cuboidEffect = new CuboidEffect(this.effectManager);
+
+        cuboidEffect.setLocation(cornerBlue);
+        cuboidEffect.setTargetLocation(cornerBlue);
+
+        cuboidEffect.particle = Particle.REDSTONE;
+        cuboidEffect.color = Color.BLUE;
+        cuboidEffect.particleSize = 2;
+        cuboidEffect.particles = 50;
+
+        cuboidEffect.xLength = 80;
+        cuboidEffect.zLength = 80;
+        cuboidEffect.yLength = 8;
+
+        cuboidEffect.iterations = 100;
+        cuboidEffect.visibleRange = 70F;
+
+        cuboidEffect.start();
 
     }
 

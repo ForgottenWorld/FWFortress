@@ -20,7 +20,7 @@ public class TimeUtil {
         String dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
 
         return settingsHandler.getDate().contains(dayName)
-                && dateTime.getHour() > settingsHandler.getTime().get(0)
+                && dateTime.getHour() >= settingsHandler.getTime().get(0)
                 && dateTime.getHour() < settingsHandler.getTime().get(1);
     }
 

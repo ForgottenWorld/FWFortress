@@ -58,8 +58,10 @@ public class BattleService {
 
     public void resolveBattle(Fortress fortress, String newOwner, long exp) {
 
-        if (!fortress.getOwner().equals(newOwner))
+        if (!fortress.getOwner().equals(newOwner)) {
+            FortressService.getInstance().updateFortressByTownContainer(fortress.getOwner(), newOwner, fortress);
             fortress.setOwner(newOwner);
+        }
 
         fortress.setExperience(fortress.getExperience() + exp);
 

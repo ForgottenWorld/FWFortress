@@ -40,3 +40,6 @@ permissions:
   fwfortress.build:
     description: allow to build inside fortress area
     default: op
+  fwfortress.list:
+    description: fortresses list
+    default: op

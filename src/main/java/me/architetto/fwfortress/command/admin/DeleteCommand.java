@@ -56,7 +56,6 @@ public class DeleteCommand extends SubCommand {
         Fortress fortress = optFortress.get();
 
         if (fortress.getOwner() != null) {
-
             Town owner;
 
             try {

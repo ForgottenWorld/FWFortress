@@ -3,6 +3,7 @@ package me.architetto.fwfortress.command;
 import me.architetto.fwfortress.command.admin.*;
 import me.architetto.fwfortress.command.user.InfoCommand;
 import me.architetto.fwfortress.command.user.InvadeCommand;
+import me.architetto.fwfortress.command.user.ListCommand;
 import me.architetto.fwfortress.localization.Message;
 import me.architetto.fwfortress.util.NameUtil;
 import me.architetto.fwfortress.util.MessageUtil;
@@ -28,6 +29,7 @@ public class CommandManager implements TabExecutor{
         subcommands.add(new TeleportCommand());
         //TEST
         subcommands.add(new SetCommand());
+        subcommands.add(new ListCommand());
     }
 
     @SuppressWarnings("NullableProblems")

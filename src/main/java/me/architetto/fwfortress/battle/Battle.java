@@ -64,7 +64,7 @@ public class Battle {
                         settingsHandler.getStartBattleDelay()),
                         BarColor.YELLOW, BarStyle.SOLID);
 
-        this.staticHP = settingsHandler.getFortressHP(); //da config
+        this.staticHP = settingsHandler.getFortressHP();
         this.mutableHP = staticHP;
 
         this.fortressBorderDamage = settingsHandler.getFortressBorderDamage();

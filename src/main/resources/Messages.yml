@@ -64,11 +64,11 @@ strings:
 
   creation_mode_msg: "Indica la posizione della fortezza ... &8(CLICK DX con STICK equipaggiato)"
 
-  battle_allert_broadcast: "&8[G]&r La fortezza &e{0}&r protetta dalla citta' di &e{1}&r sta per essere attaccata!"
-  battle_start_broadcast: "&8[G]&r L'attacco alla fortezza &e{0}&r è cominciato!"
-  battle_ended_broadcast1: "&8[G]&r La fortezza &e{0}&r ha respinto egregiamente l'attacco"
+  battle_allert_broadcast: "&8[G]&r La fortezza &e{0}&r protetta dalla citta' di &e{1}&r sta per essere invasa!"
+  battle_start_broadcast: "&8[G]&r L'invasione alla fortezza &e{0}&r è iniziata!"
+  battle_ended_broadcast1: "&8[G]&r I difensori della fortezza &e{0}&r hanno respinto egregiamente l'invasione"
   battle_ended_broadcast2: "&8[G]&r La fortezza &e{0}&r e' caduta sotto il controllo di &e{1}&r"
-  battle_stopped: "&8[G]&r L'attacco alla fortezza &e{0}&r e' stato annullato"
+  battle_stopped: "&8[G]&r L'invasione alla fortezza &e{0}&r e' stato annullata"
 
   battle_leave_actionbar: "&c&lTORNA NELLA FORTEZZA"
 
@@ -91,6 +91,7 @@ strings:
 
   info_command: "&6Restituisce informazioni su una fortezza"
   invade_command: "&6Comando da utilizzare per invadere una fortezza (Solo sindaco)"
+  list_command: "&6Restituisce quante e quali fortezze sono possedute da ogni citta' presente"
 
   #FWEchelon messages
   err_echelon_activity: "&cNon puoi partecipare all'invasione perche' sei gia' in una attivita' : &e{0}"

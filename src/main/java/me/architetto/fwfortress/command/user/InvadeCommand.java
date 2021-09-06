@@ -107,6 +107,7 @@ public class InvadeCommand extends SubCommand {
         if (Objects.isNull(fortress.getOwner())) {
             fortress.setOwner(invaderTown.getName());
             fortress.setLastBattle(System.currentTimeMillis());
+            FortressService.getInstance().updateFortressByTownContainer(null,invaderTown.getName(),fortress);
             FortressService.getInstance().updateFortress(fortress);
             Message.FORTRESS_CLAIM_BROADCAST.broadcast(fortress.getFormattedName(),invaderTown.getFormattedName());
             return;

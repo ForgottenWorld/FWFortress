@@ -18,5 +18,8 @@ public class CommandName {
 
     public static final String SET_CMD = "set";
 
+    public static final String LIST_CMD = "list";
+
+
 
 }

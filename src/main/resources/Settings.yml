@@ -46,3 +46,5 @@ DATE: ['Mon','Tue','Wed','Thu','Fri','Sat' ,'Sun']
 TIME_RANGE: [18,22]
 
 ALLOW_INVADE_ALLIED_FORTRESS: false
+
+LEAVE_FORTRESS_IF_TOWN_IN_RUIN: true

@@ -192,6 +192,22 @@ public class FortressService {
     }
 
     public int countFortressesOwnedByTown(String townName) {
-        return this.fortressesByTownName.get(townName).size();
+        return this.fortressesByTownName.getOrDefault(townName, new ArrayList<>()).size();
     }
+
+    public List<Fortress> getFortressesOwnedByTown(String townName) {
+        return this.fortressesByTownName.getOrDefault(townName, new ArrayList<>());
+    }
+
+    public void updateFortressByTownContainer(String oldOwner, String newOwner, Fortress fortress) {
+        List<Fortress> townFortresses = fortressesByTownName.computeIfAbsent(
+                newOwner,
+                k -> new ArrayList<>()
+        );
+        if (oldOwner != null)
+            this.fortressesByTownName.get(oldOwner).remove(fortress);
+        townFortresses.add(fortress);
+
+    }
+
 }

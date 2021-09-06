@@ -74,6 +74,7 @@ public enum Message {
     SET_COMMAND("set_command",false),
     INFO_COMMAND("info_command",false),
     INVADE_COMMAND("invade_command",false),
+    LIST_COMMAND("list_command",false),
 
     //FWEchelon messages
     ERR_ECHELON_ACTIVITY("err_echelon_activity",true);

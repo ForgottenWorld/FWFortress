@@ -2,6 +2,7 @@ package me.architetto.fwfortress.listener;
 
 import com.palmergames.bukkit.towny.event.*;
 
+import com.palmergames.bukkit.towny.event.town.TownRuinedEvent;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 import me.architetto.fwfortress.battle.BattleService;
 import me.architetto.fwfortress.config.SettingsHandler;
@@ -43,6 +44,12 @@ public class TownListener implements Listener {
             event.setCancelled(true);
         }
 
+    }
+
+    @EventHandler
+    public void onTownRuined(TownRuinedEvent event) {
+        if (SettingsHandler.getInstance().isLeaveIfTownRuined())
+            FortressService.getInstance().dispossessFortressesFromTown(event.getTown());
     }
 
     @EventHandler
