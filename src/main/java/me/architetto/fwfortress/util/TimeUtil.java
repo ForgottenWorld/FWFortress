@@ -15,7 +15,7 @@ public class TimeUtil {
     public static boolean invadeTimeCheck() {
         SettingsHandler settingsHandler = SettingsHandler.getInstance();
 
-        ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/London"));
+        ZonedDateTime dateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/Rome"));
         DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
         String dayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
 

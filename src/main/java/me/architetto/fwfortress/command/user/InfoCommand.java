@@ -14,13 +14,13 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class InfoCommand extends SubCommand {
     @Override
@@ -65,8 +65,10 @@ public class InfoCommand extends SubCommand {
                     settingsHandler.getBattleTimeLimit(),
                     settingsHandler.getFortressHP(),
                     settingsHandler.getMaxDamageForSeconds(),
-                    settingsHandler.getBattleCountdown(),
-                    settingsHandler.allowInvadeAlliedFortress());
+                    TimeUnit.MILLISECONDS.toHours(settingsHandler.getBattleCountdown()),
+                    settingsHandler.allowInvadeAlliedFortress(),
+                    ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("Europe/Rome"))
+                            .format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
             sender.sendMessage(MessageUtil.chatFooter());
 
             return;

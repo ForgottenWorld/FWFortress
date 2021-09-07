@@ -56,11 +56,12 @@ strings:
   settings_info: "[] &bINVASIONI ATTIVE NEI GIORNI : &e{0}&r
     \n[] &bINVASIONI ATTIVE NELLA FASCIA ORARIA : &e{1}&r
     \n[] &bNUMERO MINIMO DI INVASORI : &e{2}&r
-    \n[] &bDURATA MASSIMA INVASIONE : &e{3}&r
+    \n[] &bDURATA MASSIMA INVASIONE : &e{3} secondi&r
     \n[] &bPUNTI SALUTE FORTEZZA : &e{4}&r
     \n[] &bDANNI MASSIMI AL SECONDO : &e{5}&r
-    \n[] &bCD INVASIONE (per fortezza) : &e{6}&r
-    \n[] &bINVASIONE FORTEZZE ALLEATE : &e{7}&r"
+    \n[] &bCD INVASIONI : &e{6} ore&r
+    \n[] &bINVASIONE FORTEZZE ALLEATE : &e{7}&r
+    \n[] &bORARIO SERVER : &e{8}&r"
 
   creation_mode_msg: "Indica la posizione della fortezza ... &8(CLICK DX con STICK equipaggiato)"
 

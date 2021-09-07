@@ -91,6 +91,11 @@ public class SetCommand extends SubCommand {
                         && fortress.getOwner().equals(newOwner.getName()))
                     return;
 
+                if (fortress.getOwner() == null)
+                    FortressService.getInstance().updateFortressByTownContainer(null, newOwner.getName(), fortress);
+                else
+                    FortressService.getInstance().updateFortressByTownContainer(fortress.getOwner(), newOwner.getName(), fortress);
+
                 fortress.setOwner(newOwner.getName());
                 FortressService.getInstance().updateFortress(fortress);
                 Message.FORTRESS_CLAIM_BROADCAST.broadcast(fortress.getFormattedName(),newOwner.getFormattedName());
@@ -147,6 +152,7 @@ public class SetCommand extends SubCommand {
                     return;
                 }
 
+                FortressService.getInstance().updateFortressByTownContainer(oldOwner.getName(),null,fortress);
                 fortress.setOwner(null);
                 FortressService.getInstance().updateFortress(fortress);
 
